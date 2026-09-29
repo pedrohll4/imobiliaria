@@ -112,8 +112,10 @@ model Lead {
   email      String
   phone      String
   message    String
-  status     String    @default("NOVO") // "NOVO" | "EM_ATENDIMENTO" | "VISITA_AGENDADA" | "PROPOSTA" | "FECHADO" | "PERDIDO"
-  source     String    @default("PORTAL")
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  status             String    @default("NOVO") // "NOVO" | "EM_ATENDIMENTO" | "VISITA_AGENDADA" | "PROPOSTA" | "FECHADO" | "PERDIDO"
+  source             String    @default("PORTAL")
+  curatedPropertyIds String?   // Array JSON de IDs de imóveis sugeridos pelo corretor
+  curatedNotes       String?   // Mensagem personalizada do corretor para o cliente
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 }

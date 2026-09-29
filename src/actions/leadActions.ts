@@ -105,3 +105,58 @@ export async function updateLeadStatusAction(
     return { success: false, error: "Erro ao atualizar status." };
   }
 }
+
+export async function saveLeadCurationAction(
+  leadId: string,
+  propertyIds: string[],
+  notes?: string
+): Promise<LeadActionResult & { shareUrl?: string }> {
+  const session = await getSession();
+  if (!session) {
+    return { success: false, error: "Não autorizado." };
+  }
+
+  try {
+    const existing = await prisma.lead.findUnique({
+      where: { id: leadId },
+      select: { brokerId: true, status: true },
+    });
+
+    if (!existing) {
+      return { success: false, error: "Lead não encontrado." };
+    }
+
+    if (
+      session.role === "BROKER" &&
+      session.brokerId &&
+      existing.brokerId &&
+      existing.brokerId !== session.brokerId
+    ) {
+      return { success: false, error: "Acesso negado a este atendimento." };
+    }
+
+    const updatedStatus = existing.status === "NOVO" ? "PROPOSTA" : existing.status;
+
+    await prisma.lead.update({
+      where: { id: leadId },
+      data: {
+        curatedPropertyIds: JSON.stringify(propertyIds),
+        curatedNotes: notes?.trim() || null,
+        status: updatedStatus,
+      },
+    });
+
+    revalidatePath("/dashboard/leads");
+    revalidatePath("/admin/leads");
+    revalidatePath(`/curadoria/${leadId}`);
+
+    return {
+      success: true,
+      message: "Curadoria de imóveis salva com sucesso!",
+      shareUrl: `/curadoria/${leadId}`,
+    };
+  } catch (err) {
+    console.error("Erro ao salvar curadoria de imóveis:", err);
+    return { success: false, error: "Erro ao salvar seleção de imóveis." };
+  }
+}
