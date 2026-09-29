@@ -45,7 +45,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
     property.purpose === "ALUGUEL" ? `${formattedPrice}/mês` : formattedPrice;
 
   return (
-    <div className="group relative bg-[#FFFFFF] border border-[#0F1115]/[0.08] rounded-sm overflow-hidden shadow-subtle hover:shadow-elevation hover:border-[#C5A880]/50 transition-all duration-500 flex flex-col">
+    <div className="group relative bg-[#FFFFFF] border border-[#0F1115]/[0.08] rounded-sm overflow-hidden shadow-subtle hover:shadow-elevation hover:border-[#D4AF37]/50 transition-all duration-500 flex flex-col">
       {/* Imagem com Zoom Suave */}
       <div className="relative aspect-[16/10] overflow-hidden bg-[#1A1E29]">
         <img
@@ -65,7 +65,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
           </Badge>
           <Badge
             variant="champagne"
-            className="text-[10px] tracking-widest bg-[#C5A880] text-[#0B0D12] font-bold"
+            className="text-[10px] tracking-widest bg-[#D4AF37] text-[#0B0D12] font-bold"
           >
             {property.purpose === "VENDA" ? "Venda" : "Locação"}
           </Badge>
@@ -83,7 +83,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
         >
           <Heart
             className={`w-4 h-4 transition-colors ${
-              isFavorite ? "fill-[#C5A880] text-[#C5A880]" : "text-white"
+              isFavorite ? "fill-[#D4AF37] text-[#D4AF37]" : "text-white"
             }`}
           />
         </button>
@@ -102,7 +102,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
       {/* Conteúdo do Card */}
       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
         <div>
-          <h3 className="font-serif text-lg font-normal text-[#0F1115] line-clamp-1 group-hover:text-[#8E6F3E] transition-colors tracking-tight">
+          <h3 className="font-serif text-lg font-normal text-[#0F1115] line-clamp-1 group-hover:text-[#9B7826] transition-colors tracking-tight">
             <Link href={`/imoveis/${property.id}`} className="focus:outline-none">
               {property.title}
             </Link>
@@ -116,7 +116,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
         <div className="pt-3 border-t border-[#0F1115]/[0.06] grid grid-cols-4 gap-2 text-center text-[#55524D]">
           <div className="flex flex-col items-center">
             <div className="flex items-center gap-1 text-xs font-medium text-[#0F1115]">
-              <Bed className="w-3.5 h-3.5 text-[#C5A880]" />
+              <Bed className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span>{property.bedrooms}</span>
             </div>
             <span className="text-[10px] uppercase tracking-wider text-[#8C8983] mt-0.5 font-light">
@@ -126,7 +126,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
 
           <div className="flex flex-col items-center">
             <div className="flex items-center gap-1 text-xs font-medium text-[#0F1115]">
-              <Bath className="w-3.5 h-3.5 text-[#C5A880]" />
+              <Bath className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span>{property.bathrooms}</span>
             </div>
             <span className="text-[10px] uppercase tracking-wider text-[#8C8983] mt-0.5 font-light">
@@ -136,7 +136,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
 
           <div className="flex flex-col items-center">
             <div className="flex items-center gap-1 text-xs font-medium text-[#0F1115]">
-              <Car className="w-3.5 h-3.5 text-[#C5A880]" />
+              <Car className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span>{property.parkingSpaces}</span>
             </div>
             <span className="text-[10px] uppercase tracking-wider text-[#8C8983] mt-0.5 font-light">
@@ -146,7 +146,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
 
           <div className="flex flex-col items-center">
             <div className="flex items-center gap-1 text-xs font-medium text-[#0F1115]">
-              <Maximize2 className="w-3.5 h-3.5 text-[#C5A880]" />
+              <Maximize2 className="w-3.5 h-3.5 text-[#D4AF37]" />
               <span>{property.builtArea || "-"}</span>
             </div>
             <span className="text-[10px] uppercase tracking-wider text-[#8C8983] mt-0.5 font-light">

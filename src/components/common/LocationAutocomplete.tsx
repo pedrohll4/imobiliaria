@@ -118,7 +118,7 @@ export function LocationAutocomplete({
         return {
           label: "Condomínio",
           icon: Compass,
-          className: "bg-[#C5A880]/20 text-[#8E6F3E] border-[#C5A880]/40",
+          className: "bg-[#D4AF37]/20 text-[#9B7826] border-[#D4AF37]/40",
         };
       case "BAIRRO":
         return {
@@ -182,7 +182,7 @@ export function LocationAutocomplete({
             <span className="text-[10px] font-semibold uppercase tracking-wider text-[#8C8983]">
               {value.trim() ? "Resultados em Rondônia" : "Principais Regiões de Rondônia"}
             </span>
-            <span className="text-[10px] font-mono text-[#C5A880]">RO • Brasil</span>
+            <span className="text-[10px] font-mono text-[#D4AF37]">RO • Brasil</span>
           </div>
 
           <div className="overflow-y-auto divide-y divide-[#0F1115]/5">
@@ -203,13 +203,13 @@ export function LocationAutocomplete({
                     onMouseEnter={() => setActiveIndex(index)}
                     className={`w-full text-left px-3.5 py-2.5 flex items-center justify-between gap-3 transition-colors ${
                       isActive
-                        ? "bg-[#C5A880]/10"
+                        ? "bg-[#D4AF37]/10"
                         : "hover:bg-[#FBF9F5]"
                     }`}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
                       <div className="w-7 h-7 rounded-xs bg-[#0B0D12]/5 flex items-center justify-center shrink-0">
-                        <IconComponent className="w-3.5 h-3.5 text-[#C5A880]" />
+                        <IconComponent className="w-3.5 h-3.5 text-[#D4AF37]" />
                       </div>
                       <div className="truncate">
                         <div className="flex items-center gap-2">
@@ -217,7 +217,7 @@ export function LocationAutocomplete({
                             {item.label}
                           </span>
                           {isSelected && (
-                            <Check className="w-3 h-3 text-[#C5A880] shrink-0" />
+                            <Check className="w-3 h-3 text-[#D4AF37] shrink-0" />
                           )}
                         </div>
                         <span className="text-[10px] text-[#8C8983] block truncate">

@@ -181,7 +181,7 @@ export function ArchitecturalPavilion() {
     });
 
     const bronzeMetalMat = new THREE.MeshStandardMaterial({
-      color: 0xc5a880,
+      color: 0xd4af37,
       roughness: 0.25,
       metalness: 0.85,
     });
@@ -587,7 +587,7 @@ export function ArchitecturalPavilion() {
       <div className="w-full h-full flex items-center justify-center p-8">
         <svg
           viewBox="0 0 200 200"
-          className="w-48 h-48 text-[#C5A880]/50 stroke-current fill-none stroke-[1.2]"
+          className="w-48 h-48 text-[#D4AF37]/50 stroke-current fill-none stroke-[1.2]"
         >
           <polygon points="100,30 180,75 180,145 100,190 20,145 20,75" />
           <line x1="100" y1="30" x2="100" y2="190" />
@@ -607,13 +607,13 @@ export function ArchitecturalPavilion() {
       
       {/* Badge Editorial de Interação 360° */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 pointer-events-none">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0B0D12]/90 backdrop-blur-md border border-[#C5A880]/30 shadow-2xl whitespace-nowrap">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0B0D12]/90 backdrop-blur-md border border-[#D4AF37]/30 shadow-2xl whitespace-nowrap">
           <span className="flex h-1.5 w-1.5 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C5A880] opacity-75" />
-            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#C5A880]" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75" />
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#D4AF37]" />
           </span>
           <span className="text-[10px] tracking-[0.2em] uppercase text-[#FBF9F5] font-mono">
-            Visão 360° <span className="text-[#C5A880] mx-0.5">•</span> Arraste para Girar
+            Visão 360° <span className="text-[#D4AF37] mx-0.5">•</span> Arraste para Girar
           </span>
         </div>
       </div>

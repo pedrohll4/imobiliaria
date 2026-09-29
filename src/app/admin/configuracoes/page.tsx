@@ -6,7 +6,7 @@ export default function AdminConfiguracoesPage() {
   return (
     <div className="space-y-8 max-w-5xl">
       <div className="pb-6 border-b border-[#0F1115]/10">
-        <span className="text-xs uppercase tracking-[0.2em] text-[#C5A880] font-semibold">
+        <span className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-semibold">
           Configuração do Sistema
         </span>
         <h1 className="font-serif text-3xl font-normal text-[#0F1115] mt-1">
@@ -20,7 +20,7 @@ export default function AdminConfiguracoesPage() {
       {/* 1. Identidade Visual Provisória */}
       <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] p-8 rounded-sm shadow-subtle space-y-6">
         <div className="flex items-center gap-2 border-b border-[#0F1115]/10 pb-4">
-          <Palette className="w-5 h-5 text-[#C5A880]" />
+          <Palette className="w-5 h-5 text-[#D4AF37]" />
           <div>
             <h2 className="font-serif text-xl text-[#0F1115]">
               Tokens da Marca Provisória
@@ -89,7 +89,7 @@ export default function AdminConfiguracoesPage() {
       {/* 2. Infraestrutura & Deploy Gratuito */}
       <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] p-8 rounded-sm shadow-subtle space-y-6">
         <div className="flex items-center gap-2 border-b border-[#0F1115]/10 pb-4">
-          <Database className="w-5 h-5 text-[#C5A880]" />
+          <Database className="w-5 h-5 text-[#D4AF37]" />
           <div>
             <h2 className="font-serif text-xl text-[#0F1115]">
               Banco de Dados & Hospedagem Gratuita
@@ -114,7 +114,7 @@ export default function AdminConfiguracoesPage() {
           </div>
 
           <div className="flex items-start gap-3 p-4 bg-[#FBF9F5] border border-[#0F1115]/5 rounded-xs">
-            <CheckCircle2 className="w-5 h-5 text-[#C5A880] shrink-0 mt-0.5" />
+            <CheckCircle2 className="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" />
             <div>
               <strong className="text-[#0F1115] block text-sm">
                 Deploy Gratuito com Supabase (PostgreSQL)

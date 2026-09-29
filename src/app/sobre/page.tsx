@@ -16,7 +16,7 @@ export default async function SobrePage() {
         {/* Banner Editorial */}
         <section className="bg-[#0B0D12] text-[#FBF9F5] py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center space-y-4">
-            <span className="text-xs uppercase tracking-[0.25em] text-[#C5A880] font-semibold">
+            <span className="text-xs uppercase tracking-[0.25em] text-[#D4AF37] font-semibold">
               Institucional
             </span>
             <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight">
@@ -32,7 +32,7 @@ export default async function SobrePage() {
         <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 space-y-16">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="space-y-5">
-              <span className="text-xs uppercase tracking-[0.2em] text-[#8E6F3E] font-semibold">
+              <span className="text-xs uppercase tracking-[0.2em] text-[#9B7826] font-semibold">
                 Nossa Trajetória
               </span>
               <h2 className="font-serif text-3xl sm:text-4xl text-[#0F1115] leading-tight">
@@ -65,7 +65,7 @@ export default async function SobrePage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
               <div className="bg-[#FFFFFF] p-8 rounded-sm border border-[#0F1115]/[0.08] shadow-subtle space-y-3">
-                <ShieldCheck className="w-7 h-7 text-[#C5A880]" />
+                <ShieldCheck className="w-7 h-7 text-[#D4AF37]" />
                 <h4 className="font-serif text-xl text-[#0F1115]">Privacidade Máxima</h4>
                 <p className="text-xs sm:text-sm text-[#68655F] font-light leading-relaxed">
                   Operamos com acordos de confidencialidade (NDA) rigorosos e canais de comunicação seguros para proteger sua identidade patrimonial.
@@ -73,7 +73,7 @@ export default async function SobrePage() {
               </div>
 
               <div className="bg-[#FFFFFF] p-8 rounded-sm border border-[#0F1115]/[0.08] shadow-subtle space-y-3">
-                <Compass className="w-7 h-7 text-[#C5A880]" />
+                <Compass className="w-7 h-7 text-[#D4AF37]" />
                 <h4 className="font-serif text-xl text-[#0F1115]">Consultoria Consultiva</h4>
                 <p className="text-xs sm:text-sm text-[#68655F] font-light leading-relaxed">
                   Análise técnica de liquidez, valorização de bairro, viabilidade construtiva e suporte com arquitetos e engenheiros de ponta.
@@ -81,7 +81,7 @@ export default async function SobrePage() {
               </div>
 
               <div className="bg-[#FFFFFF] p-8 rounded-sm border border-[#0F1115]/[0.08] shadow-subtle space-y-3">
-                <Award className="w-7 h-7 text-[#C5A880]" />
+                <Award className="w-7 h-7 text-[#D4AF37]" />
                 <h4 className="font-serif text-xl text-[#0F1115]">Excelência Notarial</h4>
                 <p className="text-xs sm:text-sm text-[#68655F] font-light leading-relaxed">
                   Auditoria documental preventiva de certidões, registros imobiliários e estruturação de holding imobiliária familiar.

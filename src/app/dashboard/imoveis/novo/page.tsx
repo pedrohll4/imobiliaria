@@ -20,7 +20,7 @@ export default function NovoImovelPage() {
       </div>
 
       <div className="border-b border-[#0F1115]/10 pb-4">
-        <span className="text-xs uppercase tracking-[0.2em] text-[#C5A880] font-semibold">
+        <span className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-semibold">
           Cadastro de Propriedade
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl text-[#0F1115] mt-1">

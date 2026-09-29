@@ -45,7 +45,7 @@ export default async function AdminLayout({
       <aside className="w-full md:w-64 bg-[#0B0D12] text-[#FBF9F5] border-r border-white/[0.08] flex flex-col shrink-0">
         <div className="p-6 border-b border-white/[0.08]">
           <Link href="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 border border-[#C5A880] flex items-center justify-center text-[#C5A880] font-serif text-sm tracking-widest bg-[#161922]">
+            <div className="w-9 h-9 border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] font-serif text-sm tracking-widest bg-[#161922]">
               {siteConfig.logoText}
             </div>
             <div>
@@ -80,7 +80,7 @@ export default async function AdminLayout({
                 href={item.href}
                 className="flex items-center gap-3 px-3.5 py-2.5 rounded-xs text-xs uppercase tracking-wider text-[#A5A29A] hover:text-[#FBF9F5] hover:bg-white/[0.05] transition-all font-medium"
               >
-                <Icon className="w-4 h-4 text-[#C5A880]" />
+                <Icon className="w-4 h-4 text-[#D4AF37]" />
                 <span>{item.label}</span>
               </Link>
             );
@@ -89,7 +89,7 @@ export default async function AdminLayout({
           <div className="pt-4 mt-4 border-t border-white/[0.08]">
             <Link
               href="/dashboard"
-              className="flex items-center gap-3 px-3.5 py-2.5 rounded-xs text-xs uppercase tracking-wider text-[#C5A880] hover:bg-white/[0.05] transition-all font-medium"
+              className="flex items-center gap-3 px-3.5 py-2.5 rounded-xs text-xs uppercase tracking-wider text-[#D4AF37] hover:bg-white/[0.05] transition-all font-medium"
             >
               <LayoutDashboard className="w-4 h-4" />
               <span>Painel do Corretor</span>
@@ -104,7 +104,7 @@ export default async function AdminLayout({
             className="flex items-center justify-between px-3 py-2 text-xs text-[#8C8983] hover:text-[#FBF9F5] transition-colors"
           >
             <span>Ver Portal Público</span>
-            <ExternalLink className="w-3.5 h-3.5 text-[#C5A880]" />
+            <ExternalLink className="w-3.5 h-3.5 text-[#D4AF37]" />
           </Link>
 
           <form action={logoutAction}>

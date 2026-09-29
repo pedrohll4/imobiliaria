@@ -64,7 +64,7 @@ export function PropertyFilterSidebar() {
     <div className="space-y-6">
       <div className="flex items-center justify-between pb-4 border-b border-[#0F1115]/10">
         <div className="flex items-center gap-2">
-          <SlidersHorizontal className="w-4 h-4 text-[#C5A880]" />
+          <SlidersHorizontal className="w-4 h-4 text-[#D4AF37]" />
           <h3 className="font-serif text-lg font-medium text-[#0F1115]">
             Filtros Avançados
           </h3>
@@ -118,7 +118,7 @@ export function PropertyFilterSidebar() {
           value={location}
           onChange={setLocation}
           placeholder="Ex: Porto Velho, Alphaville, Cacoal..."
-          inputClassName="w-full text-xs px-3.5 py-2.5 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#C5A880]"
+          inputClassName="w-full text-xs px-3.5 py-2.5 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#D4AF37]"
           dropdownClassName="w-full sm:w-[320px]"
         />
 
@@ -131,7 +131,7 @@ export function PropertyFilterSidebar() {
               onClick={() => setLocation(location === city ? "" : city)}
               className={`text-[10px] px-2 py-0.5 rounded-xs border transition-colors ${
                 location === city
-                  ? "bg-[#C5A880] text-[#0B0D12] border-[#C5A880] font-semibold"
+                  ? "bg-[#D4AF37] text-[#0B0D12] border-[#D4AF37] font-semibold"
                   : "bg-white text-[#68655F] border-[#0F1115]/10 hover:border-[#0F1115]/30 hover:text-[#0F1115]"
               }`}
             >
@@ -149,7 +149,7 @@ export function PropertyFilterSidebar() {
         <select
           value={type}
           onChange={(e) => setType(e.target.value)}
-          className="w-full text-xs px-3.5 py-2.5 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#C5A880] cursor-pointer"
+          className="w-full text-xs px-3.5 py-2.5 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#D4AF37] cursor-pointer"
         >
           <option value="">Todos os Tipos</option>
           <option value="APARTAMENTO">Apartamento</option>
@@ -175,14 +175,14 @@ export function PropertyFilterSidebar() {
             value={minPrice}
             onChange={(e) => setMinPrice(e.target.value)}
             placeholder="Mínimo"
-            className="w-full text-xs px-3 py-2 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#C5A880]"
+            className="w-full text-xs px-3 py-2 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#D4AF37]"
           />
           <input
             type="number"
             value={maxPrice}
             onChange={(e) => setMaxPrice(e.target.value)}
             placeholder="Máximo"
-            className="w-full text-xs px-3 py-2 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#C5A880]"
+            className="w-full text-xs px-3 py-2 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#D4AF37]"
           />
         </div>
       </div>
@@ -196,7 +196,7 @@ export function PropertyFilterSidebar() {
           <select
             value={bedrooms}
             onChange={(e) => setBedrooms(e.target.value)}
-            className="w-full text-xs px-3 py-2 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#C5A880]"
+            className="w-full text-xs px-3 py-2 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#D4AF37]"
           >
             <option value="">Qualquer</option>
             <option value="1">1+</option>
@@ -214,7 +214,7 @@ export function PropertyFilterSidebar() {
           <select
             value={parkingSpaces}
             onChange={(e) => setParkingSpaces(e.target.value)}
-            className="w-full text-xs px-3 py-2 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#C5A880]"
+            className="w-full text-xs px-3 py-2 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#D4AF37]"
           >
             <option value="">Qualquer</option>
             <option value="1">1+</option>
@@ -237,14 +237,14 @@ export function PropertyFilterSidebar() {
             value={minArea}
             onChange={(e) => setMinArea(e.target.value)}
             placeholder="Mín m²"
-            className="w-full text-xs px-3 py-2 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#C5A880]"
+            className="w-full text-xs px-3 py-2 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#D4AF37]"
           />
           <input
             type="number"
             value={maxArea}
             onChange={(e) => setMaxArea(e.target.value)}
             placeholder="Máx m²"
-            className="w-full text-xs px-3 py-2 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#C5A880]"
+            className="w-full text-xs px-3 py-2 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#D4AF37]"
           />
         </div>
       </div>
@@ -269,7 +269,7 @@ export function PropertyFilterSidebar() {
           onClick={() => setMobileDrawerOpen(true)}
           className="flex items-center gap-2 text-xs uppercase tracking-wider"
         >
-          <SlidersHorizontal className="w-3.5 h-3.5 text-[#C5A880]" />
+          <SlidersHorizontal className="w-3.5 h-3.5 text-[#D4AF37]" />
           Filtrar Catálogo
         </Button>
       </div>

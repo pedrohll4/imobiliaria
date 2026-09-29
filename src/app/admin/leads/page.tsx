@@ -19,7 +19,7 @@ export default async function AdminLeadsPage() {
   return (
     <div className="space-y-6">
       <div className="pb-6 border-b border-[#0F1115]/10">
-        <span className="text-xs uppercase tracking-[0.2em] text-[#C5A880] font-semibold">
+        <span className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-semibold">
           Central de Atendimentos
         </span>
         <h1 className="font-serif text-3xl font-normal text-[#0F1115] mt-1">
@@ -32,7 +32,7 @@ export default async function AdminLeadsPage() {
 
       {leads.length === 0 ? (
         <div className="bg-[#FFFFFF] border border-[#0F1115]/10 p-12 text-center rounded-sm space-y-3">
-          <Inbox className="w-10 h-10 text-[#C5A880] mx-auto" />
+          <Inbox className="w-10 h-10 text-[#D4AF37] mx-auto" />
           <h3 className="font-serif text-xl text-[#0F1115]">
             Nenhum lead registrado no sistema
           </h3>

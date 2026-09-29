@@ -122,7 +122,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
             </h1>
 
             <p className="flex items-center gap-1.5 text-sm text-[#68655F] font-light">
-              <MapPin className="w-4 h-4 text-[#C5A880]" />
+              <MapPin className="w-4 h-4 text-[#D4AF37]" />
               <span>
                 {property.neighborhood}, {property.city} — {property.state}
                 {property.address && ` • ${property.address}`}
@@ -144,7 +144,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
             <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] p-6 rounded-sm shadow-subtle grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-1.5 text-base font-medium text-[#0F1115]">
-                  <Bed className="w-4 h-4 text-[#C5A880]" />
+                  <Bed className="w-4 h-4 text-[#D4AF37]" />
                   <span>{property.bedrooms}</span>
                 </div>
                 <p className="text-[11px] uppercase tracking-wider text-[#8C8983]">
@@ -154,7 +154,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
 
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-1.5 text-base font-medium text-[#0F1115]">
-                  <Bath className="w-4 h-4 text-[#C5A880]" />
+                  <Bath className="w-4 h-4 text-[#D4AF37]" />
                   <span>{property.bathrooms}</span>
                 </div>
                 <p className="text-[11px] uppercase tracking-wider text-[#8C8983]">
@@ -164,7 +164,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
 
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-1.5 text-base font-medium text-[#0F1115]">
-                  <Car className="w-4 h-4 text-[#C5A880]" />
+                  <Car className="w-4 h-4 text-[#D4AF37]" />
                   <span>{property.parkingSpaces}</span>
                 </div>
                 <p className="text-[11px] uppercase tracking-wider text-[#8C8983]">
@@ -174,7 +174,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
 
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-1.5 text-base font-medium text-[#0F1115]">
-                  <Maximize2 className="w-4 h-4 text-[#C5A880]" />
+                  <Maximize2 className="w-4 h-4 text-[#D4AF37]" />
                   <span>{property.builtArea} m²</span>
                 </div>
                 <p className="text-[11px] uppercase tracking-wider text-[#8C8983]">
@@ -197,7 +197,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
             {property.features.length > 0 && (
               <div className="space-y-6 pt-6 border-t border-[#0F1115]/10">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-[#C5A880]" />
+                  <Sparkles className="w-5 h-5 text-[#D4AF37]" />
                   <h2 className="font-serif text-2xl font-normal text-[#0F1115]">
                     Diferenciais & Amenidades
                   </h2>
@@ -209,7 +209,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                       key={feat.id}
                       className="flex items-center gap-2.5 p-3.5 bg-[#FFFFFF] border border-[#0F1115]/[0.06] rounded-xs text-sm text-[#38352F]"
                     >
-                      <CheckCircle2 className="w-4 h-4 text-[#C5A880] shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 text-[#D4AF37] shrink-0" />
                       <span>{feat.name}</span>
                     </div>
                   ))}
@@ -226,7 +226,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                 Por motivos de discrição e segurança dos proprietários, o endereço exato é compartilhado mediante agendamento prévio com nossos consultores. A propriedade está situada no quadrilátero mais nobre de {property.neighborhood}, com fácil acesso aos melhores centros gastronômicos e culturais da região.
               </p>
               <div className="h-48 w-full bg-[#EAE7DF] rounded-sm border border-[#0F1115]/10 flex flex-col items-center justify-center text-center p-6 space-y-2">
-                <MapPin className="w-8 h-8 text-[#C5A880]" />
+                <MapPin className="w-8 h-8 text-[#D4AF37]" />
                 <p className="text-sm font-medium text-[#0F1115]">
                   {property.neighborhood}, {property.city} — {property.state}
                 </p>
@@ -250,7 +250,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
           <section className="pt-16 border-t border-[#0F1115]/10 space-y-8">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-xs uppercase tracking-[0.2em] text-[#C5A880] font-semibold">
+                <span className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-semibold">
                   Curadoria Relacionada
                 </span>
                 <h3 className="font-serif text-3xl font-normal text-[#0F1115] mt-1">
@@ -259,7 +259,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
               </div>
               <Link
                 href="/imoveis"
-                className="text-xs uppercase tracking-widest text-[#0B0D12] hover:text-[#8E6F3E] font-medium"
+                className="text-xs uppercase tracking-widest text-[#0B0D12] hover:text-[#9B7826] font-medium"
               >
                 Ver Portfólio Completo →
               </Link>

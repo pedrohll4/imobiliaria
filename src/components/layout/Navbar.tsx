@@ -46,7 +46,7 @@ export function Navbar({ session }: NavbarProps) {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-xs uppercase tracking-[0.18em] text-[#4A4742] hover:text-[#0B0D12] transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-[#C5A880] hover:after:w-full after:transition-all after:duration-300 font-medium"
+                className="text-xs uppercase tracking-[0.18em] text-[#4A4742] hover:text-[#0B0D12] transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-[#D4AF37] hover:after:w-full after:transition-all after:duration-300 font-medium"
               >
                 {link.label}
               </Link>
@@ -63,12 +63,12 @@ export function Navbar({ session }: NavbarProps) {
                 >
                   {session.role === "ADMIN" ? (
                     <>
-                      <Shield className="w-3.5 h-3.5 text-[#C5A880]" />
+                      <Shield className="w-3.5 h-3.5 text-[#D4AF37]" />
                       Painel Admin
                     </>
                   ) : (
                     <>
-                      <User className="w-3.5 h-3.5 text-[#C5A880]" />
+                      <User className="w-3.5 h-3.5 text-[#D4AF37]" />
                       Meu Painel
                     </>
                   )}
@@ -87,7 +87,7 @@ export function Navbar({ session }: NavbarProps) {
               href={`https://wa.me/${siteConfig.contact.whatsapp}?text=${encodeURIComponent("Olá! Gostaria de receber uma consultoria privativa sobre os imóveis de alto padrão.")}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest bg-[#C5A880] text-[#0B0D12] font-semibold px-4 py-2.5 rounded-sm hover:bg-[#B39366] transition-all shadow-sm"
+              className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest bg-[#D4AF37] text-[#0B0D12] font-semibold px-4 py-2.5 rounded-sm hover:bg-[#C29F2D] transition-all shadow-sm"
             >
               Atendimento Privativo
               <ArrowUpRight className="w-3.5 h-3.5" />
@@ -144,7 +144,7 @@ export function Navbar({ session }: NavbarProps) {
               href={`https://wa.me/${siteConfig.contact.whatsapp}?text=${encodeURIComponent("Olá! Gostaria de receber uma consultoria privativa sobre os imóveis de alto padrão.")}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full text-center text-xs uppercase tracking-widest bg-[#C5A880] text-[#0B0D12] font-semibold py-3 rounded-sm flex items-center justify-center gap-1.5"
+              className="w-full text-center text-xs uppercase tracking-widest bg-[#D4AF37] text-[#0B0D12] font-semibold py-3 rounded-sm flex items-center justify-center gap-1.5"
             >
               Atendimento Privativo
               <ArrowUpRight className="w-3.5 h-3.5" />

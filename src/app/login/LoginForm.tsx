@@ -35,7 +35,7 @@ export function LoginForm() {
     <div className="bg-[#141720] border border-white/[0.08] p-8 rounded-sm shadow-2xl space-y-6">
       <div className="border-b border-white/[0.08] pb-4">
         <h2 className="font-serif text-xl text-[#FBF9F5] flex items-center gap-2">
-          <Lock className="w-4 h-4 text-[#C5A880]" />
+          <Lock className="w-4 h-4 text-[#D4AF37]" />
           Autenticação de Acesso
         </h2>
         <p className="text-xs text-[#8C8983] font-light mt-1">
@@ -63,7 +63,7 @@ export function LoginForm() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="nome@imobiliaria.com"
             required
-            className="w-full text-sm bg-[#0B0D12] border border-white/[0.12] rounded-xs px-4 py-2.5 text-[#FBF9F5] placeholder:text-[#55524D] focus:outline-none focus:border-[#C5A880]"
+            className="w-full text-sm bg-[#0B0D12] border border-white/[0.12] rounded-xs px-4 py-2.5 text-[#FBF9F5] placeholder:text-[#55524D] focus:outline-none focus:border-[#D4AF37]"
           />
         </div>
 
@@ -78,7 +78,7 @@ export function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
             required
-            className="w-full text-sm bg-[#0B0D12] border border-white/[0.12] rounded-xs px-4 py-2.5 text-[#FBF9F5] placeholder:text-[#55524D] focus:outline-none focus:border-[#C5A880]"
+            className="w-full text-sm bg-[#0B0D12] border border-white/[0.12] rounded-xs px-4 py-2.5 text-[#FBF9F5] placeholder:text-[#55524D] focus:outline-none focus:border-[#D4AF37]"
           />
         </div>
 
@@ -104,7 +104,7 @@ export function LoginForm() {
           <button
             type="button"
             onClick={() => fillCredentials("admin@vanguard.com.br", "admin123")}
-            className="text-[11px] p-2 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] rounded-xs text-[#C5A880] flex items-center justify-center gap-1.5 transition-colors"
+            className="text-[11px] p-2 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] rounded-xs text-[#D4AF37] flex items-center justify-center gap-1.5 transition-colors"
           >
             <Shield className="w-3 h-3" />
             Admin (Diretoria)
@@ -112,7 +112,7 @@ export function LoginForm() {
           <button
             type="button"
             onClick={() => fillCredentials("helena@vanguard.com.br", "corretor123")}
-            className="text-[11px] p-2 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] rounded-xs text-[#E5D7C3] flex items-center justify-center gap-1.5 transition-colors"
+            className="text-[11px] p-2 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] rounded-xs text-[#F6EEDA] flex items-center justify-center gap-1.5 transition-colors"
           >
             <User className="w-3 h-3" />
             Corretor (Helena)

@@ -29,7 +29,7 @@ export function BrokerCreateModal() {
         onClick={() => setIsOpen(true)}
         className="flex items-center gap-2 text-xs uppercase tracking-widest px-5 py-3"
       >
-        <Plus className="w-4 h-4 text-[#C5A880]" />
+        <Plus className="w-4 h-4 text-[#D4AF37]" />
         <span>Cadastrar Corretor</span>
       </Button>
 

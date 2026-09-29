@@ -52,7 +52,7 @@ export function HeroSearchBar() {
           onClick={() => setPurpose("VENDA")}
           className={`px-6 py-2.5 text-xs uppercase tracking-widest font-semibold transition-all duration-300 ${
             purpose === "VENDA"
-              ? "bg-[#C5A880] text-[#0B0D12] shadow-sm"
+              ? "bg-[#D4AF37] text-[#0B0D12] shadow-sm"
               : "text-[#FBF9F5]/70 hover:text-[#FBF9F5]"
           }`}
         >
@@ -63,7 +63,7 @@ export function HeroSearchBar() {
           onClick={() => setPurpose("ALUGUEL")}
           className={`px-6 py-2.5 text-xs uppercase tracking-widest font-semibold transition-all duration-300 ${
             purpose === "ALUGUEL"
-              ? "bg-[#C5A880] text-[#0B0D12] shadow-sm"
+              ? "bg-[#D4AF37] text-[#0B0D12] shadow-sm"
               : "text-[#FBF9F5]/70 hover:text-[#FBF9F5]"
           }`}
         >
@@ -79,7 +79,7 @@ export function HeroSearchBar() {
         {/* Localização com Autocomplete Inteligente em Rondônia */}
         <div className="lg:col-span-3 border-b sm:border-b-0 sm:border-r border-[#0F1115]/10 pb-2 sm:pb-0 sm:pr-3 relative">
           <label className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-[#8C8983] font-medium mb-1">
-            <MapPin className="w-3.5 h-3.5 text-[#C5A880]" />
+            <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
             Localização em RO
           </label>
           <LocationAutocomplete
@@ -93,7 +93,7 @@ export function HeroSearchBar() {
         {/* Tipo de Imóvel */}
         <div className="lg:col-span-3 border-b sm:border-b-0 sm:border-r border-[#0F1115]/10 pb-2 sm:pb-0 sm:pr-3">
           <label className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-[#8C8983] font-medium mb-1">
-            <Home className="w-3.5 h-3.5 text-[#C5A880]" />
+            <Home className="w-3.5 h-3.5 text-[#D4AF37]" />
             Tipologia
           </label>
           <select
@@ -115,7 +115,7 @@ export function HeroSearchBar() {
         {/* Faixa de Preço */}
         <div className="lg:col-span-2 border-b sm:border-b-0 sm:border-r border-[#0F1115]/10 pb-2 sm:pb-0 sm:pr-3">
           <label className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-[#8C8983] font-medium mb-1">
-            <DollarSign className="w-3.5 h-3.5 text-[#C5A880]" />
+            <DollarSign className="w-3.5 h-3.5 text-[#D4AF37]" />
             Faixa de Valor
           </label>
           <select
@@ -143,7 +143,7 @@ export function HeroSearchBar() {
         {/* Quartos / Suítes */}
         <div className="lg:col-span-2 pb-2 sm:pb-0 sm:pr-2">
           <label className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-[#8C8983] font-medium mb-1">
-            <Bed className="w-3.5 h-3.5 text-[#C5A880]" />
+            <Bed className="w-3.5 h-3.5 text-[#D4AF37]" />
             Quartos
           </label>
           <select
@@ -165,7 +165,7 @@ export function HeroSearchBar() {
             type="submit"
             className="w-full h-12 bg-[#0B0D12] text-[#FBF9F5] hover:bg-[#1C202C] active:bg-[#000000] font-medium text-xs uppercase tracking-widest px-4 rounded-sm flex items-center justify-center gap-2 transition-all duration-300 shadow-md group"
           >
-            <Search className="w-3.5 h-3.5 text-[#C5A880] group-hover:scale-110 transition-transform" />
+            <Search className="w-3.5 h-3.5 text-[#D4AF37] group-hover:scale-110 transition-transform" />
             <span>Buscar</span>
           </button>
         </div>

@@ -16,7 +16,7 @@ export function Badge({
     "inline-flex items-center text-[11px] uppercase tracking-wider font-semibold px-2.5 py-0.5 rounded-xs select-none border transition-colors";
 
   const variantStyles = {
-    champagne: "bg-[#C5A880]/15 text-[#8E6F3E] border-[#C5A880]/30",
+    champagne: "bg-[#D4AF37]/15 text-[#9B7826] border-[#D4AF37]/30",
     dark: "bg-[#0B0D12] text-[#FBF9F5] border-[#0B0D12]",
     sand: "bg-[#F4F1EA] text-[#4A4742] border-[#E8E4DA]",
     outline: "bg-transparent text-[#0F1115] border-[#0F1115]/15",

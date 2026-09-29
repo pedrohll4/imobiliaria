@@ -27,7 +27,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           ref={ref}
           className={twMerge(
             clsx(
-              "w-full bg-[#FFFFFF] text-[#0F1115] text-sm px-4 py-2.5 rounded-sm border border-[#0F1115]/15 transition-all duration-200 focus:outline-none focus:border-[#C5A880] focus:ring-1 focus:ring-[#C5A880]/30 disabled:bg-[#F4F1EA] disabled:cursor-not-allowed",
+              "w-full bg-[#FFFFFF] text-[#0F1115] text-sm px-4 py-2.5 rounded-sm border border-[#0F1115]/15 transition-all duration-200 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/30 disabled:bg-[#F4F1EA] disabled:cursor-not-allowed",
               error && "border-red-500 focus:border-red-500",
               className
             )

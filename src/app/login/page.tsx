@@ -17,7 +17,7 @@ export default function LoginPage() {
         {/* Identidade Visual Provisória */}
         <div className="text-center space-y-3">
           <Link href="/" className="inline-flex items-center gap-3 group">
-            <div className="w-12 h-12 border border-[#C5A880] flex items-center justify-center bg-[#0B0D12] text-[#C5A880] font-serif text-xl tracking-widest transition-transform group-hover:scale-95 duration-300">
+            <div className="w-12 h-12 border border-[#D4AF37] flex items-center justify-center bg-[#0B0D12] text-[#D4AF37] font-serif text-xl tracking-widest transition-transform group-hover:scale-95 duration-300">
               {siteConfig.logoText}
             </div>
           </Link>
@@ -25,7 +25,7 @@ export default function LoginPage() {
             <h1 className="font-serif text-3xl font-light text-[#FBF9F5] uppercase tracking-wider">
               {siteConfig.name}
             </h1>
-            <p className="text-xs uppercase tracking-[0.25em] text-[#C5A880] mt-1 font-mono">
+            <p className="text-xs uppercase tracking-[0.25em] text-[#D4AF37] mt-1 font-mono">
               Portal Restrito & Gestão Privada
             </p>
           </div>
@@ -35,7 +35,7 @@ export default function LoginPage() {
         <Suspense
           fallback={
             <div className="bg-[#141720] border border-white/[0.08] p-8 rounded-sm shadow-2xl h-80 flex items-center justify-center">
-              <span className="w-6 h-6 border-2 border-[#C5A880] border-t-transparent rounded-full animate-spin" />
+              <span className="w-6 h-6 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin" />
             </div>
           }
         >

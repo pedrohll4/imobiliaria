@@ -73,7 +73,7 @@ export default async function DashboardOverviewPage() {
       {/* Topo: Boas-vindas & Ação Rápida */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#0F1115]/10">
         <div>
-          <span className="text-xs uppercase tracking-[0.2em] text-[#C5A880] font-semibold">
+          <span className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-semibold">
             Painel de Controle
           </span>
           <h1 className="font-serif text-3xl sm:text-4xl font-normal text-[#0F1115] mt-1">
@@ -88,7 +88,7 @@ export default async function DashboardOverviewPage() {
           href="/dashboard/imoveis/novo"
           className="inline-flex items-center gap-2 bg-[#0B0D12] text-[#FBF9F5] text-xs uppercase tracking-widest px-5 py-3 rounded-sm font-semibold hover:bg-[#1E2330] transition-all shadow-sm shrink-0"
         >
-          <Plus className="w-4 h-4 text-[#C5A880]" />
+          <Plus className="w-4 h-4 text-[#D4AF37]" />
           <span>Cadastrar Novo Imóvel</span>
         </Link>
       </div>
@@ -101,7 +101,7 @@ export default async function DashboardOverviewPage() {
             <span className="text-xs uppercase tracking-wider text-[#8C8983] font-medium">
               Imóveis Ativos
             </span>
-            <div className="w-8 h-8 rounded-full bg-[#F4F1EA] flex items-center justify-center text-[#C5A880]">
+            <div className="w-8 h-8 rounded-full bg-[#F4F1EA] flex items-center justify-center text-[#D4AF37]">
               <Building2 className="w-4 h-4" />
             </div>
           </div>
@@ -125,7 +125,7 @@ export default async function DashboardOverviewPage() {
             <span className="text-xs uppercase tracking-wider text-[#8C8983] font-medium">
               Visualizações
             </span>
-            <div className="w-8 h-8 rounded-full bg-[#F4F1EA] flex items-center justify-center text-[#C5A880]">
+            <div className="w-8 h-8 rounded-full bg-[#F4F1EA] flex items-center justify-center text-[#D4AF37]">
               <Eye className="w-4 h-4" />
             </div>
           </div>
@@ -146,7 +146,7 @@ export default async function DashboardOverviewPage() {
             <span className="text-xs uppercase tracking-wider text-[#8C8983] font-medium">
               Leads Recebidos
             </span>
-            <div className="w-8 h-8 rounded-full bg-[#F4F1EA] flex items-center justify-center text-[#C5A880]">
+            <div className="w-8 h-8 rounded-full bg-[#F4F1EA] flex items-center justify-center text-[#D4AF37]">
               <Users className="w-4 h-4" />
             </div>
           </div>
@@ -167,7 +167,7 @@ export default async function DashboardOverviewPage() {
             <span className="text-xs uppercase tracking-wider text-[#8C8983] font-medium">
               Visitas Agendadas
             </span>
-            <div className="w-8 h-8 rounded-full bg-[#F4F1EA] flex items-center justify-center text-[#C5A880]">
+            <div className="w-8 h-8 rounded-full bg-[#F4F1EA] flex items-center justify-center text-[#D4AF37]">
               <Calendar className="w-4 h-4" />
             </div>
           </div>
@@ -197,7 +197,7 @@ export default async function DashboardOverviewPage() {
                 Média semanal estimada de engajamento do portfólio
               </p>
             </div>
-            <span className="text-xs font-mono text-[#C5A880] uppercase tracking-wider">
+            <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-wider">
               Últimos 30 Dias
             </span>
           </div>
@@ -218,7 +218,7 @@ export default async function DashboardOverviewPage() {
                 </div>
                 <div className="w-full h-2 bg-[#F4F1EA] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-[#0B0D12] to-[#C5A880] rounded-full transition-all duration-1000"
+                    className="h-full bg-gradient-to-r from-[#0B0D12] to-[#D4AF37] rounded-full transition-all duration-1000"
                     style={{ width: `${bar.percent}%` }}
                   />
                 </div>
@@ -236,7 +236,7 @@ export default async function DashboardOverviewPage() {
               </h2>
               <Link
                 href="/dashboard/leads"
-                className="text-xs uppercase tracking-wider text-[#C5A880] hover:text-[#8E6F3E] font-medium"
+                className="text-xs uppercase tracking-wider text-[#D4AF37] hover:text-[#9B7826] font-medium"
               >
                 Ver Todos →
               </Link>
@@ -278,7 +278,7 @@ export default async function DashboardOverviewPage() {
               className="w-full inline-flex items-center justify-center gap-2 text-xs uppercase tracking-widest bg-[#F4F1EA] hover:bg-[#EAE7DF] text-[#0F1115] py-2.5 rounded-xs transition-colors font-medium"
             >
               <span>Gerenciar Pipeline de Leads</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-[#C5A880]" />
+              <ArrowUpRight className="w-3.5 h-3.5 text-[#D4AF37]" />
             </Link>
           </div>
         </div>

@@ -17,7 +17,7 @@ export default async function ContatoPage() {
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
         <div className="max-w-2xl mx-auto text-center mb-16 space-y-3">
-          <span className="text-xs uppercase tracking-[0.25em] text-[#C5A880] font-semibold">
+          <span className="text-xs uppercase tracking-[0.25em] text-[#D4AF37] font-semibold">
             Atendimento Privado
           </span>
           <h1 className="font-serif text-4xl sm:text-5xl font-normal text-[#0F1115] tracking-tight">
@@ -38,14 +38,14 @@ export default async function ContatoPage() {
               <h3 className="font-serif text-2xl text-[#0F1115] mt-1">
                 {siteConfig.name}
               </h3>
-              <p className="text-xs font-mono text-[#C5A880] uppercase mt-0.5">
+              <p className="text-xs font-mono text-[#D4AF37] uppercase mt-0.5">
                 {siteConfig.contact.creciJ}
               </p>
             </div>
 
             <div className="space-y-4 text-sm text-[#55524D] font-light">
               <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-[#C5A880] shrink-0 mt-0.5" />
+                <MapPin className="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-[#0F1115]">{siteConfig.contact.address.street}</p>
                   <p>{siteConfig.contact.address.neighborhood} — {siteConfig.contact.address.city}/{siteConfig.contact.address.state}</p>
@@ -54,12 +54,12 @@ export default async function ContatoPage() {
               </div>
 
               <div className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-[#C5A880] shrink-0" />
+                <Phone className="w-5 h-5 text-[#D4AF37] shrink-0" />
                 <span>{siteConfig.contact.phone}</span>
               </div>
 
               <div className="flex items-center gap-3">
-                <Mail className="w-5 h-5 text-[#C5A880] shrink-0" />
+                <Mail className="w-5 h-5 text-[#D4AF37] shrink-0" />
                 <span>{siteConfig.contact.email}</span>
               </div>
             </div>
@@ -69,7 +69,7 @@ export default async function ContatoPage() {
                 href={`https://wa.me/${siteConfig.contact.whatsapp}?text=${encodeURIComponent("Olá! Desejo agendar um atendimento na sede.")}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 bg-[#C5A880] text-[#0B0D12] text-xs uppercase tracking-widest font-semibold rounded-sm hover:bg-[#B39366] transition-all shadow-sm"
+                className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 bg-[#D4AF37] text-[#0B0D12] text-xs uppercase tracking-widest font-semibold rounded-sm hover:bg-[#C29F2D] transition-all shadow-sm"
               >
                 <MessageSquare className="w-4 h-4" />
                 <span>Atendimento via WhatsApp</span>

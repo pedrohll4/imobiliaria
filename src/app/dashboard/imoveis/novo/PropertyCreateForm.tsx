@@ -336,11 +336,11 @@ export function PropertyCreateForm() {
                 className={`flex items-center justify-between p-3 text-xs rounded-xs border text-left transition-all ${
                   isChecked
                     ? "bg-[#0B0D12] text-white border-[#0B0D12]"
-                    : "bg-[#FBF9F5] text-[#38352F] border-[#0F1115]/10 hover:border-[#C5A880]"
+                    : "bg-[#FBF9F5] text-[#38352F] border-[#0F1115]/10 hover:border-[#D4AF37]"
                 }`}
               >
                 <span>{amenity}</span>
-                {isChecked && <Check className="w-3.5 h-3.5 text-[#C5A880]" />}
+                {isChecked && <Check className="w-3.5 h-3.5 text-[#D4AF37]" />}
               </button>
             );
           })}
@@ -372,7 +372,7 @@ export function PropertyCreateForm() {
             onClick={addImage}
             className="shrink-0"
           >
-            <Plus className="w-4 h-4 mr-1 text-[#C5A880]" />
+            <Plus className="w-4 h-4 mr-1 text-[#D4AF37]" />
             Adicionar Foto
           </Button>
         </div>
@@ -383,7 +383,7 @@ export function PropertyCreateForm() {
             <div
               key={idx}
               className={`relative aspect-[16/10] rounded-xs overflow-hidden border group bg-[#161922] ${
-                idx === 0 ? "border-[#C5A880] ring-2 ring-[#C5A880]" : "border-[#0F1115]/10"
+                idx === 0 ? "border-[#D4AF37] ring-2 ring-[#D4AF37]" : "border-[#0F1115]/10"
               }`}
             >
               <img
@@ -393,7 +393,7 @@ export function PropertyCreateForm() {
               />
 
               {idx === 0 && (
-                <div className="absolute top-2 left-2 bg-[#C5A880] text-[#0B0D12] text-[9px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-xs flex items-center gap-1 shadow-sm">
+                <div className="absolute top-2 left-2 bg-[#D4AF37] text-[#0B0D12] text-[9px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-xs flex items-center gap-1 shadow-sm">
                   <Star className="w-2.5 h-2.5 fill-current" />
                   Foto Principal
                 </div>
@@ -405,7 +405,7 @@ export function PropertyCreateForm() {
                   <button
                     type="button"
                     onClick={() => setAsMainImage(idx)}
-                    className="p-1.5 bg-white text-[#0B0D12] rounded-xs text-[10px] uppercase font-semibold hover:bg-[#C5A880]"
+                    className="p-1.5 bg-white text-[#0B0D12] rounded-xs text-[10px] uppercase font-semibold hover:bg-[#D4AF37]"
                     title="Definir como foto de capa"
                   >
                     Definir Capa

@@ -57,13 +57,13 @@ export default async function BrokerDetailPage({ params }: BrokerDetailPageProps
             <img
               src={broker.photoUrl}
               alt={broker.name}
-              className="w-36 h-36 rounded-full object-cover border-2 border-[#C5A880]/30 shadow-md"
+              className="w-36 h-36 rounded-full object-cover border-2 border-[#D4AF37]/30 shadow-md"
             />
           </div>
 
           <div className="lg:col-span-8 space-y-4 text-center sm:text-left">
             <div className="space-y-1">
-              <span className="text-xs uppercase tracking-[0.2em] text-[#C5A880] font-semibold">
+              <span className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-semibold">
                 Consultor Associado
               </span>
               <h1 className="font-serif text-3xl sm:text-4xl text-[#0F1115]">
@@ -84,7 +84,7 @@ export default async function BrokerDetailPage({ params }: BrokerDetailPageProps
                 href={`https://wa.me/${broker.whatsapp}?text=${encodeURIComponent(`Olá ${broker.name}, gostaria de falar sobre as propriedades em sua carteira.`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#C5A880] text-[#0B0D12] text-xs uppercase tracking-widest font-semibold rounded-sm hover:bg-[#B39366] transition-all shadow-sm"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[#D4AF37] text-[#0B0D12] text-xs uppercase tracking-widest font-semibold rounded-sm hover:bg-[#C29F2D] transition-all shadow-sm"
               >
                 <MessageSquare className="w-4 h-4" />
                 <span>Conversar no WhatsApp</span>
@@ -93,11 +93,11 @@ export default async function BrokerDetailPage({ params }: BrokerDetailPageProps
 
               <div className="flex items-center gap-4 text-xs text-[#6B6862]">
                 <div className="flex items-center gap-1.5">
-                  <Phone className="w-3.5 h-3.5 text-[#C5A880]" />
+                  <Phone className="w-3.5 h-3.5 text-[#D4AF37]" />
                   <span>{broker.phone}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Mail className="w-3.5 h-3.5 text-[#C5A880]" />
+                  <Mail className="w-3.5 h-3.5 text-[#D4AF37]" />
                   <span>{broker.email}</span>
                 </div>
               </div>

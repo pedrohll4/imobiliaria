@@ -27,7 +27,7 @@ export default async function DashboardImoveisPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#0F1115]/10">
         <div>
-          <span className="text-xs uppercase tracking-[0.2em] text-[#C5A880] font-semibold">
+          <span className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-semibold">
             Gestão de Carteira
           </span>
           <h1 className="font-serif text-3xl font-normal text-[#0F1115] mt-1">
@@ -42,14 +42,14 @@ export default async function DashboardImoveisPage() {
           href="/dashboard/imoveis/novo"
           className="inline-flex items-center gap-2 bg-[#0B0D12] text-[#FBF9F5] text-xs uppercase tracking-widest px-5 py-3 rounded-sm font-semibold hover:bg-[#1E2330] transition-all shadow-sm shrink-0"
         >
-          <Plus className="w-4 h-4 text-[#C5A880]" />
+          <Plus className="w-4 h-4 text-[#D4AF37]" />
           <span>Cadastrar Imóvel</span>
         </Link>
       </div>
 
       {properties.length === 0 ? (
         <div className="bg-[#FFFFFF] border border-[#0F1115]/10 p-12 text-center rounded-sm space-y-4">
-          <Building className="w-10 h-10 text-[#C5A880] mx-auto" />
+          <Building className="w-10 h-10 text-[#D4AF37] mx-auto" />
           <h3 className="font-serif text-xl text-[#0F1115]">
             Nenhum imóvel cadastrado ainda
           </h3>
@@ -59,7 +59,7 @@ export default async function DashboardImoveisPage() {
           <div className="pt-2">
             <Link
               href="/dashboard/imoveis/novo"
-              className="inline-flex items-center gap-2 bg-[#C5A880] text-[#0B0D12] text-xs uppercase tracking-widest px-5 py-2.5 rounded-sm font-semibold"
+              className="inline-flex items-center gap-2 bg-[#D4AF37] text-[#0B0D12] text-xs uppercase tracking-widest px-5 py-2.5 rounded-sm font-semibold"
             >
               Cadastrar Agora
             </Link>
@@ -141,7 +141,7 @@ export default async function DashboardImoveisPage() {
                       </td>
                       <td className="py-3.5 px-4 text-center font-mono">
                         <span className="inline-flex items-center gap-1 text-[#6B6862]">
-                          <Eye className="w-3 h-3 text-[#C5A880]" />
+                          <Eye className="w-3 h-3 text-[#D4AF37]" />
                           {prop.views}
                         </span>
                       </td>

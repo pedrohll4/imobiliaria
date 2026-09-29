@@ -71,7 +71,7 @@ export const siteConfig: SiteConfig = {
 
   colors: {
     primary: "#0B0D12",
-    accent: "#C5A880",
+    accent: "#D4AF37",
     background: "#FBF9F5",
   },
 };

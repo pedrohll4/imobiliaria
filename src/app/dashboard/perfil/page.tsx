@@ -35,7 +35,7 @@ export default async function DashboardPerfilPage() {
   return (
     <div className="space-y-8 max-w-6xl">
       <div className="border-b border-[#0F1115]/10 pb-4">
-        <span className="text-xs uppercase tracking-[0.2em] text-[#C5A880] font-semibold">
+        <span className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-semibold">
           Configurações de Conta
         </span>
         <h1 className="font-serif text-3xl font-normal text-[#0F1115] mt-1">

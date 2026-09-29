@@ -12,9 +12,9 @@
     --brand-sand: #fbf9f5;
     --brand-sand-subtle: #f4f1ea;
     --brand-sand-card: #ffffff;
-    --brand-champagne: #c5a880;
-    --brand-champagne-dark: #b39366;
-    --brand-champagne-light: #f0e7dc;
+    --brand-champagne: #D4AF37;
+    --brand-champagne-dark: #C29F2D;
+    --brand-champagne-light: #F6EEDA;
     --brand-muted: #85827c;
     --brand-border: rgba(15, 17, 21, 0.08);
     --brand-border-dark: rgba(255, 255, 255, 0.09);
@@ -27,7 +27,7 @@
   }
 
   ::selection {
-    background-color: #c5a880;
+    background-color: #D4AF37;
     color: #ffffff;
   }
 
@@ -80,9 +80,9 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(197, 168, 128, 0.3);
+  background: rgba(212, 175, 55, 0.3);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(197, 168, 128, 0.6);
+  background: rgba(212, 175, 55, 0.6);
 }

@@ -23,7 +23,7 @@ export default async function AdminCorretoresPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#0F1115]/10">
         <div>
-          <span className="text-xs uppercase tracking-[0.2em] text-[#C5A880] font-semibold">
+          <span className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-semibold">
             Governança da Equipe
           </span>
           <h1 className="font-serif text-3xl font-normal text-[#0F1115] mt-1">

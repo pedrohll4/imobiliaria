@@ -12,7 +12,7 @@ export function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-14 border-b border-white/[0.08]">
           <div className="lg:col-span-5 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 border border-[#C5A880] flex items-center justify-center text-[#C5A880] font-serif text-base tracking-widest">
+              <div className="w-9 h-9 border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] font-serif text-base tracking-widest">
                 {siteConfig.logoText}
               </div>
               <span className="font-serif text-xl tracking-widest text-[#FBF9F5] font-light uppercase">
@@ -23,14 +23,14 @@ export function Footer() {
               Intermediação e curadoria de imóveis singulares, residências assinadas e investimentos imobiliários com discrição e sofisticação incomparáveis.
             </p>
             <div className="pt-2">
-              <span className="inline-block text-[11px] uppercase tracking-wider text-[#C5A880] border border-[#C5A880]/30 px-3 py-1">
+              <span className="inline-block text-[11px] uppercase tracking-wider text-[#D4AF37] border border-[#D4AF37]/30 px-3 py-1">
                 {siteConfig.contact.creciJ}
               </span>
             </div>
           </div>
 
           <div className="lg:col-span-3 space-y-3">
-            <h4 className="text-xs uppercase tracking-[0.2em] text-[#C5A880] font-medium">
+            <h4 className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-medium">
               Navegação
             </h4>
             <ul className="space-y-2 text-sm text-[#A5A29A] font-light">
@@ -68,7 +68,7 @@ export function Footer() {
           </div>
 
           <div className="lg:col-span-4 space-y-3">
-            <h4 className="text-xs uppercase tracking-[0.2em] text-[#C5A880] font-medium">
+            <h4 className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-medium">
               Sede Corporativa
             </h4>
             <div className="text-sm text-[#A5A29A] font-light space-y-1 leading-relaxed">
@@ -83,7 +83,7 @@ export function Footer() {
                 href={`https://wa.me/${siteConfig.contact.whatsapp}?text=${encodeURIComponent("Olá! Desejo atendimento exclusivo.")}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-[#C5A880] hover:text-[#E5D7C3] transition-colors uppercase tracking-wider font-medium"
+                className="inline-flex items-center gap-1.5 text-xs text-[#D4AF37] hover:text-[#F6EEDA] transition-colors uppercase tracking-wider font-medium"
               >
                 Conectar via WhatsApp
                 <ArrowUpRight className="w-3.5 h-3.5" />

@@ -28,7 +28,7 @@ export default async function CorretoresPage() {
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 w-full">
         {/* Cabeçalho */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-          <span className="text-xs uppercase tracking-[0.25em] text-[#C5A880] font-semibold">
+          <span className="text-xs uppercase tracking-[0.25em] text-[#D4AF37] font-semibold">
             Corpo Consultivo
           </span>
           <h1 className="font-serif text-4xl sm:text-5xl font-normal text-[#0F1115] tracking-tight">
@@ -44,7 +44,7 @@ export default async function CorretoresPage() {
           {brokers.map((broker) => (
             <div
               key={broker.id}
-              className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] rounded-sm overflow-hidden p-7 shadow-subtle hover:border-[#C5A880]/60 transition-all duration-300 flex flex-col justify-between space-y-6"
+              className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] rounded-sm overflow-hidden p-7 shadow-subtle hover:border-[#D4AF37]/60 transition-all duration-300 flex flex-col justify-between space-y-6"
             >
               <div>
                 <div className="flex items-center gap-4">
@@ -57,11 +57,11 @@ export default async function CorretoresPage() {
                     <h3 className="font-serif text-xl font-medium text-[#0F1115]">
                       {broker.name}
                     </h3>
-                    <p className="text-xs font-mono tracking-wider text-[#C5A880] uppercase mt-0.5">
+                    <p className="text-xs font-mono tracking-wider text-[#D4AF37] uppercase mt-0.5">
                       {broker.creci}
                     </p>
                     <div className="flex items-center gap-1.5 text-xs text-[#8C8983] mt-1.5 font-light">
-                      <Building2 className="w-3.5 h-3.5 text-[#C5A880]" />
+                      <Building2 className="w-3.5 h-3.5 text-[#D4AF37]" />
                       <span>{broker._count.properties} imóveis em carteira</span>
                     </div>
                   </div>
@@ -86,7 +86,7 @@ export default async function CorretoresPage() {
               <div className="pt-4 border-t border-[#0F1115]/10 flex items-center justify-between gap-3">
                 <Link
                   href={`/corretores/${broker.id}`}
-                  className="text-xs uppercase tracking-widest font-semibold text-[#0B0D12] hover:text-[#8E6F3E] transition-colors"
+                  className="text-xs uppercase tracking-widest font-semibold text-[#0B0D12] hover:text-[#9B7826] transition-colors"
                 >
                   Ver Perfil e Imóveis
                 </Link>
@@ -95,7 +95,7 @@ export default async function CorretoresPage() {
                   href={`https://wa.me/${broker.whatsapp}?text=${encodeURIComponent(`Olá ${broker.name}, gostaria de solicitar uma consultoria imobiliária.`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs uppercase tracking-wider font-semibold text-[#C5A880] hover:text-[#8E6F3E]"
+                  className="inline-flex items-center gap-1 text-xs uppercase tracking-wider font-semibold text-[#D4AF37] hover:text-[#9B7826]"
                 >
                   WhatsApp
                   <ArrowUpRight className="w-3.5 h-3.5" />

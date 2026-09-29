@@ -54,7 +54,7 @@ export function PropertyGallery({ images, title }: { images: ImageItem[]; title:
           }}
           className="absolute bottom-4 right-4 bg-[#0B0D12]/80 hover:bg-[#0B0D12] text-white backdrop-blur-md px-3.5 py-2 rounded-xs text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-md"
         >
-          <Maximize2 className="w-3.5 h-3.5 text-[#C5A880]" />
+          <Maximize2 className="w-3.5 h-3.5 text-[#D4AF37]" />
           <span>Ver Galeria ({selectedIndex + 1}/{images.length})</span>
         </button>
       </div>
@@ -69,7 +69,7 @@ export function PropertyGallery({ images, title }: { images: ImageItem[]; title:
               onClick={() => setSelectedIndex(idx)}
               className={`relative aspect-[16/10] overflow-hidden rounded-xs transition-all border ${
                 selectedIndex === idx
-                  ? "border-[#C5A880] ring-1 ring-[#C5A880] opacity-100"
+                  ? "border-[#D4AF37] ring-1 ring-[#D4AF37] opacity-100"
                   : "border-transparent opacity-60 hover:opacity-100"
               }`}
             >

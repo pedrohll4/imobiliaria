@@ -112,7 +112,7 @@ export function PropertyContactBox({ property, broker }: PropertyContactBoxProps
         {/* Informações do Corretor Responsável */}
         {broker ? (
           <div className="pt-4 border-t border-[#0F1115]/10">
-            <span className="text-[10px] uppercase tracking-[0.2em] text-[#C5A880] font-semibold">
+            <span className="text-[10px] uppercase tracking-[0.2em] text-[#D4AF37] font-semibold">
               Corretor Responsável
             </span>
             <div className="flex items-center gap-3.5 mt-2.5">
@@ -153,7 +153,7 @@ export function PropertyContactBox({ property, broker }: PropertyContactBoxProps
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 bg-[#C5A880] hover:bg-[#B39366] text-[#0B0D12] text-xs uppercase tracking-widest font-semibold rounded-sm transition-all shadow-sm"
+            className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 bg-[#D4AF37] hover:bg-[#C29F2D] text-[#0B0D12] text-xs uppercase tracking-widest font-semibold rounded-sm transition-all shadow-sm"
           >
             <MessageSquare className="w-4 h-4" />
             <span>Falar no WhatsApp</span>
@@ -175,7 +175,7 @@ export function PropertyContactBox({ property, broker }: PropertyContactBoxProps
             onClick={() => openLeadModal("VISIT")}
             className="w-full py-2.5 text-xs uppercase tracking-widest flex items-center gap-2"
           >
-            <Calendar className="w-3.5 h-3.5 text-[#C5A880]" />
+            <Calendar className="w-3.5 h-3.5 text-[#D4AF37]" />
             <span>Agendar Visita Privada</span>
           </Button>
         </div>

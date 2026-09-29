@@ -19,7 +19,7 @@ export default async function AdminImoveisPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#0F1115]/10">
         <div>
-          <span className="text-xs uppercase tracking-[0.2em] text-[#C5A880] font-semibold">
+          <span className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-semibold">
             Governança da Plataforma
           </span>
           <h1 className="font-serif text-3xl font-normal text-[#0F1115] mt-1">
@@ -34,7 +34,7 @@ export default async function AdminImoveisPage() {
           href="/dashboard/imoveis/novo"
           className="inline-flex items-center gap-2 bg-[#0B0D12] text-[#FBF9F5] text-xs uppercase tracking-widest px-5 py-3 rounded-sm font-semibold hover:bg-[#1E2330] transition-all shadow-sm shrink-0"
         >
-          <Plus className="w-4 h-4 text-[#C5A880]" />
+          <Plus className="w-4 h-4 text-[#D4AF37]" />
           <span>Novo Imóvel</span>
         </Link>
       </div>

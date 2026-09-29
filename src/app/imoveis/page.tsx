@@ -112,7 +112,7 @@ export default async function ImoveisPage(props: ImoveisPageProps) {
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
         {/* Cabeçalho Editorial */}
         <div className="mb-10 text-center sm:text-left">
-          <span className="text-xs uppercase tracking-[0.25em] text-[#C5A880] font-semibold">
+          <span className="text-xs uppercase tracking-[0.25em] text-[#D4AF37] font-semibold">
             Portfólio Exclusivo
           </span>
           <h1 className="font-serif text-4xl sm:text-5xl font-normal text-[#0F1115] mt-1.5 tracking-tight">
@@ -136,7 +136,7 @@ export default async function ImoveisPage(props: ImoveisPageProps) {
 
             {properties.length === 0 ? (
               <div className="bg-[#FFFFFF] border border-[#0F1115]/10 rounded-sm p-12 text-center space-y-4 shadow-subtle my-6">
-                <div className="w-12 h-12 rounded-full bg-[#F4F1EA] flex items-center justify-center mx-auto text-[#C5A880]">
+                <div className="w-12 h-12 rounded-full bg-[#F4F1EA] flex items-center justify-center mx-auto text-[#D4AF37]">
                   <Building2 className="w-6 h-6" />
                 </div>
                 <h3 className="font-serif text-2xl text-[#0F1115]">

@@ -73,7 +73,7 @@ export default async function AdminOverviewPage() {
         <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] p-6 rounded-sm shadow-subtle space-y-2">
           <div className="flex items-center justify-between text-xs text-[#8C8983] uppercase tracking-wider font-medium">
             <span>Valor de Carteira</span>
-            <DollarSign className="w-4 h-4 text-[#C5A880]" />
+            <DollarSign className="w-4 h-4 text-[#D4AF37]" />
           </div>
           <p className="font-serif text-2xl sm:text-3xl font-normal text-[#0F1115]">
             {formattedPortfolioValue}
@@ -86,7 +86,7 @@ export default async function AdminOverviewPage() {
         <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] p-6 rounded-sm shadow-subtle space-y-2">
           <div className="flex items-center justify-between text-xs text-[#8C8983] uppercase tracking-wider font-medium">
             <span>Total de Imóveis</span>
-            <Building className="w-4 h-4 text-[#C5A880]" />
+            <Building className="w-4 h-4 text-[#D4AF37]" />
           </div>
           <p className="font-serif text-3xl font-normal text-[#0F1115]">
             {totalProperties}
@@ -99,7 +99,7 @@ export default async function AdminOverviewPage() {
         <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] p-6 rounded-sm shadow-subtle space-y-2">
           <div className="flex items-center justify-between text-xs text-[#8C8983] uppercase tracking-wider font-medium">
             <span>Corretores Ativos</span>
-            <UserCheck className="w-4 h-4 text-[#C5A880]" />
+            <UserCheck className="w-4 h-4 text-[#D4AF37]" />
           </div>
           <p className="font-serif text-3xl font-normal text-[#0F1115]">
             {totalBrokers}
@@ -112,7 +112,7 @@ export default async function AdminOverviewPage() {
         <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] p-6 rounded-sm shadow-subtle space-y-2">
           <div className="flex items-center justify-between text-xs text-[#8C8983] uppercase tracking-wider font-medium">
             <span>Volume de Leads</span>
-            <Inbox className="w-4 h-4 text-[#C5A880]" />
+            <Inbox className="w-4 h-4 text-[#D4AF37]" />
           </div>
           <p className="font-serif text-3xl font-normal text-[#0F1115]">
             {totalLeads}
@@ -133,7 +133,7 @@ export default async function AdminOverviewPage() {
             </h2>
             <Link
               href="/admin/imoveis"
-              className="text-xs uppercase tracking-wider text-[#C5A880] hover:text-[#8E6F3E] font-medium"
+              className="text-xs uppercase tracking-wider text-[#D4AF37] hover:text-[#9B7826] font-medium"
             >
               Gerenciar Todos →
             </Link>
@@ -175,7 +175,7 @@ export default async function AdminOverviewPage() {
             </h2>
             <Link
               href="/admin/leads"
-              className="text-xs uppercase tracking-wider text-[#C5A880] hover:text-[#8E6F3E] font-medium"
+              className="text-xs uppercase tracking-wider text-[#D4AF37] hover:text-[#9B7826] font-medium"
             >
               Ver Todos os Leads →
             </Link>

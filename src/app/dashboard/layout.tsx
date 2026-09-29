@@ -41,14 +41,14 @@ export default async function DashboardLayout({
         {/* Identidade no Topo da Sidebar */}
         <div className="p-6 border-b border-white/[0.08]">
           <Link href="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 border border-[#C5A880] flex items-center justify-center text-[#C5A880] font-serif text-sm tracking-widest">
+            <div className="w-9 h-9 border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] font-serif text-sm tracking-widest">
               {siteConfig.logoText}
             </div>
             <div>
               <span className="font-serif text-sm tracking-wider uppercase block text-[#FBF9F5]">
                 {siteConfig.name}
               </span>
-              <span className="text-[10px] tracking-widest text-[#C5A880] uppercase font-mono">
+              <span className="text-[10px] tracking-widest text-[#D4AF37] uppercase font-mono">
                 Área do Corretor
               </span>
             </div>
@@ -62,7 +62,7 @@ export default async function DashboardLayout({
             <p className="text-xs font-medium text-[#FBF9F5] truncate mt-0.5">
               {session.name}
             </p>
-            <span className="inline-block mt-1 text-[9px] uppercase tracking-widest bg-[#C5A880]/20 text-[#E5D7C3] px-2 py-0.5 rounded-xs font-mono">
+            <span className="inline-block mt-1 text-[9px] uppercase tracking-widest bg-[#D4AF37]/20 text-[#F6EEDA] px-2 py-0.5 rounded-xs font-mono">
               {session.role === "ADMIN" ? "Diretoria (Admin)" : "Consultor Autorizado"}
             </span>
           </div>
@@ -78,7 +78,7 @@ export default async function DashboardLayout({
                 href={item.href}
                 className="flex items-center gap-3 px-3.5 py-2.5 rounded-xs text-xs uppercase tracking-wider text-[#A5A29A] hover:text-[#FBF9F5] hover:bg-white/[0.05] transition-all font-medium"
               >
-                <Icon className="w-4 h-4 text-[#C5A880]" />
+                <Icon className="w-4 h-4 text-[#D4AF37]" />
                 <span>{item.label}</span>
               </Link>
             );
@@ -88,7 +88,7 @@ export default async function DashboardLayout({
             <div className="pt-4 mt-4 border-t border-white/[0.08]">
               <Link
                 href="/admin"
-                className="flex items-center gap-3 px-3.5 py-2.5 rounded-xs text-xs uppercase tracking-wider text-[#C5A880] hover:bg-white/[0.05] transition-all font-medium"
+                className="flex items-center gap-3 px-3.5 py-2.5 rounded-xs text-xs uppercase tracking-wider text-[#D4AF37] hover:bg-white/[0.05] transition-all font-medium"
               >
                 <Shield className="w-4 h-4" />
                 <span>Painel Admin Geral</span>
@@ -105,7 +105,7 @@ export default async function DashboardLayout({
             className="flex items-center justify-between px-3 py-2 text-xs text-[#8C8983] hover:text-[#FBF9F5] transition-colors"
           >
             <span>Ver Portal Público</span>
-            <ExternalLink className="w-3.5 h-3.5 text-[#C5A880]" />
+            <ExternalLink className="w-3.5 h-3.5 text-[#D4AF37]" />
           </Link>
 
           <form action={logoutAction}>

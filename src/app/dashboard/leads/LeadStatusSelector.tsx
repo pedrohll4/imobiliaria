@@ -48,7 +48,7 @@ export function LeadStatusSelector({ lead }: LeadItemProps) {
   const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(greeting)}`;
 
   return (
-    <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] p-6 rounded-sm shadow-subtle space-y-4 hover:border-[#C5A880]/40 transition-all">
+    <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] p-6 rounded-sm shadow-subtle space-y-4 hover:border-[#D4AF37]/40 transition-all">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#0F1115]/5">
         <div>
           <h3 className="font-serif text-lg font-medium text-[#0F1115]">
@@ -74,7 +74,7 @@ export function LeadStatusSelector({ lead }: LeadItemProps) {
             onChange={(e) => handleStatusChange(e.target.value)}
             className={`text-xs px-2.5 py-1.5 rounded-xs border font-medium cursor-pointer transition-colors focus:outline-none ${
               status === "NOVO"
-                ? "bg-[#C5A880]/15 text-[#8E6F3E] border-[#C5A880]/30"
+                ? "bg-[#D4AF37]/15 text-[#9B7826] border-[#D4AF37]/30"
                 : status === "VISITA_AGENDADA"
                 ? "bg-emerald-50 text-emerald-800 border-emerald-300"
                 : status === "FECHADO"
@@ -100,11 +100,11 @@ export function LeadStatusSelector({ lead }: LeadItemProps) {
       <div className="flex flex-wrap items-center justify-between gap-4 pt-2 text-xs text-[#6B6862]">
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1.5">
-            <Phone className="w-3.5 h-3.5 text-[#C5A880]" />
+            <Phone className="w-3.5 h-3.5 text-[#D4AF37]" />
             {lead.phone}
           </span>
           <span className="flex items-center gap-1.5">
-            <Mail className="w-3.5 h-3.5 text-[#C5A880]" />
+            <Mail className="w-3.5 h-3.5 text-[#D4AF37]" />
             {lead.email}
           </span>
         </div>
@@ -124,7 +124,7 @@ export function LeadStatusSelector({ lead }: LeadItemProps) {
             href={waUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#C5A880] text-[#0B0D12] font-semibold text-[11px] uppercase tracking-wider rounded-xs hover:bg-[#B39366] transition-all shadow-sm"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#D4AF37] text-[#0B0D12] font-semibold text-[11px] uppercase tracking-wider rounded-xs hover:bg-[#C29F2D] transition-all shadow-sm"
           >
             <MessageSquare className="w-3 h-3" />
             <span>Responder no WhatsApp</span>

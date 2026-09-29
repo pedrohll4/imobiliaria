@@ -30,7 +30,7 @@ export function Button({
     primary:
       "bg-[#0B0D12] text-[#FBF9F5] hover:bg-[#1A1E29] active:bg-[#000000] border border-transparent shadow-sm",
     champagne:
-      "bg-[#C5A880] text-[#0B0D12] hover:bg-[#B39366] active:bg-[#A38350] border border-transparent font-semibold shadow-sm",
+      "bg-[#D4AF37] text-[#0B0D12] hover:bg-[#C29F2D] active:bg-[#B08F24] border border-transparent font-semibold shadow-sm",
     outline:
       "bg-transparent text-[#0B0D12] border border-[#0B0D12]/20 hover:border-[#0B0D12] hover:bg-[#0B0D12]/[0.02]",
     ghost:

@@ -121,12 +121,12 @@ export function ProfileEditForm({
           <div
             className={`p-4 rounded-sm flex items-start gap-3 border text-sm transition-all duration-300 ${
               feedback.success
-                ? "bg-[#C5A880]/10 border-[#C5A880] text-[#0F1115]"
+                ? "bg-[#D4AF37]/10 border-[#D4AF37] text-[#0F1115]"
                 : "bg-red-50 border-red-300 text-red-800"
             }`}
           >
             {feedback.success ? (
-              <CheckCircle2 className="w-5 h-5 text-[#8E6F3E] shrink-0 mt-0.5" />
+              <CheckCircle2 className="w-5 h-5 text-[#9B7826] shrink-0 mt-0.5" />
             ) : (
               <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
             )}
@@ -149,7 +149,7 @@ export function ProfileEditForm({
                   Foto de alta resolução exibida nos cards dos imóveis e no WhatsApp.
                 </p>
               </div>
-              <span className="text-[10px] uppercase font-mono tracking-widest bg-[#C5A880]/20 text-[#8E6F3E] px-2 py-0.5 rounded-xs">
+              <span className="text-[10px] uppercase font-mono tracking-widest bg-[#D4AF37]/20 text-[#9B7826] px-2 py-0.5 rounded-xs">
                 Live Preview
               </span>
             </div>
@@ -163,7 +163,7 @@ export function ProfileEditForm({
                     (e.target as HTMLImageElement).src =
                       "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&q=80";
                   }}
-                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-2 border-[#C5A880] shadow-md transition-transform group-hover:scale-105 duration-300"
+                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-2 border-[#D4AF37] shadow-md transition-transform group-hover:scale-105 duration-300"
                 />
                 <div className="absolute bottom-0 right-0 bg-[#0B0D12] text-[#FBF9F5] p-1.5 rounded-full border border-white shadow-sm">
                   <Camera className="w-3.5 h-3.5" />
@@ -193,7 +193,7 @@ export function ProfileEditForm({
                         onClick={() => setPhotoUrl(preset.url)}
                         className={`text-[11px] px-2.5 py-1 rounded-xs border transition-all ${
                           photoUrl === preset.url
-                            ? "border-[#C5A880] bg-[#C5A880]/15 text-[#0F1115] font-semibold"
+                            ? "border-[#D4AF37] bg-[#D4AF37]/15 text-[#0F1115] font-semibold"
                             : "border-[#0F1115]/10 bg-[#FBF9F5] text-[#68655F] hover:border-[#0F1115]/30 hover:text-[#0F1115]"
                         }`}
                       >
@@ -293,7 +293,7 @@ export function ProfileEditForm({
             <button
               type="button"
               onClick={() => setShowPasswordSection(!showPasswordSection)}
-              className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#8E6F3E] hover:text-[#0F1115] transition-colors"
+              className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#9B7826] hover:text-[#0F1115] transition-colors"
             >
               <Lock className="w-3.5 h-3.5" />
               <span>{showPasswordSection ? "Ocultar troca de senha" : "Deseja alterar sua senha de acesso?"}</span>
@@ -319,7 +319,7 @@ export function ProfileEditForm({
           {/* Botões de Ação */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-[#0F1115]/10">
             <div className="flex items-center gap-2 text-xs text-[#68655F]">
-              <ShieldCheck className="w-4 h-4 text-[#C5A880]" />
+              <ShieldCheck className="w-4 h-4 text-[#D4AF37]" />
               <span>Dados protegidos e sincronizados com Supabase</span>
             </div>
 
@@ -340,7 +340,7 @@ export function ProfileEditForm({
       {/* Coluna Lateral: Pré-visualização do Perfil Público em Tempo Real */}
       <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
         <div className="border-b border-[#0F1115]/10 pb-3">
-          <span className="text-[10px] uppercase font-mono tracking-widest text-[#C5A880] font-semibold flex items-center gap-1.5">
+          <span className="text-[10px] uppercase font-mono tracking-widest text-[#D4AF37] font-semibold flex items-center gap-1.5">
             <Eye className="w-3.5 h-3.5" />
             Visualização Pública
           </span>
@@ -364,7 +364,7 @@ export function ProfileEditForm({
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             
             <div className="absolute bottom-3 left-4 right-4 text-white">
-              <span className="text-[10px] uppercase tracking-widest text-[#E8DCC4] font-mono">
+              <span className="text-[10px] uppercase tracking-widest text-[#F7EFCF] font-mono">
                 {creci || "CRECI PENDENTE"}
               </span>
               <h3 className="font-serif text-xl font-normal leading-tight mt-0.5">
@@ -380,15 +380,15 @@ export function ProfileEditForm({
 
             <div className="space-y-2 pt-2 border-t border-[#0F1115]/10 text-xs text-[#4A4742]">
               <div className="flex items-center gap-2">
-                <Mail className="w-3.5 h-3.5 text-[#C5A880] shrink-0" />
+                <Mail className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
                 <span className="truncate">{email}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Phone className="w-3.5 h-3.5 text-[#C5A880] shrink-0" />
+                <Phone className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
                 <span>{phone}</span>
               </div>
-              <div className="flex items-center gap-2 font-mono text-[11px] text-[#8E6F3E]">
-                <Smartphone className="w-3.5 h-3.5 text-[#C5A880] shrink-0" />
+              <div className="flex items-center gap-2 font-mono text-[11px] text-[#9B7826]">
+                <Smartphone className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
                 <span>WhatsApp: +{whatsapp.replace(/\D/g, "")}</span>
               </div>
             </div>
@@ -415,7 +415,7 @@ export function ProfileEditForm({
                   className="inline-flex items-center gap-1.5 text-xs text-[#8C8983] hover:text-[#0F1115] transition-colors"
                 >
                   <span>Abrir página pública no portal</span>
-                  <ExternalLink className="w-3 h-3 text-[#C5A880]" />
+                  <ExternalLink className="w-3 h-3 text-[#D4AF37]" />
                 </Link>
               </div>
             )}

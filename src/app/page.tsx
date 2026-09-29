@@ -73,15 +73,15 @@ export default async function HomePage() {
               {/* Texto Editorial */}
               <div className="lg:col-span-6 space-y-6">
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/[0.06] border border-white/[0.12] rounded-xs backdrop-blur-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#C5A880] animate-pulse" />
-                  <span className="text-[11px] uppercase tracking-[0.22em] text-[#E5D7C3] font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+                  <span className="text-[11px] uppercase tracking-[0.22em] text-[#F6EEDA] font-medium">
                     Curadoria Imobiliária Exclusiva
                   </span>
                 </div>
 
                 <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-light text-[#FBF9F5] leading-[1.12] tracking-tight">
                   Encontre o imóvel que combina com a sua{" "}
-                  <span className="italic font-normal text-[#C5A880]">próxima história.</span>
+                  <span className="italic font-normal text-[#D4AF37]">próxima história.</span>
                 </h1>
 
                 <p className="text-base sm:text-lg text-[#C8C5BD] font-light max-w-xl leading-relaxed">
@@ -92,7 +92,7 @@ export default async function HomePage() {
               {/* Elemento 3D Arquitetônico de Grande Porte */}
               <div className="lg:col-span-6 relative flex items-center justify-center">
                 <div className="relative w-full max-w-2xl">
-                  <div className="absolute -inset-8 bg-[#C5A880]/15 rounded-full blur-3xl pointer-events-none" />
+                  <div className="absolute -inset-8 bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none" />
                   <ArchitecturalPavilion />
                 </div>
               </div>
@@ -109,7 +109,7 @@ export default async function HomePage() {
         <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 pb-6 border-b border-[#0F1115]/10 gap-6">
             <div className="space-y-2">
-              <span className="text-xs uppercase tracking-[0.25em] text-[#C5A880] font-semibold">
+              <span className="text-xs uppercase tracking-[0.25em] text-[#D4AF37] font-semibold">
                 Portfólio Privado
               </span>
               <h2 className="font-serif text-3xl sm:text-4xl font-normal text-[#0F1115] tracking-tight">
@@ -122,7 +122,7 @@ export default async function HomePage() {
 
             <Link
               href="/imoveis"
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-widest font-semibold text-[#0B0D12] hover:text-[#8E6F3E] transition-colors pb-1 border-b border-[#0B0D12] hover:border-[#8E6F3E]"
+              className="inline-flex items-center gap-2 text-xs uppercase tracking-widest font-semibold text-[#0B0D12] hover:text-[#9B7826] transition-colors pb-1 border-b border-[#0B0D12] hover:border-[#9B7826]"
             >
               Ver Todas as Propriedades
               <ArrowRight className="w-4 h-4" />
@@ -143,7 +143,7 @@ export default async function HomePage() {
               className="inline-flex items-center gap-3 text-xs uppercase tracking-[0.2em] px-8 py-4 bg-[#0B0D12] text-[#FBF9F5] hover:bg-[#1E2330] rounded-sm font-semibold transition-all shadow-subtle"
             >
               Explorar Catálogo Completo ({featuredProperties.length}+ Residências)
-              <ArrowRight className="w-4 h-4 text-[#C5A880]" />
+              <ArrowRight className="w-4 h-4 text-[#D4AF37]" />
             </Link>
           </div>
         </section>
@@ -154,7 +154,7 @@ export default async function HomePage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
               
               <div className="lg:col-span-5 space-y-6">
-                <span className="text-xs uppercase tracking-[0.25em] text-[#C5A880] font-medium">
+                <span className="text-xs uppercase tracking-[0.25em] text-[#D4AF37] font-medium">
                   Nossa Filosofia
                 </span>
                 <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-[#FBF9F5] leading-tight">
@@ -166,7 +166,7 @@ export default async function HomePage() {
                 <div className="pt-4">
                   <Link
                     href="/sobre"
-                    className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#C5A880] hover:text-[#FBF9F5] transition-colors"
+                    className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#D4AF37] hover:text-[#FBF9F5] transition-colors"
                   >
                     Conheça Nossa Trajetória
                     <ArrowRight className="w-4 h-4" />
@@ -176,7 +176,7 @@ export default async function HomePage() {
 
               <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div className="p-6 border border-white/[0.08] bg-white/[0.02] rounded-sm space-y-3">
-                  <ShieldCheck className="w-6 h-6 text-[#C5A880]" />
+                  <ShieldCheck className="w-6 h-6 text-[#D4AF37]" />
                   <h3 className="font-serif text-lg text-[#FBF9F5]">Discrição Absoluta</h3>
                   <p className="text-xs text-[#8E8B84] font-light leading-relaxed">
                     Processos estritamente confidenciais para proteger a privacidade de compradores e vendedores em cada negociação.
@@ -184,7 +184,7 @@ export default async function HomePage() {
                 </div>
 
                 <div className="p-6 border border-white/[0.08] bg-white/[0.02] rounded-sm space-y-3">
-                  <Compass className="w-6 h-6 text-[#C5A880]" />
+                  <Compass className="w-6 h-6 text-[#D4AF37]" />
                   <h3 className="font-serif text-lg text-[#FBF9F5]">Curadoria Estrita</h3>
                   <p className="text-xs text-[#8E8B84] font-light leading-relaxed">
                     Apenas propriedades que atendem a elevados padrões de localização, assinatura arquitetônica e liquidez patrimonial.
@@ -192,7 +192,7 @@ export default async function HomePage() {
                 </div>
 
                 <div className="p-6 border border-white/[0.08] bg-white/[0.02] rounded-sm space-y-3">
-                  <Award className="w-6 h-6 text-[#C5A880]" />
+                  <Award className="w-6 h-6 text-[#D4AF37]" />
                   <h3 className="font-serif text-lg text-[#FBF9F5]">Assessoria 360°</h3>
                   <p className="text-xs text-[#8E8B84] font-light leading-relaxed">
                     Suporte jurídico, fiscal e técnico do primeiro contato até a celebração da escritura definitiva.
@@ -208,7 +208,7 @@ export default async function HomePage() {
         <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
             <div>
-              <span className="text-xs uppercase tracking-[0.25em] text-[#C5A880] font-semibold">
+              <span className="text-xs uppercase tracking-[0.25em] text-[#D4AF37] font-semibold">
                 Corpo Consultivo
               </span>
               <h2 className="font-serif text-3xl sm:text-4xl font-normal text-[#0F1115] mt-1">
@@ -217,7 +217,7 @@ export default async function HomePage() {
             </div>
             <Link
               href="/corretores"
-              className="text-xs uppercase tracking-widest font-semibold text-[#0B0D12] hover:text-[#8E6F3E] transition-colors"
+              className="text-xs uppercase tracking-widest font-semibold text-[#0B0D12] hover:text-[#9B7826] transition-colors"
             >
               Ver Todos os Corretores →
             </Link>
@@ -227,7 +227,7 @@ export default async function HomePage() {
             {brokers.map((broker) => (
               <div
                 key={broker.id}
-                className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] rounded-sm overflow-hidden p-6 space-y-5 hover:border-[#C5A880]/50 transition-all duration-300"
+                className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] rounded-sm overflow-hidden p-6 space-y-5 hover:border-[#D4AF37]/50 transition-all duration-300"
               >
                 <div className="flex items-center gap-4">
                   <img
@@ -252,7 +252,7 @@ export default async function HomePage() {
                 <div className="pt-2 flex items-center justify-between border-t border-[#0F1115]/[0.06]">
                   <Link
                     href={`/corretores/${broker.id}`}
-                    className="text-xs uppercase tracking-wider font-semibold text-[#0B0D12] hover:text-[#8E6F3E]"
+                    className="text-xs uppercase tracking-wider font-semibold text-[#0B0D12] hover:text-[#9B7826]"
                   >
                     Ver Imóveis do Corretor
                   </Link>
@@ -261,7 +261,7 @@ export default async function HomePage() {
                     href={`https://wa.me/${broker.whatsapp}?text=${encodeURIComponent(`Olá ${broker.name}, gostaria de conversar sobre oportunidades de imóveis de alto padrão.`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-[#C5A880] hover:text-[#8E6F3E] font-medium"
+                    className="inline-flex items-center gap-1 text-xs text-[#D4AF37] hover:text-[#9B7826] font-medium"
                   >
                     WhatsApp
                     <ArrowUpRight className="w-3.5 h-3.5" />
@@ -275,7 +275,7 @@ export default async function HomePage() {
         {/* BANNER CONCIERGE / ATENDIMENTO PRIVATIVO */}
         <section className="py-20 bg-[#F4F1EA] border-y border-[#0F1115]/[0.08]">
           <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
-            <span className="text-xs uppercase tracking-[0.25em] text-[#8E6F3E] font-semibold">
+            <span className="text-xs uppercase tracking-[0.25em] text-[#9B7826] font-semibold">
               Atendimento Personalizado
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl text-[#0F1115] font-light">

@@ -31,14 +31,14 @@ export function PropertySortControl({ totalCount }: { totalCount: number }) {
           htmlFor="sort-select"
           className="text-xs uppercase tracking-wider text-[#6B6862] flex items-center gap-1.5 font-medium"
         >
-          <ArrowUpDown className="w-3.5 h-3.5 text-[#C5A880]" />
+          <ArrowUpDown className="w-3.5 h-3.5 text-[#D4AF37]" />
           Ordenar:
         </label>
         <select
           id="sort-select"
           value={currentSort}
           onChange={handleSortChange}
-          className="text-xs bg-[#FFFFFF] border border-[#0F1115]/15 px-3 py-2 rounded-xs focus:outline-none focus:border-[#C5A880] cursor-pointer"
+          className="text-xs bg-[#FFFFFF] border border-[#0F1115]/15 px-3 py-2 rounded-xs focus:outline-none focus:border-[#D4AF37] cursor-pointer"
         >
           <option value="recent">Mais Recentes</option>
           <option value="price_asc">Menor Preço</option>
