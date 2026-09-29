@@ -38,9 +38,24 @@ export default async function AdminCorretoresPage() {
         <BrokerCreateModal />
       </div>
 
-      <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] rounded-sm overflow-hidden shadow-subtle">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
+      {brokers.length === 0 ? (
+        <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] rounded-sm p-12 sm:p-16 text-center space-y-4 shadow-subtle">
+          <div className="w-12 h-12 rounded-full bg-[#F4F1EA] flex items-center justify-center mx-auto text-[#D4AF37]">
+            <Users className="w-6 h-6" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="font-serif text-2xl text-[#0F1115]">
+              Nenhum corretor cadastrado ainda
+            </h3>
+            <p className="text-xs sm:text-sm text-[#8C8983] max-w-md mx-auto font-light leading-relaxed">
+              O corpo de corretores está limpo. Utilize o botão &ldquo;Novo Corretor&rdquo; acima para criar as contas e credenciais dos consultores da sua equipe.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] rounded-sm overflow-hidden shadow-subtle">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
             <thead className="bg-[#F4F1EA] text-[11px] uppercase tracking-wider text-[#6B6862] border-b border-[#0F1115]/10">
               <tr>
                 <th className="py-3.5 px-4 font-semibold">Corretor</th>
@@ -178,6 +193,7 @@ export default async function AdminCorretoresPage() {
           </table>
         </div>
       </div>
+      )}
     </div>
   );
 }

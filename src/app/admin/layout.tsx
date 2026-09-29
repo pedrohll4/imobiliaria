@@ -12,7 +12,6 @@ import {
   Sliders,
   LogOut,
   ExternalLink,
-  LayoutDashboard,
 } from "lucide-react";
 
 export default async function AdminLayout({
@@ -85,16 +84,6 @@ export default async function AdminLayout({
               </Link>
             );
           })}
-
-          <div className="pt-4 mt-4 border-t border-white/[0.08]">
-            <Link
-              href="/dashboard"
-              className="flex items-center gap-3 px-3.5 py-2.5 rounded-xs text-xs uppercase tracking-wider text-[#D4AF37] hover:bg-white/[0.05] transition-all font-medium"
-            >
-              <LayoutDashboard className="w-4 h-4" />
-              <span>Painel do Corretor</span>
-            </Link>
-          </div>
         </nav>
 
         <div className="p-4 border-t border-white/[0.08] space-y-2">
