@@ -231,3 +231,188 @@ export async function updateMyProfileAction(
     return { success: false, error: "Ocorreu um erro ao atualizar suas informações. Tente novamente." };
   }
 }
+
+export async function updateBrokerByAdminAction(
+  prevState: BrokerActionResult | null,
+  formData: FormData
+): Promise<BrokerActionResult> {
+  const session = await getSession();
+  if (!session || session.role !== "ADMIN") {
+    return { success: false, error: "Apenas administradores podem editar corretores." };
+  }
+
+  const brokerId = formData.get("brokerId") as string;
+  const name = (formData.get("name") as string)?.trim();
+  const email = (formData.get("email") as string)?.trim().toLowerCase();
+  const phone = (formData.get("phone") as string)?.trim();
+  let whatsapp = (formData.get("whatsapp") as string)?.trim().replace(/\D/g, "");
+  const creci = (formData.get("creci") as string)?.trim();
+  const photoUrl = (formData.get("photoUrl") as string)?.trim();
+  const bio = (formData.get("bio") as string)?.trim();
+  const newPassword = (formData.get("newPassword") as string)?.trim();
+
+  if (!brokerId || !name || !email) {
+    return { success: false, error: "Nome e e-mail são obrigatórios." };
+  }
+
+  if (whatsapp && !whatsapp.startsWith("55")) {
+    whatsapp = `55${whatsapp}`;
+  }
+
+  try {
+    const broker = await prisma.broker.findUnique({
+      where: { id: brokerId },
+      include: { user: true },
+    });
+
+    if (!broker) {
+      return { success: false, error: "Corretor não encontrado." };
+    }
+
+    if (email !== broker.email) {
+      const emailExists = await prisma.user.findUnique({
+        where: { email },
+      });
+      if (emailExists) {
+        return { success: false, error: "Este e-mail já pertence a outro usuário." };
+      }
+    }
+
+    let passwordHash: string | undefined = undefined;
+    if (newPassword && newPassword.length >= 6) {
+      passwordHash = await hashPassword(newPassword);
+    }
+
+    await prisma.user.update({
+      where: { id: broker.userId },
+      data: {
+        name,
+        email,
+        ...(passwordHash ? { passwordHash } : {}),
+      },
+    });
+
+    await prisma.broker.update({
+      where: { id: brokerId },
+      data: {
+        name,
+        email,
+        phone: phone || broker.phone,
+        whatsapp: whatsapp || broker.whatsapp,
+        creci: creci || broker.creci,
+        photoUrl: photoUrl || broker.photoUrl,
+        bio: bio || broker.bio,
+      },
+    });
+
+    revalidatePath("/admin/corretores");
+    revalidatePath("/corretores");
+    revalidatePath(`/corretores/${brokerId}`);
+    revalidatePath("/imoveis");
+    revalidatePath("/dashboard/perfil");
+
+    return { success: true, message: "Dados e foto do corretor atualizados com sucesso!" };
+  } catch (err: any) {
+    console.error("Erro ao atualizar corretor:", err);
+    return { success: false, error: err?.message || "Erro ao atualizar corretor." };
+  }
+}
+
+export async function deleteBrokerAction(brokerId: string): Promise<BrokerActionResult> {
+  const session = await getSession();
+  if (!session || session.role !== "ADMIN") {
+    return { success: false, error: "Apenas administradores podem excluir corretores." };
+  }
+
+  try {
+    const broker = await prisma.broker.findUnique({
+      where: { id: brokerId },
+    });
+
+    if (!broker) {
+      return { success: false, error: "Corretor não encontrado." };
+    }
+
+    // Desvincular imóveis e leads para segurança dos dados
+    await prisma.property.updateMany({
+      where: { brokerId },
+      data: { brokerId: null },
+    });
+
+    await prisma.lead.updateMany({
+      where: { brokerId },
+      data: { brokerId: null },
+    });
+
+    await prisma.broker.delete({
+      where: { id: brokerId },
+    });
+
+    await prisma.user.delete({
+      where: { id: broker.userId },
+    });
+
+    revalidatePath("/admin/corretores");
+    revalidatePath("/corretores");
+    revalidatePath("/imoveis");
+
+    return { success: true, message: "Corretor removido com sucesso." };
+  } catch (err: any) {
+    console.error("Erro ao excluir corretor:", err);
+    return { success: false, error: err?.message || "Erro ao excluir corretor." };
+  }
+}
+
+export async function updateBrokerAvatarInstantAction(
+  photoUrl: string,
+  targetBrokerId?: string
+): Promise<BrokerActionResult> {
+  const session = await getSession();
+  if (!session) {
+    return { success: false, error: "Não autorizado." };
+  }
+
+  try {
+    let brokerIdToUpdate = targetBrokerId;
+
+    if (!brokerIdToUpdate) {
+      const broker = await prisma.broker.findUnique({
+        where: { userId: session.userId },
+      });
+      if (broker) {
+        brokerIdToUpdate = broker.id;
+      } else {
+        const created = await prisma.broker.create({
+          data: {
+            userId: session.userId,
+            name: session.name,
+            email: session.email,
+            phone: "(11) 3045-8000",
+            whatsapp: "5511987654321",
+            creci: "Diretoria",
+            photoUrl,
+            bio: "Membro da equipe executiva.",
+          },
+        });
+        brokerIdToUpdate = created.id;
+      }
+    }
+
+    if (brokerIdToUpdate) {
+      await prisma.broker.update({
+        where: { id: brokerIdToUpdate },
+        data: { photoUrl },
+      });
+    }
+
+    revalidatePath("/dashboard/perfil");
+    revalidatePath("/corretores");
+    revalidatePath("/admin/corretores");
+    revalidatePath("/imoveis");
+
+    return { success: true, message: "Foto de perfil salva com sucesso no banco de dados!" };
+  } catch (err: any) {
+    console.error("Erro ao atualizar avatar instantaneamente:", err);
+    return { success: false, error: err?.message || "Erro ao salvar foto no banco." };
+  }
+}

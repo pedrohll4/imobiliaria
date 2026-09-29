@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { deleteImagesFromSupabase } from "@/lib/supabase";
 
 export interface PropertyActionResult {
   success: boolean;
@@ -158,7 +159,12 @@ export async function deletePropertyAction(propertyId: string): Promise<Property
   try {
     const existing = await prisma.property.findUnique({
       where: { id: propertyId },
-      select: { brokerId: true },
+      select: {
+        brokerId: true,
+        images: {
+          select: { url: true },
+        },
+      },
     });
 
     if (!existing) {
@@ -169,9 +175,19 @@ export async function deletePropertyAction(propertyId: string): Promise<Property
       return { success: false, error: "Você não tem permissão para excluir este imóvel." };
     }
 
+    // Coleta URLs das fotos antes de excluir no banco
+    const imageUrls = existing.images.map((img) => img.url);
+
     await prisma.property.delete({
       where: { id: propertyId },
     });
+
+    // Limpeza assíncrona no Supabase Storage para não deixar arquivos órfãos ocupando cota
+    if (imageUrls.length > 0) {
+      deleteImagesFromSupabase(imageUrls).catch((e) =>
+        console.error("Falha ao remover fotos do Supabase Storage:", e)
+      );
+    }
 
     revalidatePath("/");
     revalidatePath("/imoveis");

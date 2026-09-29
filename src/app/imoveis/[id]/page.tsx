@@ -19,6 +19,7 @@ import {
   MapPin,
   Sparkles,
 } from "lucide-react";
+import { getSiteSettings } from "@/lib/settings";
 
 interface PropertyDetailPageProps {
   params: Promise<{ id: string }>;
@@ -44,6 +45,7 @@ export async function generateMetadata({ params }: PropertyDetailPageProps) {
 export default async function PropertyDetailPage({ params }: PropertyDetailPageProps) {
   const { id } = await params;
   const session = await getSession();
+  const settings = await getSiteSettings();
 
   // Buscar imóvel completo (aceita tanto ID quanto slug)
   const property = await prisma.property.findFirst({
@@ -86,7 +88,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FBF9F5]">
-      <Navbar session={session} />
+      <Navbar session={session} settings={settings} />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-10">
         {/* Breadcrumb e Identificação */}
@@ -274,7 +276,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
         )}
       </main>
 
-      <Footer />
+      <Footer settings={settings} />
     </div>
   );
 }

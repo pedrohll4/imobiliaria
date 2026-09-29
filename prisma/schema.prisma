@@ -119,3 +119,24 @@ model Lead {
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
 }
+
+model SiteSetting {
+  id           String   @id @default("default")
+  name         String   @default("IMOBILIÁRIA")
+  tagline      String   @default("Residências e Empreendimentos de Alto Padrão")
+  logoText     String   @default("IMV")
+  logoUrl      String?
+  phone        String   @default("(11) 3045-8000")
+  whatsapp     String   @default("5511999998888")
+  email        String   @default("contato@imobiliaria.com.br")
+  creciJ       String   @default("CRECI 00.000-J")
+  street       String   @default("Avenida Principal, 1000")
+  neighborhood String   @default("Centro")
+  city         String   @default("São Paulo")
+  state        String   @default("SP")
+  zipCode      String   @default("01000-000")
+  instagram    String   @default("https://instagram.com")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+

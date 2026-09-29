@@ -4,13 +4,15 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { siteConfig } from "@/config/site";
 import { ShieldCheck, Compass, Award, Building, Sparkles } from "lucide-react";
+import { getSiteSettings } from "@/lib/settings";
 
 export default async function SobrePage() {
   const session = await getSession();
+  const settings = await getSiteSettings();
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FBF9F5]">
-      <Navbar session={session} />
+      <Navbar session={session} settings={settings} />
 
       <main className="flex-1">
         {/* Banner Editorial */}
@@ -92,7 +94,7 @@ export default async function SobrePage() {
         </section>
       </main>
 
-      <Footer />
+      <Footer settings={settings} />
     </div>
   );
 }

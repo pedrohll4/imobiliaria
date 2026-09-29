@@ -1,8 +1,14 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React, { useState, useTransition, useRef } from "react";
 import Link from "next/link";
-import { updateMyProfileAction, BrokerActionResult } from "@/actions/brokerActions";
+import {
+  updateMyProfileAction,
+  updateBrokerAvatarInstantAction,
+  BrokerActionResult,
+} from "@/actions/brokerActions";
+import { uploadBrokerImageAction } from "@/actions/uploadActions";
+import { compressImage } from "@/lib/imageOptimization";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
@@ -19,6 +25,8 @@ import {
   Smartphone,
   Eye,
   UserCheck,
+  UploadCloud,
+  Loader2,
 } from "lucide-react";
 
 interface ProfileEditFormProps {
@@ -41,34 +49,6 @@ interface ProfileEditFormProps {
   } | null;
   propertyCount: number;
 }
-
-// Avatares de alto padrão pré-selecionados para facilitar escolha rápida
-const PRESET_AVATARS = [
-  {
-    name: "Executiva Elegante",
-    url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    name: "Consultor Alfaiataria",
-    url: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    name: "Especialista Moderna",
-    url: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    name: "Diretor Contemporâneo",
-    url: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    name: "Retrato Minimalista",
-    url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    name: "Studio Editorial",
-    url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
-  },
-];
 
 export function ProfileEditForm({
   initialUser,
@@ -94,6 +74,58 @@ export function ProfileEditForm({
   );
   const [newPassword, setNewPassword] = useState("");
   const [showPasswordSection, setShowPasswordSection] = useState(false);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [photoFeedback, setPhotoFeedback] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingPhoto(true);
+    setPhotoFeedback(null);
+
+    try {
+      // Comprime retrato do consultor (máx 800x800 WebP para ficar ultraleve ~40KB)
+      const compressed = await compressImage(file, {
+        maxWidth: 800,
+        maxHeight: 800,
+        quality: 0.85,
+        mimeType: "image/webp",
+      });
+
+      const fd = new FormData();
+      fd.append("file", compressed.file);
+
+      const res = await uploadBrokerImageAction(fd);
+      if (res.success && res.url) {
+        setPhotoUrl(res.url);
+        // Persistir imediatamente no banco de dados para nunca perder a foto
+        await updateBrokerAvatarInstantAction(res.url, initialBroker?.id);
+        setPhotoFeedback({
+          type: "success",
+          message: "Foto de perfil enviada e salva com sucesso no banco de dados e CDN!",
+        });
+      } else {
+        throw new Error(res.error || "Erro ao salvar foto no Supabase.");
+      }
+    } catch (err: any) {
+      console.error("Erro no upload de foto de perfil:", err);
+      setPhotoFeedback({
+        type: "error",
+        message: err?.message || "Falha ao processar upload da foto.",
+      });
+    } finally {
+      setIsUploadingPhoto(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -165,43 +197,85 @@ export function ProfileEditForm({
                   }}
                   className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-2 border-[#D4AF37] shadow-md transition-transform group-hover:scale-105 duration-300"
                 />
-                <div className="absolute bottom-0 right-0 bg-[#0B0D12] text-[#FBF9F5] p-1.5 rounded-full border border-white shadow-sm">
-                  <Camera className="w-3.5 h-3.5" />
-                </div>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isUploadingPhoto}
+                  className="absolute bottom-0 right-0 bg-[#0B0D12] text-[#D4AF37] p-2 rounded-full border border-[#D4AF37]/50 shadow-md hover:scale-110 transition-transform"
+                  title="Upload de foto do dispositivo"
+                >
+                  {isUploadingPhoto ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Camera className="w-3.5 h-3.5" />
+                  )}
+                </button>
               </div>
 
               <div className="w-full space-y-3">
+                {/* Input Oculto de Arquivo */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleAvatarFileChange}
+                  accept="image/*"
+                  className="hidden"
+                />
+
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploadingPhoto}
+                    className="text-xs flex items-center gap-2 border-[#D4AF37]/50 hover:border-[#D4AF37]"
+                  >
+                    {isUploadingPhoto ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4AF37]" />
+                        <span>Otimizando & Enviando...</span>
+                      </>
+                    ) : (
+                      <>
+                        <UploadCloud className="w-3.5 h-3.5 text-[#D4AF37]" />
+                        <span>Upload de Foto do Dispositivo</span>
+                      </>
+                    )}
+                  </Button>
+
+                  {photoUrl.includes("supabase.co") && (
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2 py-1 rounded-xs border border-emerald-200 flex items-center gap-1">
+                      <Sparkles className="w-2.5 h-2.5 text-emerald-600" />
+                      Supabase Storage CDN
+                    </span>
+                  )}
+                </div>
+
+                {photoFeedback && (
+                  <div
+                    className={`p-2.5 rounded-xs text-xs flex items-center gap-2 border ${
+                      photoFeedback.type === "success"
+                        ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                        : "bg-red-50 text-red-800 border-red-200"
+                    }`}
+                  >
+                    {photoFeedback.type === "success" ? (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    ) : (
+                      <AlertCircle className="w-3.5 h-3.5 text-red-600 shrink-0" />
+                    )}
+                    <span>{photoFeedback.message}</span>
+                  </div>
+                )}
+
                 <Input
-                  label="URL da Imagem de Perfil"
+                  label="Ou Link Direto da Foto (URL)"
                   name="photoUrl"
                   value={photoUrl}
                   onChange={(e) => setPhotoUrl(e.target.value)}
                   placeholder="https://exemplo.com/sua-foto.jpg"
                   required
                 />
-                
-                {/* Seletores rápidos de fotos para teste imediato */}
-                <div>
-                  <span className="text-[11px] font-medium text-[#8C8983] uppercase tracking-wider block mb-1.5">
-                    Ou selecione um retrato de estúdio contemporâneo:
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    {PRESET_AVATARS.map((preset, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => setPhotoUrl(preset.url)}
-                        className={`text-[11px] px-2.5 py-1 rounded-xs border transition-all ${
-                          photoUrl === preset.url
-                            ? "border-[#D4AF37] bg-[#D4AF37]/15 text-[#0F1115] font-semibold"
-                            : "border-[#0F1115]/10 bg-[#FBF9F5] text-[#68655F] hover:border-[#0F1115]/30 hover:text-[#0F1115]"
-                        }`}
-                      >
-                        {preset.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
               </div>
             </div>
           </div>

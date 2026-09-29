@@ -1,13 +1,26 @@
 "use client";
 
-import React, { useState, useActionState } from "react";
+import React, { useState, useActionState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createPropertyAction, PropertyActionResult } from "@/actions/propertyActions";
+import { uploadPropertyImageAction } from "@/actions/uploadActions";
+import { compressImage } from "@/lib/imageOptimization";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
-import { Plus, Trash2, Image as ImageIcon, Star, Check } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  Image as ImageIcon,
+  Star,
+  Check,
+  UploadCloud,
+  Loader2,
+  Sparkles,
+  AlertCircle,
+  CheckCircle2,
+} from "lucide-react";
 
 const COMMON_AMENITIES = [
   "Piscina de borda infinita",
@@ -39,6 +52,14 @@ export function PropertyCreateForm() {
     "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85",
   ]);
   const [newImageUrl, setNewImageUrl] = useState("");
+  const [showManualUrl, setShowManualUrl] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadFeedback, setUploadFeedback] = useState<{
+    type: "info" | "success" | "error";
+    message: string;
+  } | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Características selecionadas
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([
@@ -61,6 +82,86 @@ export function PropertyCreateForm() {
     },
     null
   );
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+    setUploadFeedback({
+      type: "info",
+      message: `Iniciando compressão de ${files.length} foto(s) para WebP...`,
+    });
+
+    let totalOriginal = 0;
+    let totalCompressed = 0;
+    const newUrls: string[] = [];
+
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        setUploadFeedback({
+          type: "info",
+          message: `Otimizando foto ${i + 1} de ${files.length} (reduzindo peso para WebP)...`,
+        });
+
+        // Compacta imagem no browser antes de transmitir (economia de 90-95% do armazenamento)
+        const compressed = await compressImage(file, {
+          maxWidth: 1920,
+          maxHeight: 1080,
+          quality: 0.82,
+          mimeType: "image/webp",
+        });
+
+        totalOriginal += compressed.originalSize;
+        totalCompressed += compressed.compressedSize;
+
+        setUploadFeedback({
+          type: "info",
+          message: `Enviando foto ${i + 1} de ${files.length} para o Supabase Storage...`,
+        });
+
+        const formData = new FormData();
+        formData.append("file", compressed.file);
+
+        const res = await uploadPropertyImageAction(formData);
+
+        if (res.success && res.url) {
+          newUrls.push(res.url);
+        } else {
+          throw new Error(
+            res.error ||
+              "Falha ao enviar foto para o Supabase Storage. Verifique se o bucket 'properties' foi criado."
+          );
+        }
+      }
+
+      if (newUrls.length > 0) {
+        setImages((prev) => [...prev, ...newUrls]);
+        const savedBytes = totalOriginal - totalCompressed;
+        const savedMb = (savedBytes / (1024 * 1024)).toFixed(1);
+        const ratio = Math.max(0, Math.round((savedBytes / totalOriginal) * 100));
+
+        setUploadFeedback({
+          type: "success",
+          message: `${newUrls.length} foto(s) salvas no Supabase Storage! Economia de ${savedMb} MB (-${ratio}% do espaço do plano Free).`,
+        });
+      }
+    } catch (err: any) {
+      console.error("Erro no processamento de imagens:", err);
+      setUploadFeedback({
+        type: "error",
+        message:
+          err?.message ||
+          "Não foi possível salvar no Supabase. Adicione as chaves no seu .env ou use URL direta.",
+      });
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
 
   const addImage = () => {
     if (newImageUrl.trim().startsWith("http")) {
@@ -347,33 +448,125 @@ export function PropertyCreateForm() {
 
       {/* 5. GALERIA DE FOTOS */}
       <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] p-6 sm:p-8 rounded-sm shadow-subtle space-y-6">
-        <div className="border-b border-[#0F1115]/10 pb-4">
-          <h2 className="font-serif text-xl text-[#0F1115]">
-            5. Fotografias em Alta Resolução
-          </h2>
-          <p className="text-xs text-[#8C8983] font-light">
-            Adicione links diretos de fotos arquitetônicas. A primeira foto será a capa principal.
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#0F1115]/10 pb-4">
+          <div>
+            <h2 className="font-serif text-xl text-[#0F1115] flex items-center gap-2">
+              5. Fotografias em Alta Resolução
+              <span className="text-[10px] font-sans font-medium uppercase tracking-wider px-2 py-0.5 bg-[#D4AF37]/15 text-[#B89428] rounded-full border border-[#D4AF37]/30">
+                Otimizado para Supabase Free
+              </span>
+            </h2>
+            <p className="text-xs text-[#8C8983] font-light mt-0.5">
+              Faça upload do seu celular/computador ou insira links diretos. As fotos são convertidas automaticamente para WebP Full HD.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setShowManualUrl(!showManualUrl)}
+            className="text-xs text-[#D4AF37] hover:underline self-start sm:self-auto"
+          >
+            {showManualUrl ? "Ocultar URL manual" : "Adicionar por URL externa"}
+          </button>
         </div>
 
-        {/* Campo para adicionar nova URL */}
-        <div className="flex gap-2">
-          <Input
-            value={newImageUrl}
-            onChange={(e) => setNewImageUrl(e.target.value)}
-            placeholder="Cole a URL da fotografia (https://...)"
-            className="flex-1"
-          />
-          <Button
-            type="button"
-            variant="outline"
-            onClick={addImage}
-            className="shrink-0"
-          >
-            <Plus className="w-4 h-4 mr-1 text-[#D4AF37]" />
-            Adicionar Foto
-          </Button>
+        {/* Input Oculto de Arquivos */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileUpload}
+          accept="image/*"
+          multiple
+          className="hidden"
+        />
+
+        {/* Área de Upload / Dropzone */}
+        <div
+          onClick={() => !isUploading && fileInputRef.current?.click()}
+          className={`border-2 border-dashed rounded-sm p-6 sm:p-8 text-center cursor-pointer transition-all ${
+            isUploading
+              ? "border-[#D4AF37] bg-[#D4AF37]/5 cursor-wait"
+              : "border-[#0F1115]/15 hover:border-[#D4AF37] hover:bg-[#FBF9F5]"
+          }`}
+        >
+          <div className="flex flex-col items-center justify-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-[#0B0D12] text-[#D4AF37] flex items-center justify-center shadow-sm">
+              {isUploading ? (
+                <Loader2 className="w-6 h-6 animate-spin text-[#D4AF37]" />
+              ) : (
+                <UploadCloud className="w-6 h-6" />
+              )}
+            </div>
+
+            <div>
+              <p className="text-sm font-medium text-[#0F1115]">
+                {isUploading
+                  ? "Processando e otimizando imagens..."
+                  : "Clique para selecionar fotos do seu dispositivo"}
+              </p>
+              <p className="text-xs text-[#8C8983] font-light mt-1">
+                Suporta PNG, JPG e WEBP. As fotos são compactadas automaticamente para economizar cota.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-2 pt-1 text-[11px] text-[#555]">
+              <span className="inline-flex items-center gap-1 bg-[#F5F2EB] px-2.5 py-1 rounded-full border border-[#0F1115]/10">
+                <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+                WebP Full HD Automático
+              </span>
+              <span className="inline-flex items-center gap-1 bg-[#F5F2EB] px-2.5 py-1 rounded-full border border-[#0F1115]/10">
+                <Check className="w-3 h-3 text-emerald-600" />
+                Supabase Storage CDN
+              </span>
+              <span className="inline-flex items-center gap-1 bg-[#F5F2EB] px-2.5 py-1 rounded-full border border-[#0F1115]/10">
+                Redução de ~90% no peso
+              </span>
+            </div>
+          </div>
         </div>
+
+        {/* Feedback do Upload */}
+        {uploadFeedback && (
+          <div
+            className={`p-3.5 rounded-xs text-xs flex items-center gap-2 border ${
+              uploadFeedback.type === "success"
+                ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                : uploadFeedback.type === "error"
+                ? "bg-red-50 text-red-800 border-red-200"
+                : "bg-amber-50 text-amber-900 border-amber-200"
+            }`}
+          >
+            {uploadFeedback.type === "success" ? (
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
+            ) : uploadFeedback.type === "error" ? (
+              <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
+            ) : (
+              <Loader2 className="w-4 h-4 shrink-0 animate-spin text-amber-700" />
+            )}
+            <span className="flex-1">{uploadFeedback.message}</span>
+          </div>
+        )}
+
+        {/* Campo Opcional para Adicionar URL Manual */}
+        {showManualUrl && (
+          <div className="flex gap-2 p-3 bg-[#FBF9F5] border border-[#0F1115]/10 rounded-xs">
+            <Input
+              value={newImageUrl}
+              onChange={(e) => setNewImageUrl(e.target.value)}
+              placeholder="Cole a URL externa da fotografia (https://...)"
+              className="flex-1 text-xs"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={addImage}
+              className="shrink-0 text-xs"
+            >
+              <Plus className="w-3.5 h-3.5 mr-1 text-[#D4AF37]" />
+              Inserir Link
+            </Button>
+          </div>
+        )}
 
         {/* Pré-visualização da Galeria com Ordenação */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
@@ -394,6 +587,13 @@ export function PropertyCreateForm() {
                 <div className="absolute top-2 left-2 bg-[#D4AF37] text-[#0B0D12] text-[9px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-xs flex items-center gap-1 shadow-sm">
                   <Star className="w-2.5 h-2.5 fill-current" />
                   Foto Principal
+                </div>
+              )}
+
+              {url.includes("supabase.co") && (
+                <div className="absolute bottom-2 left-2 bg-[#0B0D12]/80 text-[#D4AF37] text-[8px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded-xs backdrop-blur-xs border border-[#D4AF37]/30 flex items-center gap-1">
+                  <Sparkles className="w-2 h-2" />
+                  Supabase CDN
                 </div>
               )}
 

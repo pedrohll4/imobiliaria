@@ -21,6 +21,7 @@ import {
   ShieldCheck,
   Quote,
 } from "lucide-react";
+import { getSiteSettings } from "@/lib/settings";
 
 interface CuratedPageProps {
   params: Promise<{ id: string }>;
@@ -49,6 +50,7 @@ export async function generateMetadata({ params }: CuratedPageProps) {
 
 export default async function CuratedDossierPage({ params }: CuratedPageProps) {
   const { id } = await params;
+  const settings = await getSiteSettings();
 
   // Busca o lead com os dados do corretor responsável e do imóvel de contato original
   const lead = await prisma.lead.findUnique({
@@ -121,7 +123,7 @@ export default async function CuratedDossierPage({ params }: CuratedPageProps) {
 
   return (
     <div className="min-h-screen bg-[#FBF9F5] text-[#0F1115] flex flex-col font-sans">
-      <Navbar />
+      <Navbar settings={settings} />
 
       {/* HERO VIP: APRESENTAÇÃO EDITORIAL DA CURADORIA */}
       <section className="relative pt-32 pb-16 md:pt-40 md:pb-24 bg-[#0B0D12] text-white overflow-hidden border-b border-[#D4AF37]/20">
@@ -473,7 +475,7 @@ export default async function CuratedDossierPage({ params }: CuratedPageProps) {
         </div>
       </div>
 
-      <Footer />
+      <Footer settings={settings} />
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { PropertyCard } from "@/components/property/PropertyCard";
 import { ArrowUpRight, Phone, Mail, Award, MessageSquare, ChevronRight } from "lucide-react";
+import { getSiteSettings } from "@/lib/settings";
 
 interface BrokerDetailPageProps {
   params: Promise<{ id: string }>;
@@ -15,6 +16,7 @@ interface BrokerDetailPageProps {
 export default async function BrokerDetailPage({ params }: BrokerDetailPageProps) {
   const { id } = await params;
   const session = await getSession();
+  const settings = await getSiteSettings();
 
   const broker = await prisma.broker.findUnique({
     where: { id },
@@ -35,7 +37,7 @@ export default async function BrokerDetailPage({ params }: BrokerDetailPageProps
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FBF9F5]">
-      <Navbar session={session} />
+      <Navbar session={session} settings={settings} />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-12">
         {/* Breadcrumb */}
@@ -130,7 +132,7 @@ export default async function BrokerDetailPage({ params }: BrokerDetailPageProps
         </div>
       </main>
 
-      <Footer />
+      <Footer settings={settings} />
     </div>
   );
 }

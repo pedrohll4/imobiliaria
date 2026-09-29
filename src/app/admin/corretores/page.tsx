@@ -1,10 +1,11 @@
 import React from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { toggleBrokerStatusAction } from "@/actions/brokerActions";
+import { toggleBrokerStatusAction, deleteBrokerAction } from "@/actions/brokerActions";
 import { BrokerCreateModal } from "./BrokerCreateModal";
+import { BrokerEditModal } from "./BrokerEditModal";
 import { Badge } from "@/components/ui/Badge";
-import { ExternalLink, Building2, Users } from "lucide-react";
+import { ExternalLink, Building2, Users, Trash2 } from "lucide-react";
 
 export default async function AdminCorretoresPage() {
   const brokers = await prisma.broker.findMany({
@@ -98,11 +99,24 @@ export default async function AdminCorretoresPage() {
                   </td>
 
                   <td className="py-3.5 px-4 text-right">
-                    <div className="flex items-center justify-end gap-3">
+                    <div className="flex items-center justify-end gap-2">
+                      <BrokerEditModal
+                        broker={{
+                          id: broker.id,
+                          name: broker.name,
+                          email: broker.email,
+                          phone: broker.phone,
+                          whatsapp: broker.whatsapp,
+                          creci: broker.creci,
+                          photoUrl: broker.photoUrl,
+                          bio: broker.bio,
+                        }}
+                      />
+
                       <Link
                         href={`/corretores/${broker.id}`}
                         target="_blank"
-                        className="p-1.5 text-[#8C8983] hover:text-[#0F1115]"
+                        className="p-1.5 text-[#8C8983] hover:text-[#0F1115] transition-colors rounded-xs hover:bg-[#F4F1EA]"
                         title="Ver perfil público"
                       >
                         <ExternalLink className="w-4 h-4" />
@@ -118,11 +132,26 @@ export default async function AdminCorretoresPage() {
                           type="submit"
                           className={`text-xs px-2.5 py-1 rounded-xs font-medium transition-colors ${
                             broker.active
-                              ? "bg-red-50 text-red-700 hover:bg-red-100 border border-red-200"
+                              ? "bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200"
                               : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200"
                           }`}
                         >
                           {broker.active ? "Desativar" : "Ativar"}
+                        </button>
+                      </form>
+
+                      <form
+                        action={async () => {
+                          "use server";
+                          await deleteBrokerAction(broker.id);
+                        }}
+                      >
+                        <button
+                          type="submit"
+                          className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xs transition-colors"
+                          title="Remover consultor do acervo"
+                        >
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </form>
                     </div>

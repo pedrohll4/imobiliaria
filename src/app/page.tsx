@@ -8,12 +8,14 @@ import { HeroSearchBar } from "@/components/home/HeroSearchBar";
 import { ArchitecturalPavilion } from "@/components/3d/ArchitecturalPavilion";
 import { PropertyCard } from "@/components/property/PropertyCard";
 import { siteConfig } from "@/config/site";
-import { ArrowUpRight, ArrowRight, ShieldCheck, Compass, Award } from "lucide-react";
+import { getSiteSettings } from "@/lib/settings";
+import { ArrowUpRight, ArrowRight, ShieldCheck, Compass, Award, Sparkles } from "lucide-react";
 
 export const revalidate = 60; // Revalidar a cada 60 segundos
 
 export default async function HomePage() {
   const session = await getSession();
+  const settings = await getSiteSettings();
 
   // Buscar imóveis em destaque para a Home
   const featuredProperties = await prisma.property.findMany({
@@ -40,7 +42,7 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FBF9F5]">
-      <Navbar session={session} />
+      <Navbar session={session} settings={settings} />
 
       <main className="flex-1">
         {/* HERO CINEMATOGRÁFICO */}
@@ -129,23 +131,56 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          {/* Grid de Imóveis */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredProperties.map((property) => (
-              <PropertyCard key={property.id} property={property} />
-            ))}
-          </div>
+          {featuredProperties.length === 0 ? (
+            <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] rounded-sm p-12 sm:p-16 text-center space-y-5 shadow-subtle max-w-2xl mx-auto my-8">
+              <div className="w-14 h-14 rounded-full bg-[#F4F1EA] flex items-center justify-center mx-auto text-[#D4AF37]">
+                <Sparkles className="w-7 h-7" />
+              </div>
+              <div className="space-y-2">
+                <span className="text-[11px] uppercase tracking-[0.25em] text-[#D4AF37] font-semibold">
+                  Curadoria em Andamento
+                </span>
+                <h3 className="font-serif text-2xl sm:text-3xl text-[#0F1115] font-light">
+                  Novas Propriedades em Catalogação
+                </h3>
+              </div>
+              <p className="text-sm text-[#6F6C66] font-light leading-relaxed max-w-lg mx-auto">
+                Nosso acervo de residências de alto padrão e coberturas exclusivas está sendo atualizado.
+                Para ter acesso imediato a oportunidades confidenciais e <em>off-market</em>, contate nossa equipe.
+              </p>
+              <div className="pt-2">
+                <a
+                  href={`https://wa.me/${settings.whatsapp}?text=${encodeURIComponent("Olá! Gostaria de consultar oportunidades de imóveis off-market.")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#0B0D12] text-[#FBF9F5] text-xs uppercase tracking-widest font-semibold hover:bg-[#1E2330] rounded-sm transition-all"
+                >
+                  Falar com a Diretoria no WhatsApp
+                  <ArrowUpRight className="w-4 h-4 text-[#D4AF37]" />
+                </a>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Grid de Imóveis */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {featuredProperties.map((property) => (
+                  <PropertyCard key={property.id} property={property} />
+                ))}
+              </div>
 
-          {/* Botão de Expansão */}
-          <div className="mt-14 text-center">
-            <Link
-              href="/imoveis"
-              className="inline-flex items-center gap-3 text-xs uppercase tracking-[0.2em] px-8 py-4 bg-[#0B0D12] text-[#FBF9F5] hover:bg-[#1E2330] rounded-sm font-semibold transition-all shadow-subtle"
-            >
-              Explorar Catálogo Completo ({featuredProperties.length}+ Residências)
-              <ArrowRight className="w-4 h-4 text-[#D4AF37]" />
-            </Link>
-          </div>
+              {/* Botão de Expansão */}
+              <div className="mt-14 text-center">
+                <Link
+                  href="/imoveis"
+                  className="inline-flex items-center gap-3 text-xs uppercase tracking-[0.2em] px-8 py-4 bg-[#0B0D12] text-[#FBF9F5] hover:bg-[#1E2330] rounded-sm font-semibold transition-all shadow-subtle"
+                >
+                  Explorar Catálogo Completo ({featuredProperties.length}+ Residências)
+                  <ArrowRight className="w-4 h-4 text-[#D4AF37]" />
+                </Link>
+              </div>
+            </>
+          )}
         </section>
 
         {/* SEÇÃO EDITORIAL: CONCEITO & PILARES DA MARCA */}
@@ -223,53 +258,78 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {brokers.map((broker) => (
-              <div
-                key={broker.id}
-                className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] rounded-sm overflow-hidden p-6 space-y-5 hover:border-[#D4AF37]/50 transition-all duration-300"
-              >
-                <div className="flex items-center gap-4">
-                  <img
-                    src={broker.photoUrl}
-                    alt={broker.name}
-                    className="w-16 h-16 rounded-full object-cover border border-[#0F1115]/10"
-                  />
-                  <div>
-                    <h3 className="font-serif text-lg font-medium text-[#0F1115]">
-                      {broker.name}
-                    </h3>
-                    <p className="text-xs text-[#8C8983] uppercase tracking-wider font-mono">
-                      {broker.creci}
-                    </p>
+          {brokers.length === 0 ? (
+            <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] rounded-sm p-10 sm:p-12 text-center space-y-4 shadow-subtle max-w-xl mx-auto">
+              <span className="text-[11px] uppercase tracking-[0.25em] text-[#D4AF37] font-semibold">
+                Atendimento Centralizado
+              </span>
+              <h3 className="font-serif text-2xl text-[#0F1115] font-light">
+                Corpo Consultivo Dedicado
+              </h3>
+              <p className="text-xs sm:text-sm text-[#6F6C66] font-light leading-relaxed">
+                Nosso time de consultores atua sob estrita governança e sigilo. Para atendimento privativo ou agendamento de reuniões, contate nossa central corporativa.
+              </p>
+              <div className="pt-2">
+                <a
+                  href={`https://wa.me/${settings.whatsapp}?text=${encodeURIComponent("Olá! Desejo atendimento com um consultor imobiliário.")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#0B0D12] text-[#FBF9F5] text-xs uppercase tracking-widest font-semibold hover:bg-[#1E2330] rounded-sm transition-all"
+                >
+                  Falar com Atendimento Geral
+                  <ArrowUpRight className="w-4 h-4 text-[#D4AF37]" />
+                </a>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {brokers.map((broker) => (
+                <div
+                  key={broker.id}
+                  className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] rounded-sm overflow-hidden p-6 space-y-5 hover:border-[#D4AF37]/50 transition-all duration-300"
+                >
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={broker.photoUrl}
+                      alt={broker.name}
+                      className="w-16 h-16 rounded-full object-cover border border-[#0F1115]/10"
+                    />
+                    <div>
+                      <h3 className="font-serif text-lg font-medium text-[#0F1115]">
+                        {broker.name}
+                      </h3>
+                      <p className="text-xs text-[#8C8983] uppercase tracking-wider font-mono">
+                        {broker.creci}
+                      </p>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-[#6B6862] font-light leading-relaxed line-clamp-3">
+                    {broker.bio}
+                  </p>
+
+                  <div className="pt-2 flex items-center justify-between border-t border-[#0F1115]/[0.06]">
+                    <Link
+                      href={`/corretores/${broker.id}`}
+                      className="text-xs uppercase tracking-wider font-semibold text-[#0B0D12] hover:text-[#9B7826]"
+                    >
+                      Ver Imóveis do Corretor
+                    </Link>
+
+                    <a
+                      href={`https://wa.me/${broker.whatsapp}?text=${encodeURIComponent(`Olá ${broker.name}, gostaria de conversar sobre oportunidades de imóveis de alto padrão.`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs text-[#D4AF37] hover:text-[#9B7826] font-medium"
+                    >
+                      WhatsApp
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </a>
                   </div>
                 </div>
-
-                <p className="text-xs text-[#6B6862] font-light leading-relaxed line-clamp-3">
-                  {broker.bio}
-                </p>
-
-                <div className="pt-2 flex items-center justify-between border-t border-[#0F1115]/[0.06]">
-                  <Link
-                    href={`/corretores/${broker.id}`}
-                    className="text-xs uppercase tracking-wider font-semibold text-[#0B0D12] hover:text-[#9B7826]"
-                  >
-                    Ver Imóveis do Corretor
-                  </Link>
-
-                  <a
-                    href={`https://wa.me/${broker.whatsapp}?text=${encodeURIComponent(`Olá ${broker.name}, gostaria de conversar sobre oportunidades de imóveis de alto padrão.`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-[#D4AF37] hover:text-[#9B7826] font-medium"
-                  >
-                    WhatsApp
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </section>
 
         {/* BANNER CONCIERGE / ATENDIMENTO PRIVATIVO */}
@@ -286,7 +346,7 @@ export default async function HomePage() {
             </p>
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
-                href={`https://wa.me/${siteConfig.contact.whatsapp}?text=${encodeURIComponent("Olá! Desejo solicitar uma busca personalizada off-market.")}`}
+                href={`https://wa.me/${settings.whatsapp}?text=${encodeURIComponent("Olá! Desejo solicitar uma busca personalizada off-market.")}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto px-8 py-3.5 bg-[#0B0D12] text-[#FBF9F5] text-xs uppercase tracking-widest font-semibold hover:bg-[#1E2330] rounded-sm transition-all"
@@ -304,7 +364,7 @@ export default async function HomePage() {
         </section>
       </main>
 
-      <Footer />
+      <Footer settings={settings} />
     </div>
   );
 }

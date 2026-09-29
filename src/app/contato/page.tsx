@@ -7,13 +7,15 @@ import { Phone, Mail, MapPin, MessageSquare, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
+import { getSiteSettings } from "@/lib/settings";
 
 export default async function ContatoPage() {
   const session = await getSession();
+  const settings = await getSiteSettings();
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FBF9F5]">
-      <Navbar session={session} />
+      <Navbar session={session} settings={settings} />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
         <div className="max-w-2xl mx-auto text-center mb-16 space-y-3">
@@ -36,37 +38,39 @@ export default async function ContatoPage() {
                 Sede Principal
               </span>
               <h3 className="font-serif text-2xl text-[#0F1115] mt-1">
-                {siteConfig.name}
+                {settings.name}
               </h3>
-              <p className="text-xs font-mono text-[#D4AF37] uppercase mt-0.5">
-                {siteConfig.contact.creciJ}
-              </p>
+              {settings.creciJ && (
+                <p className="text-xs font-mono text-[#D4AF37] uppercase mt-0.5">
+                  {settings.creciJ}
+                </p>
+              )}
             </div>
 
             <div className="space-y-4 text-sm text-[#55524D] font-light">
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-medium text-[#0F1115]">{siteConfig.contact.address.street}</p>
-                  <p>{siteConfig.contact.address.neighborhood} — {siteConfig.contact.address.city}/{siteConfig.contact.address.state}</p>
-                  <p>CEP {siteConfig.contact.address.zipCode}</p>
+                  <p className="font-medium text-[#0F1115]">{settings.address.street}</p>
+                  <p>{settings.address.neighborhood} — {settings.address.city}/{settings.address.state}</p>
+                  <p>CEP {settings.address.zipCode}</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-[#D4AF37] shrink-0" />
-                <span>{siteConfig.contact.phone}</span>
+                <span>{settings.phone}</span>
               </div>
 
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-[#D4AF37] shrink-0" />
-                <span>{siteConfig.contact.email}</span>
+                <span>{settings.email}</span>
               </div>
             </div>
 
             <div className="pt-4 border-t border-[#0F1115]/10">
               <a
-                href={`https://wa.me/${siteConfig.contact.whatsapp}?text=${encodeURIComponent("Olá! Desejo agendar um atendimento na sede.")}`}
+                href={`https://wa.me/${settings.whatsapp}?text=${encodeURIComponent("Olá! Desejo agendar um atendimento na sede.")}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 bg-[#D4AF37] text-[#0B0D12] text-xs uppercase tracking-widest font-semibold rounded-sm hover:bg-[#C29F2D] transition-all shadow-sm"
@@ -114,7 +118,7 @@ export default async function ContatoPage() {
         </div>
       </main>
 
-      <Footer />
+      <Footer settings={settings} />
     </div>
   );
 }

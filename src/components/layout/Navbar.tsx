@@ -8,10 +8,19 @@ import { SessionPayload } from "@/lib/auth";
 
 interface NavbarProps {
   session?: SessionPayload | null;
+  settings?: {
+    name?: string;
+    logoText?: string;
+    logoUrl?: string | null;
+  };
 }
 
-export function Navbar({ session }: NavbarProps) {
+export function Navbar({ session, settings }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const brandName = settings?.name || siteConfig.name;
+  const logoText = settings?.logoText || siteConfig.logoText;
+  const logoUrl = settings?.logoUrl || siteConfig.logoUrl;
 
   const navLinks = [
     { label: "Imóveis", href: "/imoveis" },
@@ -25,17 +34,25 @@ export function Navbar({ session }: NavbarProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* Logo Provisória Elegante */}
+          {/* Logo da Imobiliária */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 border border-[#0B0D12] flex items-center justify-center bg-[#0B0D12] text-[#FBF9F5] font-serif text-lg tracking-widest transition-transform group-hover:scale-95 duration-300">
-              {siteConfig.logoText}
-            </div>
+            {logoUrl ? (
+              <img
+                src={logoUrl}
+                alt={brandName}
+                className="h-10 max-w-[160px] object-contain transition-transform group-hover:scale-95 duration-300"
+              />
+            ) : (
+              <div className="w-10 h-10 border border-[#0B0D12] flex items-center justify-center bg-[#0B0D12] text-[#FBF9F5] font-serif text-lg tracking-widest transition-transform group-hover:scale-95 duration-300">
+                {logoText}
+              </div>
+            )}
             <div className="flex flex-col">
               <span className="font-serif text-lg tracking-widest text-[#0B0D12] font-medium leading-none uppercase">
-                {siteConfig.name}
+                {brandName}
               </span>
               <span className="text-[10px] tracking-[0.2em] text-[#8C8983] uppercase mt-1 font-light">
-                {siteConfig.shortName} Privativo
+                Imóveis Exclusivos
               </span>
             </div>
           </Link>

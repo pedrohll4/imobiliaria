@@ -7,7 +7,8 @@ import { PropertyCard } from "@/components/property/PropertyCard";
 import { PropertyFilterSidebar } from "@/components/property/PropertyFilterSidebar";
 import { PropertySortControl } from "@/components/property/PropertySortControl";
 import { Prisma } from "@prisma/client";
-import { Building2 } from "lucide-react";
+import { Building2, ArrowUpRight } from "lucide-react";
+import { getSiteSettings } from "@/lib/settings";
 
 interface ImoveisPageProps {
   searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -18,6 +19,7 @@ export const dynamic = "force-dynamic";
 export default async function ImoveisPage(props: ImoveisPageProps) {
   const searchParams = await props.searchParams;
   const session = await getSession();
+  const settings = await getSiteSettings();
 
   // Filtros
   const purpose = searchParams.purpose;
@@ -107,7 +109,7 @@ export default async function ImoveisPage(props: ImoveisPageProps) {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FBF9F5]">
-      <Navbar session={session} />
+      <Navbar session={session} settings={settings} />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
         {/* Cabeçalho Editorial */}
@@ -135,16 +137,27 @@ export default async function ImoveisPage(props: ImoveisPageProps) {
             </React.Suspense>
 
             {properties.length === 0 ? (
-              <div className="bg-[#FFFFFF] border border-[#0F1115]/10 rounded-sm p-12 text-center space-y-4 shadow-subtle my-6">
+              <div className="bg-[#FFFFFF] border border-[#0F1115]/10 rounded-sm p-12 text-center space-y-5 shadow-subtle my-6 max-w-2xl mx-auto">
                 <div className="w-12 h-12 rounded-full bg-[#F4F1EA] flex items-center justify-center mx-auto text-[#D4AF37]">
                   <Building2 className="w-6 h-6" />
                 </div>
                 <h3 className="font-serif text-2xl text-[#0F1115]">
-                  Nenhum imóvel corresponde aos filtros selecionados.
+                  Nenhum imóvel disponível no momento com estes critérios.
                 </h3>
-                <p className="text-sm text-[#8C8983] max-w-md mx-auto font-light">
-                  Experimente flexibilizar os parâmetros de preço, localização ou tipologia, ou fale diretamente com um de nossos consultores para busca off-market.
+                <p className="text-sm text-[#8C8983] max-w-md mx-auto font-light leading-relaxed">
+                  Nosso acervo está em constante renovação documental e curadoria. Se procura um imóvel específico ou oportunidades <em>off-market</em>, converse diretamente conosco.
                 </p>
+                <div className="pt-2">
+                  <a
+                    href={`https://wa.me/${settings.whatsapp}?text=${encodeURIComponent("Olá! Gostaria de consultar imóveis exclusivos e opções off-market.")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-[#0B0D12] text-[#FBF9F5] text-xs uppercase tracking-widest font-semibold hover:bg-[#1E2330] rounded-sm transition-all"
+                  >
+                    Consultar Oportunidades no WhatsApp
+                    <ArrowUpRight className="w-4 h-4 text-[#D4AF37]" />
+                  </a>
+                </div>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -157,7 +170,7 @@ export default async function ImoveisPage(props: ImoveisPageProps) {
         </div>
       </main>
 
-      <Footer />
+      <Footer settings={settings} />
     </div>
   );
 }
