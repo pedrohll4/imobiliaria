@@ -9,7 +9,7 @@ Plataforma web completa, contemporânea e profissional para imobiliárias de lux
 ## 🏛️ Destaques da Plataforma
 
 - **Experiência "Uau" no Hero**: Fotografia arquitetônica monumental, tipografia editorial (*Cormorant Garamond* & *Plus Jakarta Sans*), microinterações de profundidade e **elemento 3D arquitetônico minimalista** em Three.js com rotação suave e fallback automático em SVG.
-- **Sistema de Busca Integrado**: Filtro arquitetônico por finalidade (*Comprar* / *Alugar*), tipologia, faixa de preço, quartos e localização.
+- **Sistema de Busca Integrado**: Filtro arquitetônico por tipologia, faixa de preço, quartos e localização exclusiva em Rondônia.
 - **Portal de Imóveis Completo (`/imoveis`)**: Múltiplos filtros combinados (tipologia, valor mín/máx, quartos, banheiros, vagas, área útil em m²), ordenação dinâmica e estados vazios elegantes.
 - **Página de Imóvel Singular (`/imoveis/[id]`)**: Galeria cinematográfica com lightbox em tela cheia, especificações completas, diferenciais exclusivos, card do corretor credenciado e **integração direta com o WhatsApp do corretor** com mensagem pré-formatada citando o nome e código do imóvel.
 - **Área Exclusiva do Corretor (`/dashboard`)**: Métricas de carteira, acompanhamento de visualizações, cadastro/edição de imóveis com gerenciador de fotos e pipeline de atendimento de leads (*Novo lead* → *Em atendimento* → *Visita agendada* → *Proposta* → *Fechado* / *Perdido*).

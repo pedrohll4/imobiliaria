@@ -51,7 +51,7 @@ model Property {
   slug          String   @unique
   description   String
   type          String   // "CASA" | "APARTAMENTO" | "COBERTURA" | "TERRENO" | "COMERCIAL" | "FAZENDA" | "CHACARA" | "SOBRADO" | "CONDOMINIO"
-  purpose       String   // "VENDA" | "ALUGUEL"
+  purpose       String   @default("VENDA") // "VENDA"
   price         Float
   condoFee      Float?
   propertyTax   Float?   // IPTU
@@ -69,7 +69,7 @@ model Property {
   parkingSpaces Int      @default(0)
   builtArea     Float    // Em m²
   totalArea     Float    // Em m²
-  status        String   @default("PUBLICADO") // "RASCUNHO" | "PUBLICADO" | "RESERVADO" | "VENDIDO" | "ALUGADO" | "INATIVO"
+  status        String   @default("PUBLICADO") // "RASCUNHO" | "PUBLICADO" | "RESERVADO" | "VENDIDO" | "INATIVO"
   isFeatured    Boolean  @default(false)
   views         Int      @default(0)
   createdAt     DateTime @default(now())

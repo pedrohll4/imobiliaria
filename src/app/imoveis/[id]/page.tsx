@@ -110,7 +110,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
             <div className="flex items-center gap-2.5">
               <Badge variant="dark">{property.type}</Badge>
               <Badge variant="champagne">
-                {property.purpose === "VENDA" ? "Venda" : "Locação"}
+                Aquisição Exclusiva
               </Badge>
               <span className="text-xs font-mono tracking-widest text-[#8C8983] uppercase ml-2">
                 Cód: {property.code}

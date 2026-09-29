@@ -40,13 +40,13 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/imoveis?purpose=VENDA" className="hover:text-[#FBF9F5] transition-colors">
+                <Link href="/imoveis" className="hover:text-[#FBF9F5] transition-colors">
                   Propriedades à Venda
                 </Link>
               </li>
               <li>
-                <Link href="/imoveis?purpose=ALUGUEL" className="hover:text-[#FBF9F5] transition-colors">
-                  Locações Exclusivas
+                <Link href="/imoveis?type=CONDOMINIO" className="hover:text-[#FBF9F5] transition-colors">
+                  Casas em Condomínio
                 </Link>
               </li>
               <li>

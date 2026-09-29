@@ -116,10 +116,10 @@ export default async function DashboardImoveisPage() {
                       </td>
                       <td className="py-3.5 px-4">
                         <Badge
-                          variant={prop.purpose === "VENDA" ? "champagne" : "dark"}
+                          variant="champagne"
                           className="text-[10px]"
                         >
-                          {prop.purpose === "VENDA" ? "Venda" : "Aluguel"}
+                          Venda
                         </Badge>
                       </td>
                       <td className="py-3.5 px-4 font-medium text-[#0F1115]">

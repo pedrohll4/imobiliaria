@@ -142,7 +142,6 @@ export function PropertyCreateForm() {
           <div className="sm:col-span-3">
             <Select name="purpose" label="Finalidade *" required>
               <option value="VENDA">Venda</option>
-              <option value="ALUGUEL">Locação</option>
             </Select>
           </div>
 
@@ -152,7 +151,6 @@ export function PropertyCreateForm() {
               <option value="RASCUNHO">Rascunho</option>
               <option value="RESERVADO">Reservado</option>
               <option value="VENDIDO">Vendido</option>
-              <option value="ALUGADO">Alugado</option>
             </Select>
           </div>
 

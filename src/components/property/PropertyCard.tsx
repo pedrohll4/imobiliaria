@@ -41,8 +41,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
     maximumFractionDigits: 0,
   }).format(property.price);
 
-  const displayPrice =
-    property.purpose === "ALUGUEL" ? `${formattedPrice}/mês` : formattedPrice;
+  const displayPrice = formattedPrice;
 
   return (
     <div className="group relative bg-[#FFFFFF] border border-[#0F1115]/[0.08] rounded-sm overflow-hidden shadow-subtle hover:shadow-elevation hover:border-[#D4AF37]/50 transition-all duration-500 flex flex-col">
@@ -67,7 +66,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
             variant="champagne"
             className="text-[10px] tracking-widest bg-[#D4AF37] text-[#0B0D12] font-bold"
           >
-            {property.purpose === "VENDA" ? "Venda" : "Locação"}
+            Venda
           </Badge>
         </div>
 

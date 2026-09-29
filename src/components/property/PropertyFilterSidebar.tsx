@@ -11,7 +11,6 @@ export function PropertyFilterSidebar() {
   const searchParams = useSearchParams();
 
   // Estados dos filtros baseados na URL
-  const [purpose, setPurpose] = useState(searchParams.get("purpose") || "");
   const [type, setType] = useState(searchParams.get("type") || "");
   const [location, setLocation] = useState(searchParams.get("location") || "");
   const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") || "");
@@ -26,7 +25,7 @@ export function PropertyFilterSidebar() {
   const applyFilters = () => {
     const params = new URLSearchParams();
 
-    if (purpose) params.set("purpose", purpose);
+    params.set("purpose", "VENDA");
     if (type) params.set("type", type);
     if (location) params.set("location", location);
     if (minPrice) params.set("minPrice", minPrice);
@@ -46,7 +45,6 @@ export function PropertyFilterSidebar() {
   };
 
   const resetFilters = () => {
-    setPurpose("");
     setType("");
     setLocation("");
     setMinPrice("");
@@ -76,37 +74,6 @@ export function PropertyFilterSidebar() {
           <RotateCcw className="w-3 h-3" />
           Limpar
         </button>
-      </div>
-
-      {/* Finalidade: Venda / Aluguel */}
-      <div className="space-y-2">
-        <label className="text-xs uppercase tracking-wider font-semibold text-[#4A4742]">
-          Finalidade
-        </label>
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => setPurpose(purpose === "VENDA" ? "" : "VENDA")}
-            className={`py-2 text-xs uppercase tracking-wider font-medium border rounded-xs transition-all ${
-              purpose === "VENDA"
-                ? "bg-[#0B0D12] text-white border-[#0B0D12]"
-                : "border-[#0F1115]/15 text-[#4A4742] hover:border-[#0F1115]"
-            }`}
-          >
-            Venda
-          </button>
-          <button
-            type="button"
-            onClick={() => setPurpose(purpose === "ALUGUEL" ? "" : "ALUGUEL")}
-            className={`py-2 text-xs uppercase tracking-wider font-medium border rounded-xs transition-all ${
-              purpose === "ALUGUEL"
-                ? "bg-[#0B0D12] text-white border-[#0B0D12]"
-                : "border-[#0F1115]/15 text-[#4A4742] hover:border-[#0F1115]"
-            }`}
-          >
-            Aluguel
-          </button>
-        </div>
       </div>
 
       {/* Localização em Rondônia */}

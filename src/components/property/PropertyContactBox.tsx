@@ -45,8 +45,7 @@ export function PropertyContactBox({ property, broker }: PropertyContactBoxProps
     maximumFractionDigits: 0,
   }).format(property.price);
 
-  const displayPrice =
-    property.purpose === "ALUGUEL" ? `${formattedPrice} / mês` : formattedPrice;
+  const displayPrice = formattedPrice;
 
   // WhatsApp link formatado com o número real do corretor
   const brokerWhatsApp = broker?.whatsapp || "5511987654321";
@@ -73,7 +72,7 @@ export function PropertyContactBox({ property, broker }: PropertyContactBoxProps
         {/* Preço e Encargos */}
         <div>
           <span className="text-[11px] uppercase tracking-widest text-[#8C8983] font-medium">
-            Valor de {property.purpose === "VENDA" ? "Venda" : "Locação"}
+            Valor de Venda
           </span>
           <p className="font-serif text-3xl font-normal text-[#0F1115] mt-1 tracking-tight">
             {displayPrice}
