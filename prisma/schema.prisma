@@ -1,0 +1,119 @@
+// Prisma Schema para Plataforma Imobiliária Premium
+// Compatível com SQLite (desenvolvimento local sem fricção)
+// e PostgreSQL (Supabase / Neon para deploy gratuito em produção)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("BROKER") // "ADMIN" | "BROKER"
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  brokerProfile Broker?
+}
+
+model Broker {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  email       String
+  phone       String
+  whatsapp    String   // Número limpo com DDI/DDD, ex: "5511999998888" para link direto
+  creci       String
+  photoUrl    String
+  bio         String
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  properties  Property[]
+  leads       Lead[]
+}
+
+model Property {
+  id            String   @id @default(uuid())
+  code          String   @unique // Ex: "IMV-1001"
+  title         String
+  slug          String   @unique
+  description   String
+  type          String   // "CASA" | "APARTAMENTO" | "COBERTURA" | "TERRENO" | "COMERCIAL" | "FAZENDA" | "CHACARA" | "SOBRADO" | "CONDOMINIO"
+  purpose       String   // "VENDA" | "ALUGUEL"
+  price         Float
+  condoFee      Float?
+  propertyTax   Float?   // IPTU
+  city          String
+  state         String
+  neighborhood  String
+  address       String?
+  number        String?
+  zipCode       String?
+  latitude      Float?
+  longitude     Float?
+  bedrooms      Int      @default(0)
+  suites        Int      @default(0)
+  bathrooms     Int      @default(0)
+  parkingSpaces Int      @default(0)
+  builtArea     Float    // Em m²
+  totalArea     Float    // Em m²
+  status        String   @default("PUBLICADO") // "RASCUNHO" | "PUBLICADO" | "RESERVADO" | "VENDIDO" | "ALUGADO" | "INATIVO"
+  isFeatured    Boolean  @default(false)
+  views         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  brokerId      String?
+  broker        Broker?  @relation(fields: [brokerId], references: [id], onDelete: SetNull)
+
+  images        PropertyImage[]
+  features      PropertyFeature[]
+  leads         Lead[]
+}
+
+model PropertyImage {
+  id         String   @id @default(uuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  url        String
+  alt        String?
+  isMain     Boolean  @default(false)
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
+}
+
+model PropertyFeature {
+  id         String   @id @default(uuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  name       String   // Ex: "Piscina de borda infinita"
+  category   String?  // Ex: "Lazer", "Segurança", "Tecnologia"
+}
+
+model Lead {
+  id         String    @id @default(uuid())
+  propertyId String?
+  property   Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  brokerId   String?
+  broker     Broker?   @relation(fields: [brokerId], references: [id], onDelete: SetNull)
+  name       String
+  email      String
+  phone      String
+  message    String
+  status     String    @default("NOVO") // "NOVO" | "EM_ATENDIMENTO" | "VISITA_AGENDADA" | "PROPOSTA" | "FECHADO" | "PERDIDO"
+  source     String    @default("PORTAL")
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
