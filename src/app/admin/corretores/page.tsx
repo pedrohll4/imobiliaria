@@ -1,11 +1,11 @@
 import React from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { toggleBrokerStatusAction, deleteBrokerAction } from "@/actions/brokerActions";
+import { toggleBrokerStatusAction, deleteBrokerAction, impersonateBrokerAction } from "@/actions/brokerActions";
 import { BrokerCreateModal } from "./BrokerCreateModal";
 import { BrokerEditModal } from "./BrokerEditModal";
 import { Badge } from "@/components/ui/Badge";
-import { ExternalLink, Building2, Users, Trash2 } from "lucide-react";
+import { ExternalLink, Building2, Users, Trash2, LogIn } from "lucide-react";
 
 export default async function AdminCorretoresPage() {
   const brokers = await prisma.broker.findMany({
@@ -100,6 +100,22 @@ export default async function AdminCorretoresPage() {
 
                   <td className="py-3.5 px-4 text-right">
                     <div className="flex items-center justify-end gap-2">
+                      <form
+                        action={async () => {
+                          "use server";
+                          await impersonateBrokerAction(broker.id);
+                        }}
+                      >
+                        <button
+                          type="submit"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#0B0D12] text-[#D4AF37] hover:bg-[#1E2330] rounded-xs text-[11px] font-semibold tracking-wider uppercase transition-all shadow-xs"
+                          title={`Acessar o painel exclusivo de ${broker.name}`}
+                        >
+                          <LogIn className="w-3.5 h-3.5 text-[#D4AF37]" />
+                          <span>Acessar Painel</span>
+                        </button>
+                      </form>
+
                       <BrokerEditModal
                         broker={{
                           id: broker.id,

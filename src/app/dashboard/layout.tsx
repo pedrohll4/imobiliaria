@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { logoutAction } from "@/actions/authActions";
+import { stopImpersonationAction } from "@/actions/brokerActions";
 import { siteConfig } from "@/config/site";
 import {
   LayoutDashboard,
@@ -13,6 +14,8 @@ import {
   LogOut,
   ExternalLink,
   Shield,
+  ShieldAlert,
+  ArrowLeft,
 } from "lucide-react";
 
 export default async function DashboardLayout({
@@ -62,9 +65,15 @@ export default async function DashboardLayout({
             <p className="text-xs font-medium text-[#FBF9F5] truncate mt-0.5">
               {session.name}
             </p>
-            <span className="inline-block mt-1 text-[9px] uppercase tracking-widest bg-[#D4AF37]/20 text-[#F6EEDA] px-2 py-0.5 rounded-xs font-mono">
-              {session.role === "ADMIN" ? "Diretoria (Admin)" : "Consultor Autorizado"}
-            </span>
+            {session.impersonatedBy ? (
+              <span className="inline-block mt-1 text-[9px] uppercase tracking-widest bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-xs font-mono font-medium">
+                Acesso Master (Admin)
+              </span>
+            ) : (
+              <span className="inline-block mt-1 text-[9px] uppercase tracking-widest bg-[#D4AF37]/20 text-[#F6EEDA] px-2 py-0.5 rounded-xs font-mono">
+                {session.role === "ADMIN" ? "Diretoria (Admin)" : "Consultor Autorizado"}
+              </span>
+            )}
           </div>
         </div>
 
@@ -84,15 +93,27 @@ export default async function DashboardLayout({
             );
           })}
 
-          {session.role === "ADMIN" && (
+          {(session.role === "ADMIN" || session.impersonatedBy) && (
             <div className="pt-4 mt-4 border-t border-white/[0.08]">
-              <Link
-                href="/admin"
-                className="flex items-center gap-3 px-3.5 py-2.5 rounded-xs text-xs uppercase tracking-wider text-[#D4AF37] hover:bg-white/[0.05] transition-all font-medium"
-              >
-                <Shield className="w-4 h-4" />
-                <span>Painel Admin Geral</span>
-              </Link>
+              {session.impersonatedBy ? (
+                <form action={stopImpersonationAction}>
+                  <button
+                    type="submit"
+                    className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xs text-xs uppercase tracking-wider text-[#D4AF37] hover:bg-white/[0.05] transition-all font-medium text-left"
+                  >
+                    <ArrowLeft className="w-4 h-4 text-[#D4AF37]" />
+                    <span>Voltar ao Admin</span>
+                  </button>
+                </form>
+              ) : (
+                <Link
+                  href="/admin"
+                  className="flex items-center gap-3 px-3.5 py-2.5 rounded-xs text-xs uppercase tracking-wider text-[#D4AF37] hover:bg-white/[0.05] transition-all font-medium"
+                >
+                  <Shield className="w-4 h-4" />
+                  <span>Painel Admin Geral</span>
+                </Link>
+              )}
             </div>
           )}
         </nav>
@@ -122,6 +143,29 @@ export default async function DashboardLayout({
 
       {/* Conteúdo Dinâmico da Página */}
       <div className="flex-1 flex flex-col min-w-0">
+        {session.impersonatedBy && (
+          <div className="bg-[#D4AF37] text-[#0B0D12] px-6 py-3 flex flex-wrap items-center justify-between gap-4 shadow-subtle border-b border-[#0B0D12]/10 sticky top-0 z-40">
+            <div className="flex items-center gap-2.5">
+              <ShieldAlert className="w-5 h-5 text-[#0B0D12] shrink-0" />
+              <div className="text-xs">
+                <span className="font-semibold block">Acesso de Administrador Master</span>
+                <span className="font-light text-[#0B0D12]/80">
+                  Você está navegando pelo painel do consultor <strong>{session.name}</strong> ({session.email}).
+                </span>
+              </div>
+            </div>
+            <form action={stopImpersonationAction}>
+              <button
+                type="submit"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[#0B0D12] text-[#FBF9F5] text-xs uppercase tracking-widest font-semibold rounded-xs hover:bg-[#1E2330] transition-all shadow-sm"
+              >
+                <ArrowLeft className="w-4 h-4 text-[#D4AF37]" />
+                <span>Voltar ao Painel Master (Admin)</span>
+              </button>
+            </form>
+          </div>
+        )}
+
         <main className="flex-1 p-6 sm:p-10 max-w-7xl w-full mx-auto">
           {children}
         </main>

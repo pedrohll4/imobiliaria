@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { getSession, hashPassword, setSessionCookie } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export interface BrokerActionResult {
   success: boolean;
@@ -415,4 +416,65 @@ export async function updateBrokerAvatarInstantAction(
     console.error("Erro ao atualizar avatar instantaneamente:", err);
     return { success: false, error: err?.message || "Erro ao salvar foto no banco." };
   }
+}
+
+/**
+ * Permite ao Administrador acessar o painel de qualquer corretor (Impersonação)
+ */
+export async function impersonateBrokerAction(brokerId: string) {
+  const session = await getSession();
+  if (!session || (session.role !== "ADMIN" && !session.impersonatedBy)) {
+    throw new Error("Apenas administradores podem acessar o painel de corretores.");
+  }
+
+  const originalAdminId = session.impersonatedBy || session.userId;
+
+  const broker = await prisma.broker.findUnique({
+    where: { id: brokerId },
+    include: { user: true },
+  });
+
+  if (!broker || !broker.user) {
+    throw new Error("Corretor ou usuário correspondente não encontrado.");
+  }
+
+  await setSessionCookie({
+    userId: broker.user.id,
+    email: broker.user.email,
+    name: broker.name,
+    role: "BROKER",
+    brokerId: broker.id,
+    impersonatedBy: originalAdminId,
+  });
+
+  redirect("/dashboard");
+}
+
+/**
+ * Encerra a impersonação e retorna a sessão para o Administrador original
+ */
+export async function stopImpersonationAction() {
+  const session = await getSession();
+  if (!session || !session.impersonatedBy) {
+    redirect("/dashboard");
+  }
+
+  const adminUser = await prisma.user.findUnique({
+    where: { id: session.impersonatedBy },
+    include: { brokerProfile: true },
+  });
+
+  if (!adminUser || adminUser.role !== "ADMIN") {
+    redirect("/login");
+  }
+
+  await setSessionCookie({
+    userId: adminUser.id,
+    email: adminUser.email,
+    name: adminUser.name,
+    role: "ADMIN",
+    brokerId: adminUser.brokerProfile?.id,
+  });
+
+  redirect("/admin/corretores");
 }

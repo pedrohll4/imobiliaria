@@ -27,7 +27,7 @@ export default async function AdminLayout({
   }
 
   // Estrito para ADMIN
-  if (session.role !== "ADMIN") {
+  if (session.role !== "ADMIN" && !session.impersonatedBy) {
     redirect("/dashboard");
   }
 

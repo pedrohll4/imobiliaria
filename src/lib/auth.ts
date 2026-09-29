@@ -14,6 +14,7 @@ export interface SessionPayload {
   name: string;
   role: "ADMIN" | "BROKER";
   brokerId?: string;
+  impersonatedBy?: string;
 }
 
 export async function hashPassword(password: string): Promise<string> {

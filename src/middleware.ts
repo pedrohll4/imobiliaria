@@ -12,12 +12,12 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
 
-  let session: { role?: string; userId?: string } | null = null;
+  let session: { role?: string; userId?: string; impersonatedBy?: string } | null = null;
 
   if (token) {
     try {
       const { payload } = await jwtVerify(token, JWT_SECRET);
-      session = payload as { role?: string; userId?: string };
+      session = payload as { role?: string; userId?: string; impersonatedBy?: string };
     } catch {
       session = null;
     }
@@ -31,7 +31,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
 
-    if (session.role !== "ADMIN") {
+    if (session.role !== "ADMIN" && !session.impersonatedBy) {
       // Corretor tentando acessar painel de admin -> redirecionar para seu dashboard
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
