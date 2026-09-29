@@ -103,7 +103,7 @@ export function LoginForm() {
         <div className="grid grid-cols-2 gap-2">
           <button
             type="button"
-            onClick={() => fillCredentials("admin@imobiliaria.com", "admin123")}
+            onClick={() => fillCredentials("admin@vanguard.com.br", "admin123")}
             className="text-[11px] p-2 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] rounded-xs text-[#C5A880] flex items-center justify-center gap-1.5 transition-colors"
           >
             <Shield className="w-3 h-3" />
@@ -111,7 +111,7 @@ export function LoginForm() {
           </button>
           <button
             type="button"
-            onClick={() => fillCredentials("helena.vianna@imobiliaria.com", "corretor123")}
+            onClick={() => fillCredentials("helena@vanguard.com.br", "corretor123")}
             className="text-[11px] p-2 bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] rounded-xs text-[#E5D7C3] flex items-center justify-center gap-1.5 transition-colors"
           >
             <User className="w-3 h-3" />
