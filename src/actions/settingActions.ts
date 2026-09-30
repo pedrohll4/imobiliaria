@@ -23,6 +23,7 @@ export async function updateSiteSettingsAction(
   const tagline = (formData.get("tagline") as string)?.trim() || "Residências e Empreendimentos de Alto Padrão";
   const logoText = (formData.get("logoText") as string)?.trim() || "IMV";
   const logoUrl = (formData.get("logoUrl") as string)?.trim() || null;
+  const logoSubtitle = (formData.get("logoSubtitle") as string)?.trim() ?? "Imóveis Exclusivos";
   const phone = (formData.get("phone") as string)?.trim() || "";
   let whatsapp = (formData.get("whatsapp") as string)?.trim().replace(/\D/g, "") || "";
   const email = (formData.get("email") as string)?.trim().toLowerCase() || "";
@@ -65,6 +66,7 @@ export async function updateSiteSettingsAction(
       tagline,
       logoText,
       logoUrl,
+      logoSubtitle,
       phone,
       whatsapp,
       email,

@@ -126,6 +126,7 @@ model SiteSetting {
   tagline      String   @default("Residências e Empreendimentos de Alto Padrão")
   logoText     String   @default("IMV")
   logoUrl      String?
+  logoSubtitle String?  @default("Imóveis Exclusivos")
   phone        String   @default("(11) 3045-8000")
   whatsapp     String   @default("5511999998888")
   email        String   @default("contato@imobiliaria.com.br")

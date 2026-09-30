@@ -12,6 +12,8 @@ interface NavbarProps {
     name?: string;
     logoText?: string;
     logoUrl?: string | null;
+    logoSubtitle?: string | null;
+    whatsapp?: string;
   };
 }
 
@@ -21,6 +23,8 @@ export function Navbar({ session, settings }: NavbarProps) {
   const brandName = settings?.name || siteConfig.name;
   const logoText = settings?.logoText || siteConfig.logoText;
   const logoUrl = settings?.logoUrl || siteConfig.logoUrl;
+  const logoSubtitle = settings?.logoSubtitle !== undefined ? settings.logoSubtitle : "Imóveis Exclusivos";
+  const whatsappNumber = settings?.whatsapp || siteConfig.contact.whatsapp;
 
   const navLinks = [
     { label: "Imóveis", href: "/imoveis" },
@@ -51,9 +55,11 @@ export function Navbar({ session, settings }: NavbarProps) {
               <span className="font-serif text-lg tracking-widest text-[#0B0D12] font-medium leading-none uppercase">
                 {brandName}
               </span>
-              <span className="text-[10px] tracking-[0.2em] text-[#8C8983] uppercase mt-1 font-light">
-                Imóveis Exclusivos
-              </span>
+              {logoSubtitle && (
+                <span className="text-[10px] tracking-[0.2em] text-[#8C8983] uppercase mt-1 font-light">
+                  {logoSubtitle}
+                </span>
+              )}
             </div>
           </Link>
 
@@ -101,7 +107,7 @@ export function Navbar({ session, settings }: NavbarProps) {
             )}
 
             <a
-              href={`https://wa.me/${siteConfig.contact.whatsapp}?text=${encodeURIComponent("Olá! Gostaria de receber uma consultoria privativa sobre os imóveis de alto padrão.")}`}
+              href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Olá! Gostaria de receber uma consultoria privativa sobre os imóveis de alto padrão.")}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest bg-[#D4AF37] text-[#0B0D12] font-semibold px-4 py-2.5 rounded-sm hover:bg-[#C29F2D] transition-all shadow-sm"
@@ -158,7 +164,7 @@ export function Navbar({ session, settings }: NavbarProps) {
             )}
 
             <a
-              href={`https://wa.me/${siteConfig.contact.whatsapp}?text=${encodeURIComponent("Olá! Gostaria de receber uma consultoria privativa sobre os imóveis de alto padrão.")}`}
+              href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Olá! Gostaria de receber uma consultoria privativa sobre os imóveis de alto padrão.")}`}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full text-center text-xs uppercase tracking-widest bg-[#D4AF37] text-[#0B0D12] font-semibold py-3 rounded-sm flex items-center justify-center gap-1.5"

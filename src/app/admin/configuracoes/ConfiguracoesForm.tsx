@@ -31,6 +31,7 @@ interface ConfiguracoesFormProps {
     tagline: string;
     logoText: string;
     logoUrl?: string | null;
+    logoSubtitle?: string | null;
     phone: string;
     whatsapp: string;
     email: string;
@@ -610,6 +611,18 @@ export function ConfiguracoesForm({ initialSettings }: ConfiguracoesFormProps) {
                 defaultValue={initialSettings.tagline}
                 placeholder="Ex: Residências e Empreendimentos de Alto Padrão"
               />
+            </div>
+
+            <div className="sm:col-span-12">
+              <Input
+                name="logoSubtitle"
+                label="Subtítulo do Topo (Abaixo do Nome da Imobiliária no Cabeçalho) *"
+                defaultValue={initialSettings.logoSubtitle || "Imóveis Exclusivos"}
+                placeholder="Ex: Imóveis Exclusivos ou Consultoria Imobiliária"
+              />
+              <p className="text-[11px] text-[#8C8983] mt-1 font-light">
+                Texto em caixa alta exibido logo abaixo do nome no topo do site (ex: &quot;IMÓVEIS EXCLUSIVOS&quot;).
+              </p>
             </div>
 
             {/* Upload do Logotipo */}

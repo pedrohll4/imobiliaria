@@ -25,6 +25,7 @@ export default async function AdminConfiguracoesPage() {
           tagline: settings.tagline,
           logoText: settings.logoText,
           logoUrl: settings.logoUrl,
+          logoSubtitle: settings.logoSubtitle,
           phone: settings.phone,
           whatsapp: settings.whatsapp,
           email: settings.email,
