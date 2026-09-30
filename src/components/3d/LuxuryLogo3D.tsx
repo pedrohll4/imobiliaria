@@ -27,16 +27,17 @@ export function LuxuryLogo3D() {
     const container = containerRef.current;
     if (!container) return;
 
-    let width = container.clientWidth || 550;
-    let height = container.clientHeight || 520;
+    let width = container.clientWidth || 500;
+    let height = container.clientHeight || 450;
 
-    // 2. Cena & Câmera em Perspectiva Studio
+    // 2. Cena & Câmera (Com recuo amplo para NUNCA encostar ou cortar nas bordas)
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(36, width / height, 0.1, 100);
-    camera.position.set(0, 0.4, 7.8);
+    const camera = new THREE.PerspectiveCamera(34, width / height, 0.1, 100);
+    // Câmera posicionada a 9.6 unidades garante muito respiro e zero clipping
+    camera.position.set(0, 0, 9.6);
     camera.lookAt(0, 0, 0);
 
-    // 3. Renderer com Suavização e Tratamento de Cor de Cinema
+    // 3. Renderer com Fundo 100% Transparente e Antialias Suave
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: true,
@@ -47,11 +48,11 @@ export function LuxuryLogo3D() {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.25;
-    renderer.setClearColor(0x000000, 0);
+    renderer.toneMappingExposure = 1.2;
+    renderer.setClearColor(0x000000, 0); // 100% transparente, sem qualquer quadrado ou caixa
     container.appendChild(renderer.domElement);
 
-    // 4. MAPA DE ILUMINAÇÃO DE AMBIENTE (IBL / HDRI Procedural de Estúdio de Luxo)
+    // 4. MAPA DE ILUMINAÇÃO DE AMBIENTE (IBL de Estúdio de Joalheria)
     const pmremGenerator = new THREE.PMREMGenerator(renderer);
     pmremGenerator.compileEquirectangularShader();
 
@@ -62,21 +63,21 @@ export function LuxuryLogo3D() {
     envCanvas.height = 256;
     const envCtx = envCanvas.getContext("2d")!;
 
-    // Gradiente de Iluminação de Joalheria (Luz quente dourada + reflexo de estúdio)
+    // Gradiente de Estúdio Dourado Suave
     const envGrad = envCtx.createLinearGradient(0, 0, 512, 256);
-    envGrad.addColorStop(0.0, "#0b0d12");
-    envGrad.addColorStop(0.25, "#2a2215");
-    envGrad.addColorStop(0.48, "#fff1d0"); // Luz alta de reflexo
-    envGrad.addColorStop(0.55, "#d4af37"); // Ouro rico
-    envGrad.addColorStop(0.75, "#1e1a14");
-    envGrad.addColorStop(1.0, "#05070a");
+    envGrad.addColorStop(0.0, "#0e1117");
+    envGrad.addColorStop(0.3, "#2d2315");
+    envGrad.addColorStop(0.5, "#fff2d6"); // Reflexo de luz alta
+    envGrad.addColorStop(0.56, "#d4af37"); // Tom rico ouro
+    envGrad.addColorStop(0.78, "#1f1a14");
+    envGrad.addColorStop(1.0, "#080a0e");
     envCtx.fillStyle = envGrad;
     envCtx.fillRect(0, 0, 512, 256);
 
-    // Destaques de estúdio suaves
-    envCtx.fillStyle = "rgba(255, 245, 220, 0.85)";
+    // Pontos de reflexo suave
+    envCtx.fillStyle = "rgba(255, 248, 230, 0.9)";
     envCtx.beginPath();
-    envCtx.arc(256, 90, 70, 0, Math.PI * 2);
+    envCtx.arc(256, 80, 60, 0, Math.PI * 2);
     envCtx.fill();
 
     const envTexture = new THREE.CanvasTexture(envCanvas);
@@ -89,11 +90,13 @@ export function LuxuryLogo3D() {
     const generatedEnvMap = pmremGenerator.fromScene(envScene).texture;
     scene.environment = generatedEnvMap;
 
-    // 5. GRUPO PRINCIPAL DO LOGO 3D
+    // 5. GRUPO PRINCIPAL DO LOGO 3D (Escala equilibrada, sem encostar nas bordas)
     const logoGroup = new THREE.Group();
+    // Escala calibrada para ficar perfeitamente enquadrado com margem de segurança
+    logoGroup.scale.set(0.72, 0.72, 0.72);
     scene.add(logoGroup);
 
-    // Subgrupo flutuante para animação independente
+    // Subgrupo flutuante para o movimento sutil
     const floatingGroup = new THREE.Group();
     logoGroup.add(floatingGroup);
 
@@ -121,14 +124,12 @@ export function LuxuryLogo3D() {
       [65, 155],
     ];
 
-    // Ordem invertida para garantir winding oposto para o furo (hole)
     const aHoleRaw = [
       [145, 63],
       [119, 106],
       [167, 106],
     ];
 
-    // Normalização e centralização (Origem 0,0 no baricentro do logo)
     const scaleFactor = 1 / 34;
     const cx = 111;
     const cy = 80;
@@ -144,7 +145,7 @@ export function LuxuryLogo3D() {
     }
     shapeY.closePath();
 
-    // Shape da letra A (com o furo interno triangular)
+    // Shape da letra A com furo interno
     const shapeA = new THREE.Shape();
     const ptsA = aOuterRaw.map(toThree);
     shapeA.moveTo(ptsA[0].x, ptsA[0].y);
@@ -162,11 +163,11 @@ export function LuxuryLogo3D() {
     holeA.closePath();
     shapeA.holes.push(holeA);
 
-    // Parâmetros de Extrusão Joalheira (Chanfro lapidado premium)
+    // Extrusão lapidada de alta definição
     const extrudeSettings = {
-      depth: 0.32,
+      depth: 0.35,
       bevelEnabled: true,
-      bevelThickness: 0.07,
+      bevelThickness: 0.075,
       bevelSize: 0.045,
       bevelSegments: 5,
       curveSegments: 16,
@@ -178,29 +179,27 @@ export function LuxuryLogo3D() {
     geoY.center();
     geoA.center();
 
-    // MATERIAIS DE OURO 18K ULTRA REFINADO
-    // Ouro frontal (letra Y com destaque de brilho)
+    // MATERIAIS DE OURO 18K ULTRA REFINADOS
     const goldMaterialY = new THREE.MeshPhysicalMaterial({
-      color: 0xe8be5d,
-      emissive: 0x241704,
-      metalness: 0.94,
-      roughness: 0.16,
+      color: 0xebc46a,
+      emissive: 0x221603,
+      metalness: 0.95,
+      roughness: 0.15,
       clearcoat: 0.6,
-      clearcoatRoughness: 0.12,
+      clearcoatRoughness: 0.1,
       reflectivity: 1.0,
-      envMapIntensity: 2.4,
+      envMapIntensity: 2.6,
     });
 
-    // Ouro da letra A (ligeiramente mais quente e acetinado para contraste escultural)
     const goldMaterialA = new THREE.MeshPhysicalMaterial({
-      color: 0xdfb04e,
-      emissive: 0x1f1403,
-      metalness: 0.92,
-      roughness: 0.2,
+      color: 0xdfb455,
+      emissive: 0x1d1302,
+      metalness: 0.93,
+      roughness: 0.18,
       clearcoat: 0.5,
-      clearcoatRoughness: 0.15,
+      clearcoatRoughness: 0.12,
       reflectivity: 0.95,
-      envMapIntensity: 2.2,
+      envMapIntensity: 2.4,
     });
 
     const meshY = new THREE.Mesh(geoY, goldMaterialY);
@@ -211,74 +210,25 @@ export function LuxuryLogo3D() {
     meshA.castShadow = true;
     meshA.receiveShadow = true;
 
-    // Posicionamento relativo fiel ao monograma original
-    // 'Y' à esquerda e sutilmente sobreposto à frente
-    meshY.position.set(-0.85, 0.05, 0.06);
-    // 'A' à direita, harmoniosamente integrado
+    // Posicionamento harmônico (Y ligeiramente à frente, criando profundidade escultural)
+    meshY.position.set(-0.82, 0.05, 0.06);
     meshA.position.set(0.72, -0.05, -0.06);
 
     floatingGroup.add(meshY);
     floatingGroup.add(meshA);
 
     // ==========================================
-    // BASE ARQUITETÔNICA / PEDESTAL DE LUXO
+    // PARTÍCULAS DOURADAS ULTRA DISCRETAS (SEM BORDA)
     // ==========================================
-    const pedestalGroup = new THREE.Group();
-    pedestalGroup.position.set(0, -2.4, 0);
-    logoGroup.add(pedestalGroup);
-
-    // Disco de Mármore Negro / Granito com reflexo escuro
-    const discGeo = new THREE.CylinderGeometry(2.8, 3.1, 0.12, 64);
-    const discMat = new THREE.MeshPhysicalMaterial({
-      color: 0x0c0e12,
-      metalness: 0.3,
-      roughness: 0.15,
-      clearcoat: 0.9,
-      clearcoatRoughness: 0.05,
-      reflectivity: 0.9,
-    });
-    const discMesh = new THREE.Mesh(discGeo, discMat);
-    discMesh.receiveShadow = true;
-    pedestalGroup.add(discMesh);
-
-    // Anel Dourado Chanfrado na borda do pedestal
-    const ringGeo = new THREE.TorusGeometry(2.95, 0.035, 16, 96);
-    ringGeo.rotateX(Math.PI / 2);
-    const goldRingMat = new THREE.MeshStandardMaterial({
-      color: 0xd4af37,
-      metalness: 0.9,
-      roughness: 0.2,
-      envMapIntensity: 2.0,
-    });
-    const ringMesh = new THREE.Mesh(ringGeo, goldRingMat);
-    ringMesh.position.y = 0.06;
-    pedestalGroup.add(ringMesh);
-
-    // Anel de Luz Suave (Aura Dourada da Base)
-    const innerLightRing = new THREE.TorusGeometry(1.6, 0.015, 12, 64);
-    innerLightRing.rotateX(Math.PI / 2);
-    const lightRingMat = new THREE.MeshBasicMaterial({
-      color: 0xf6d688,
-      transparent: true,
-      opacity: 0.6,
-    });
-    const innerLightMesh = new THREE.Mesh(innerLightRing, lightRingMat);
-    innerLightMesh.position.y = 0.07;
-    pedestalGroup.add(innerLightMesh);
-
-    // ==========================================
-    // PARTÍCULAS DOURADAS CINTILANTES FLUTUANTES
-    // ==========================================
-    const particleCount = 45;
+    const particleCount = 30;
     const particleGeo = new THREE.BufferGeometry();
     const particlePositions = new Float32Array(particleCount * 3);
-    const particleScales = new Float32Array(particleCount);
 
     for (let i = 0; i < particleCount; i++) {
-      particlePositions[i * 3 + 0] = (Math.random() - 0.5) * 6.5;
-      particlePositions[i * 3 + 1] = (Math.random() - 0.5) * 4.5;
-      particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 4.5;
-      particleScales[i] = Math.random() * 0.8 + 0.2;
+      // Concentradas perto do logo, sem espalhar até os cantos do canvas
+      particlePositions[i * 3 + 0] = (Math.random() - 0.5) * 4.2;
+      particlePositions[i * 3 + 1] = (Math.random() - 0.5) * 3.5;
+      particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 3.0;
     }
 
     particleGeo.setAttribute(
@@ -286,25 +236,24 @@ export function LuxuryLogo3D() {
       new THREE.BufferAttribute(particlePositions, 3)
     );
 
-    // Canvas de partícula com halo suave
     const sparkCanvas = document.createElement("canvas");
     sparkCanvas.width = 64;
     sparkCanvas.height = 64;
     const sCtx = sparkCanvas.getContext("2d")!;
     const radGrad = sCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
     radGrad.addColorStop(0, "rgba(255, 245, 210, 1)");
-    radGrad.addColorStop(0.3, "rgba(224, 185, 91, 0.8)");
-    radGrad.addColorStop(0.7, "rgba(190, 138, 40, 0.2)");
+    radGrad.addColorStop(0.3, "rgba(224, 185, 91, 0.7)");
+    radGrad.addColorStop(0.7, "rgba(190, 138, 40, 0.15)");
     radGrad.addColorStop(1, "rgba(0, 0, 0, 0)");
     sCtx.fillStyle = radGrad;
     sCtx.fillRect(0, 0, 64, 64);
     const sparkTexture = new THREE.CanvasTexture(sparkCanvas);
 
     const particleMat = new THREE.PointsMaterial({
-      size: 0.12,
+      size: 0.09,
       map: sparkTexture,
       transparent: true,
-      opacity: 0.75,
+      opacity: 0.65,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
     });
@@ -312,84 +261,56 @@ export function LuxuryLogo3D() {
     scene.add(particles);
 
     // ==========================================
-    // ILUMINAÇÃO DE ESTÚDIO CINEMATOGRÁFICA
+    // ILUMINAÇÃO DE ESTÚDIO FRONT-FACING
     // ==========================================
-    const ambientLight = new THREE.AmbientLight(0xfff5e6, 0.75);
+    const ambientLight = new THREE.AmbientLight(0xfff5e6, 0.9);
     scene.add(ambientLight);
 
-    // Luz principal dourada (Key light)
-    const keyLight = new THREE.DirectionalLight(0xffeed1, 3.2);
-    keyLight.position.set(4, 5, 6);
-    keyLight.castShadow = true;
-    keyLight.shadow.mapSize.width = 1024;
-    keyLight.shadow.mapSize.height = 1024;
-    keyLight.shadow.bias = -0.0005;
-    keyLight.shadow.radius = 3;
+    // Luz principal frontal/superior destacando a leitura e os chanfros dourados
+    const keyLight = new THREE.DirectionalLight(0xffeed1, 3.4);
+    keyLight.position.set(3, 4, 7);
     scene.add(keyLight);
 
-    // Kicker / Rim light violeta/azulada de fundo (contraste arquitetônico)
-    const rimLight = new THREE.DirectionalLight(0xaac4ff, 1.6);
-    rimLight.position.set(-5, 3, -4);
+    // Rim light para destacar o contorno lateral 3D
+    const rimLight = new THREE.DirectionalLight(0xa5c4ff, 1.8);
+    rimLight.position.set(-4, 2, -3);
     scene.add(rimLight);
 
-    // Luz de baixo para cima aquecendo a base
-    const underGlow = new THREE.PointLight(0xd4af37, 2.2, 7);
-    underGlow.position.set(0, -1.8, 1);
-    scene.add(underGlow);
+    // Luz frontal suave iluminando as faces
+    const frontFill = new THREE.DirectionalLight(0xfff7e8, 1.2);
+    frontFill.position.set(0, -1, 6);
+    scene.add(frontFill);
 
-    // Luz de brilho cintilante dinâmico que viaja pela frente do logo
-    const glintLight = new THREE.PointLight(0xffffff, 2.5, 5);
-    glintLight.position.set(0, 0, 3.2);
+    // Luz de cintilação que percorre suavemente as arestas de ouro
+    const glintLight = new THREE.PointLight(0xffffff, 2.8, 4.5);
+    glintLight.position.set(0, 0, 2.6);
     scene.add(glintLight);
 
     // ==========================================
-    // INTERAÇÃO DO USUÁRIO (MOUSE & TOUCH)
+    // PARALAXE SUAVE DE MOUSE (SEM GIRAR 360)
     // ==========================================
-    let isDragging = false;
-    let prevMouseX = 0;
-    let prevMouseY = 0;
-    let targetRotationY = 0;
-    let targetRotationX = 0;
-    let currentRotationY = 0;
-    let currentRotationX = 0;
     let mouseHoverX = 0;
     let mouseHoverY = 0;
-
-    const onPointerDown = (e: PointerEvent) => {
-      isDragging = true;
-      prevMouseX = e.clientX;
-      prevMouseY = e.clientY;
-    };
+    let currentTiltX = 0;
+    let currentTiltY = 0;
 
     const onPointerMove = (e: PointerEvent) => {
       const rect = container.getBoundingClientRect();
       const normX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       const normY = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-      mouseHoverX = normX;
-      mouseHoverY = normY;
-
-      if (isDragging) {
-        const deltaX = e.clientX - prevMouseX;
-        const deltaY = e.clientY - prevMouseY;
-        prevMouseX = e.clientX;
-        prevMouseY = e.clientY;
-
-        targetRotationY += deltaX * 0.008;
-        targetRotationX += deltaY * 0.005;
-        // Limite angular no eixo vertical
-        targetRotationX = Math.max(-0.4, Math.min(0.4, targetRotationX));
-      }
+      // Limitar a influência sutil para nunca girar demais
+      mouseHoverX = Math.max(-1, Math.min(1, normX));
+      mouseHoverY = Math.max(-1, Math.min(1, normY));
     };
 
-    const onPointerUp = () => {
-      isDragging = false;
+    const onPointerLeave = () => {
+      mouseHoverX = 0;
+      mouseHoverY = 0;
     };
 
-    container.addEventListener("pointerdown", onPointerDown);
     window.addEventListener("pointermove", onPointerMove);
-    window.addEventListener("pointerup", onPointerUp);
+    container.addEventListener("pointerleave", onPointerLeave);
 
-    // Redimensionamento responsivo
     const handleResize = () => {
       if (!container) return;
       width = container.clientWidth;
@@ -400,8 +321,12 @@ export function LuxuryLogo3D() {
     };
     window.addEventListener("resize", handleResize);
 
+    // ÂNGULO BASE ELEGANTE (Frontal com leve perspectiva 3D para valorizar o relevo)
+    const baseRotationY = -0.1; // ~ -5.7 graus: dá leitura perfeita do logo e mostra o chanfro 3D
+    const baseRotationX = 0.04; // ~ 2.3 graus: suave perspectiva frontal
+
     // ==========================================
-    // LOOP DE ANIMAÇÃO COM MOVIMENTO CHIQUE
+    // LOOP DE ANIMAÇÃO ELEGANTE (SEM ROTAÇÃO 360)
     // ==========================================
     const clock = new THREE.Clock();
     let animationFrameId: number;
@@ -411,44 +336,34 @@ export function LuxuryLogo3D() {
 
       const elapsedTime = clock.getElapsedTime();
 
-      // 1. Rotação Contínua Elegante & Suave
-      if (!isDragging) {
-        // Velocidade moderada e aristocrática (~ 0.45 rad/s)
-        targetRotationY += 0.0075;
-      }
+      // Interpolação suave do mouse (inclinação sutil que acompanha o cursor sem nunca rodar)
+      const targetTiltY = mouseHoverX * 0.12; // Máximo de ±7 graus
+      const targetTiltX = -mouseHoverY * 0.08; // Máximo de ±4.5 graus
 
-      // Interpolação suave (lerp amortecido)
-      currentRotationY += (targetRotationY - currentRotationY) * 0.08;
-      currentRotationX += (targetRotationX - currentRotationX) * 0.08;
+      currentTiltY += (targetTiltY - currentTiltY) * 0.05;
+      currentTiltX += (targetTiltX - currentTiltX) * 0.05;
 
-      // 2. Movimento Chique: Flutuação Harmônica (Zero-Gravity Hover)
-      const floatY = Math.sin(elapsedTime * 1.5) * 0.16;
+      // Movimento 1: Flutuação Harmônica suave no ar (Zero-Gravity Breathing)
+      const floatY = Math.sin(elapsedTime * 1.3) * 0.08;
       floatingGroup.position.y = floatY;
 
-      // 3. Precessão Suave (Balanço angular tridimensional que expõe os chanfros dourados)
-      const tiltWobbleX = Math.sin(elapsedTime * 0.8) * 0.06;
-      const tiltWobbleZ = Math.cos(elapsedTime * 0.6) * 0.04;
+      // Movimento 2: Micro-respiração angular sutil (NÃO RODA 360, apenas balanço nobre)
+      const organicWobbleY = Math.sin(elapsedTime * 0.7) * 0.035;
+      const organicWobbleX = Math.cos(elapsedTime * 0.9) * 0.02;
+      const organicWobbleZ = Math.sin(elapsedTime * 0.6) * 0.015;
 
-      // Influência sutil do cursor (parallax de luxo)
-      const hoverTiltX = -mouseHoverY * 0.12;
-      const hoverTiltY = mouseHoverX * 0.15;
+      // Aplica a orientação frontal com movimento vivo
+      floatingGroup.rotation.y = baseRotationY + currentTiltY + organicWobbleY;
+      floatingGroup.rotation.x = baseRotationX + currentTiltX + organicWobbleX;
+      floatingGroup.rotation.z = organicWobbleZ;
 
-      floatingGroup.rotation.y = currentRotationY + hoverTiltY;
-      floatingGroup.rotation.x = currentRotationX + tiltWobbleX + hoverTiltX;
-      floatingGroup.rotation.z = tiltWobbleZ;
+      // Movimento 3: O ponto de luz desliza suavemente pelos chanfros lapidados de ouro
+      glintLight.position.x = Math.sin(elapsedTime * 1.1) * 2.2;
+      glintLight.position.y = floatY + Math.cos(elapsedTime * 1.3) * 0.7;
+      glintLight.position.z = 2.4 + Math.sin(elapsedTime * 0.8) * 0.4;
 
-      // 4. Luz de Cintilação que corre pela superfície lapidada
-      glintLight.position.x = Math.sin(elapsedTime * 1.2) * 2.8;
-      glintLight.position.y = floatY + Math.cos(elapsedTime * 1.4) * 0.8;
-      glintLight.position.z = 2.4 + Math.sin(elapsedTime * 0.9) * 0.6;
-
-      // 5. Flutuação lenta das partículas de ouro
-      particles.rotation.y = elapsedTime * 0.02;
-      particles.position.y = Math.sin(elapsedTime * 0.5) * 0.1;
-
-      // 6. Rotação sutil da aura do pedestal
-      ringMesh.rotation.z = -elapsedTime * 0.08;
-      innerLightMesh.rotation.z = elapsedTime * 0.12;
+      // Partículas flutuam levemente
+      particles.position.y = Math.sin(elapsedTime * 0.4) * 0.06;
 
       renderer.render(scene, camera);
     };
@@ -456,26 +371,18 @@ export function LuxuryLogo3D() {
     animate();
 
     // ==========================================
-    // LIMPEZA COMPLETA AO DESMONTAR
+    // LIMPEZA
     // ==========================================
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
-      container.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerup", onPointerUp);
+      container.removeEventListener("pointerleave", onPointerLeave);
 
-      // Desalocação de geometrias e materiais
       geoY.dispose();
       geoA.dispose();
       goldMaterialY.dispose();
       goldMaterialA.dispose();
-      discGeo.dispose();
-      discMat.dispose();
-      ringGeo.dispose();
-      goldRingMat.dispose();
-      innerLightRing.dispose();
-      lightRingMat.dispose();
       particleGeo.dispose();
       particleMat.dispose();
       sparkTexture.dispose();
@@ -491,33 +398,26 @@ export function LuxuryLogo3D() {
   }, []);
 
   return (
-    <div className="relative w-full h-[460px] sm:h-[500px] flex items-center justify-center select-none">
-      {/* Halo de iluminação de fundo ambiental */}
-      <div className="absolute inset-0 bg-radial from-[#D4AF37]/18 via-[#D4AF37]/5 to-transparent blur-3xl rounded-full pointer-events-none" />
+    <div className="relative w-full h-[400px] sm:h-[450px] flex items-center justify-center select-none overflow-visible">
+      {/* Halo de brilho ambiental dourado 100% difuso (sem bordas retangulares) */}
+      <div className="absolute inset-4 bg-radial from-[#D4AF37]/18 via-[#D4AF37]/4 to-transparent blur-3xl rounded-full pointer-events-none" />
 
-      {/* Contêiner Three.js interativo */}
+      {/* Contêiner Three.js interativo (transparente e sem qualquer borda) */}
       <div
         ref={containerRef}
-        className="w-full h-full cursor-grab active:cursor-grabbing touch-none z-10"
-        title="Arraste para girar a logo em 3D"
+        className="w-full h-full cursor-default z-10"
       />
 
-      {/* Fallback caso WebGL não esteja disponível no dispositivo */}
+      {/* Fallback caso WebGL não esteja disponível */}
       {hasWebGL === false && (
         <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-20">
           <img
             src="/images/logo-yuri-almeida.svg"
             alt="Yuri Almeida Imóveis"
-            className="w-64 max-w-full drop-shadow-2xl animate-pulse"
+            className="w-56 max-w-full drop-shadow-2xl"
           />
         </div>
       )}
-
-      {/* Tag de prestígio discreta na base */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex items-center gap-2 px-3 py-1 bg-[#0B0D12]/70 backdrop-blur-md border border-[#D4AF37]/25 rounded-full text-[10px] uppercase tracking-[0.25em] text-[#D4AF37]">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-ping" />
-        <span>Emblema 3D Interativo</span>
-      </div>
     </div>
   );
 }

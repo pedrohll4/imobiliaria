@@ -92,8 +92,7 @@ export default async function HomePage() {
 
               {/* Emblema 3D Escultural da Marca */}
               <div className="lg:col-span-6 relative flex items-center justify-center">
-                <div className="relative w-full max-w-xl">
-                  <div className="absolute -inset-10 bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none" />
+                <div className="relative w-full max-w-lg flex items-center justify-center">
                   <LuxuryLogo3D />
                 </div>
               </div>
