@@ -229,6 +229,16 @@ export function PropertyContactBox({ property, broker }: PropertyContactBoxProps
           <form action={formAction} className="space-y-4">
             <input type="hidden" name="propertyId" value={property.id} />
 
+            {/* Honeypot invisível contra robôs de spam */}
+            <div className="hidden" aria-hidden="true" style={{ display: "none" }}>
+              <input
+                type="text"
+                name="website_hp"
+                tabIndex={-1}
+                autoComplete="off"
+              />
+            </div>
+
             {state?.error && (
               <div className="p-3 bg-red-50 text-red-700 text-xs border border-red-200 rounded-xs">
                 {state.error}

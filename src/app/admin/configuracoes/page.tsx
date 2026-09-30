@@ -9,13 +9,13 @@ export default async function AdminConfiguracoesPage() {
     <div className="space-y-8 max-w-5xl">
       <div className="pb-6 border-b border-[#0F1115]/10">
         <span className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-semibold">
-          Configuração da Imobiliária
+          Painel de Customização
         </span>
         <h1 className="font-serif text-3xl font-normal text-[#0F1115] mt-1">
-          Identidade Visual, Contatos & WhatsApp
+          Parâmetros, Textos, Frases & Imagens do Portal
         </h1>
         <p className="text-xs text-[#68655F] font-light mt-0.5">
-          Defina o nome oficial da empresa, logotipo, canais de atendimento e CRECI Jurídico para o site.
+          Altere as frases de impacto, textos editoriais, fotos de fundo monumentais, logotipo e canais de contato de todo o site.
         </p>
       </div>
 
@@ -35,6 +35,25 @@ export default async function AdminConfiguracoesPage() {
           state: settings.address.state,
           zipCode: settings.address.zipCode,
           instagram: settings.instagram,
+
+          heroBadge: settings.heroBadge,
+          heroTitle: settings.heroTitle,
+          heroSubtitle: settings.heroSubtitle,
+          heroBgImage: settings.heroBgImage,
+
+          philosophyBadge: settings.philosophyBadge,
+          philosophyTitle: settings.philosophyTitle,
+          philosophyText: settings.philosophyText,
+
+          featuredTitle: settings.featuredTitle,
+          featuredSubtitle: settings.featuredSubtitle,
+
+          aboutTitle: settings.aboutTitle,
+          aboutSubtitle: settings.aboutSubtitle,
+          aboutHistoryTitle: settings.aboutHistoryTitle,
+          aboutHistoryText1: settings.aboutHistoryText1,
+          aboutHistoryText2: settings.aboutHistoryText2,
+          aboutImage: settings.aboutImage,
         }}
       />
     </div>

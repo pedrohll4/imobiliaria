@@ -374,7 +374,29 @@ export async function updateBrokerAvatarInstantAction(
   }
 
   try {
+    if (
+      !photoUrl ||
+      typeof photoUrl !== "string" ||
+      (!photoUrl.startsWith("http://") &&
+        !photoUrl.startsWith("https://") &&
+        !photoUrl.startsWith("/"))
+    ) {
+      return { success: false, error: "URL de fotografia inválida." };
+    }
+
     let brokerIdToUpdate = targetBrokerId;
+
+    if (targetBrokerId) {
+      // Se um ID específico foi informado, apenas ADMIN ou o próprio corretor pode alterar
+      const isSelf = session.brokerId === targetBrokerId;
+      const isAdmin = session.role === "ADMIN";
+      if (!isSelf && !isAdmin) {
+        return {
+          success: false,
+          error: "Você não tem autorização para alterar o perfil de outro consultor.",
+        };
+      }
+    }
 
     if (!brokerIdToUpdate) {
       const broker = await prisma.broker.findUnique({

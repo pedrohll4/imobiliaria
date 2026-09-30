@@ -26,6 +26,27 @@ export async function getSiteSettings() {
           zipCode: setting.zipCode || siteConfig.contact.address.zipCode,
         },
         instagram: setting.instagram || siteConfig.social.instagram,
+
+        // Conteúdo Editorial & Textos da Home
+        heroBadge: setting.heroBadge || "Curadoria Imobiliária Exclusiva",
+        heroTitle: setting.heroTitle || "Encontre o imóvel que combina com a sua próxima história.",
+        heroSubtitle: setting.heroSubtitle || "Residências singulares, coberturas e refúgios contemporâneos selecionados com rigor arquitetônico e discrição inegociável.",
+        heroBgImage: setting.heroBgImage || "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2400&q=85",
+
+        philosophyBadge: setting.philosophyBadge || "Nossa Filosofia",
+        philosophyTitle: setting.philosophyTitle || "A arquitetura como expressão máxima do bem-viver.",
+        philosophyText: setting.philosophyText || "Não comercializamos apenas metros quadrados. Representamos residências que inspiram, acolhem e valorizam o patrimônio das famílias mais exigentes com curadoria cirúrgica.",
+
+        featuredTitle: setting.featuredTitle || "Imóveis Selecionados",
+        featuredSubtitle: setting.featuredSubtitle || "Coleção de residências notáveis que transcendem o convencional pela localização privilegiada e excelência construtiva.",
+
+        // Página Sobre
+        aboutTitle: setting.aboutTitle || "A Arte de Viver com Distinção",
+        aboutSubtitle: setting.aboutSubtitle || "Fundada sob a premissa de que uma residência transcende paredes e metragem: ela é o cenário onde vidas extraordinárias se desenrolam.",
+        aboutHistoryTitle: setting.aboutHistoryTitle || "Curadoria Imobiliária Inspirada na Alta Arquitetura",
+        aboutHistoryText1: setting.aboutHistoryText1 || "Nascemos para atender um público que valoriza design atemporal, materiais nobres e privacidade inegociável. Nossa equipe não atua com volume indiscriminado de imóveis, mas com uma seleção criteriosa de casas com assinaturas prestigiadas, coberturas singulares e propriedades rurais com vocação para o lazer refinado.",
+        aboutHistoryText2: setting.aboutHistoryText2 || "Cada empreendimento inserido em nosso acervo passa por rigorosa auditoria jurídica e técnica, garantindo segurança patrimonial absoluta tanto para quem adquire quanto para quem aliena.",
+        aboutImage: setting.aboutImage || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
       };
     }
   } catch (e) {
@@ -44,5 +65,25 @@ export async function getSiteSettings() {
     creciJ: siteConfig.contact.creciJ,
     address: siteConfig.contact.address,
     instagram: siteConfig.social.instagram,
+
+    // Padrões
+    heroBadge: "Curadoria Imobiliária Exclusiva",
+    heroTitle: "Encontre o imóvel que combina com a sua próxima história.",
+    heroSubtitle: "Residências singulares, coberturas e refúgios contemporâneos selecionados com rigor arquitetônico e discrição inegociável.",
+    heroBgImage: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2400&q=85",
+
+    philosophyBadge: "Nossa Filosofia",
+    philosophyTitle: "A arquitetura como expressão máxima do bem-viver.",
+    philosophyText: "Não comercializamos apenas metros quadrados. Representamos residências que inspiram, acolhem e valorizam o patrimônio das famílias mais exigentes com curadoria cirúrgica.",
+
+    featuredTitle: "Imóveis Selecionados",
+    featuredSubtitle: "Coleção de residências notáveis que transcendem o convencional pela localização privilegiada e excelência construtiva.",
+
+    aboutTitle: "A Arte de Viver com Distinção",
+    aboutSubtitle: "Fundada sob a premissa de que uma residência transcende paredes e metragem: ela é o cenário onde vidas extraordinárias se desenrolam.",
+    aboutHistoryTitle: "Curadoria Imobiliária Inspirada na Alta Arquitetura",
+    aboutHistoryText1: "Nascemos para atender um público que valoriza design atemporal, materiais nobres e privacidade inegociável. Nossa equipe não atua com volume indiscriminado de imóveis, mas com uma seleção criteriosa de casas com assinaturas prestigiadas, coberturas singulares e propriedades rurais com vocação para o lazer refinado.",
+    aboutHistoryText2: "Cada empreendimento inserido em nosso acervo passa por rigorosa auditoria jurídica e técnica, garantindo segurança patrimonial absoluta tanto para quem adquire quanto para quem aliena.",
+    aboutImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
   };
 }

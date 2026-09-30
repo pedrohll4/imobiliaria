@@ -1,20 +1,31 @@
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
 /**
  * Endpoint de Keep-Alive / Healthcheck para o Supabase.
- * Previne a hibernação automática do banco de dados (que no plano gratuito do Supabase
- * ocorre após 7 dias de inatividade total).
- *
- * Configurado no vercel.json para rodar periodicamente via Vercel Cron gratuito.
+ * Previne a hibernação automática do banco de dados no plano gratuito.
+ * Configurado no vercel.json para rodar periodicamente via Vercel Cron.
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Se houver CRON_SECRET configurado nas variáveis de ambiente, valida a chamada
+  const cronSecret = process.env.CRON_SECRET;
+  if (cronSecret) {
+    const authHeader = request.headers.get("authorization");
+    if (authHeader !== `Bearer ${cronSecret}`) {
+      return NextResponse.json(
+        { error: "Acesso não autorizado." },
+        { status: 401 }
+      );
+    }
+  }
+
   try {
     const startTime = Date.now();
-    // Consulta ultraleve para acordar o pooler e confirmar conectividade
-    const userCount = await prisma.user.count();
+    // Consulta ultraleve apenas para testar conectividade e manter o pool ativo
+    await prisma.user.findFirst({ select: { id: true } });
     const durationMs = Date.now() - startTime;
 
     return NextResponse.json({
@@ -22,16 +33,16 @@ export async function GET() {
       database: "connected",
       latencyMs: durationMs,
       timestamp: new Date().toISOString(),
-      userCount,
-      message: "Supabase connection is alive and healthy.",
     });
   } catch (error: any) {
-    console.error("Erro no healthcheck do banco de dados:", error);
+    // Log interno detalhado para auditoria sem expor stacktrace/credenciais para o cliente
+    console.error("Erro interno no healthcheck do banco de dados:", error);
+
     return NextResponse.json(
       {
         status: "error",
         database: "disconnected",
-        error: error?.message || "Falha ao conectar no banco de dados.",
+        message: "Falha ao validar conectividade com o banco de dados.",
         timestamp: new Date().toISOString(),
       },
       { status: 500 }

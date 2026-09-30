@@ -2,9 +2,18 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "imobiliaria-vanguard-luxury-jwt-secret-key-2026-production"
-);
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "FATAL: A variável de ambiente JWT_SECRET não está definida no middleware em produção."
+      );
+    }
+    return new TextEncoder().encode("dev-secret-local-do-not-use-in-production-only-2026");
+  }
+  return new TextEncoder().encode(secret);
+}
 
 const SESSION_COOKIE_NAME = "imob_auth_session";
 
@@ -16,7 +25,7 @@ export async function middleware(request: NextRequest) {
 
   if (token) {
     try {
-      const { payload } = await jwtVerify(token, JWT_SECRET);
+      const { payload } = await jwtVerify(token, getJwtSecret());
       session = payload as { role?: string; userId?: string; impersonatedBy?: string };
     } catch {
       session = null;

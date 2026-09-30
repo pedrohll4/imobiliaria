@@ -34,45 +34,70 @@ export async function updateSiteSettingsAction(
   const zipCode = (formData.get("zipCode") as string)?.trim() || "";
   const instagram = (formData.get("instagram") as string)?.trim() || "";
 
+  // Conteúdo Editorial e Frases da Home
+  const heroBadge = (formData.get("heroBadge") as string)?.trim() || "Curadoria Imobiliária Exclusiva";
+  const heroTitle = (formData.get("heroTitle") as string)?.trim() || "Encontre o imóvel que combina com a sua próxima história.";
+  const heroSubtitle = (formData.get("heroSubtitle") as string)?.trim() || "Residências singulares, coberturas e refúgios contemporâneos selecionados com rigor arquitetônico e discrição inegociável.";
+  const heroBgImage = (formData.get("heroBgImage") as string)?.trim() || null;
+
+  const philosophyBadge = (formData.get("philosophyBadge") as string)?.trim() || "Nossa Filosofia";
+  const philosophyTitle = (formData.get("philosophyTitle") as string)?.trim() || "A arquitetura como expressão máxima do bem-viver.";
+  const philosophyText = (formData.get("philosophyText") as string)?.trim() || "Não comercializamos apenas metros quadrados. Representamos residências que inspiram, acolhem e valorizam o patrimônio das famílias mais exigentes com curadoria cirúrgica.";
+
+  const featuredTitle = (formData.get("featuredTitle") as string)?.trim() || "Imóveis Selecionados";
+  const featuredSubtitle = (formData.get("featuredSubtitle") as string)?.trim() || "Coleção de residências notáveis que transcendem o convencional pela localização privilegiada e excelência construtiva.";
+
+  // Conteúdo da Página Sobre
+  const aboutTitle = (formData.get("aboutTitle") as string)?.trim() || "A Arte de Viver com Distinção";
+  const aboutSubtitle = (formData.get("aboutSubtitle") as string)?.trim() || "Fundada sob a premissa de que uma residência transcende paredes e metragem: ela é o cenário onde vidas extraordinárias se desenrolam.";
+  const aboutHistoryTitle = (formData.get("aboutHistoryTitle") as string)?.trim() || "Curadoria Imobiliária Inspirada na Alta Arquitetura";
+  const aboutHistoryText1 = (formData.get("aboutHistoryText1") as string)?.trim() || "";
+  const aboutHistoryText2 = (formData.get("aboutHistoryText2") as string)?.trim() || "";
+  const aboutImage = (formData.get("aboutImage") as string)?.trim() || null;
+
   if (whatsapp && !whatsapp.startsWith("55")) {
     whatsapp = `55${whatsapp}`;
   }
 
   try {
+    const dataToSave = {
+      name,
+      tagline,
+      logoText,
+      logoUrl,
+      phone,
+      whatsapp,
+      email,
+      creciJ,
+      street,
+      neighborhood,
+      city,
+      state,
+      zipCode,
+      instagram,
+      heroBadge,
+      heroTitle,
+      heroSubtitle,
+      heroBgImage,
+      philosophyBadge,
+      philosophyTitle,
+      philosophyText,
+      featuredTitle,
+      featuredSubtitle,
+      aboutTitle,
+      aboutSubtitle,
+      aboutHistoryTitle,
+      aboutHistoryText1,
+      aboutHistoryText2,
+      aboutImage,
+    };
+
     await prisma.siteSetting.upsert({
       where: { id: "default" },
-      update: {
-        name,
-        tagline,
-        logoText,
-        logoUrl,
-        phone,
-        whatsapp,
-        email,
-        creciJ,
-        street,
-        neighborhood,
-        city,
-        state,
-        zipCode,
-        instagram,
-      },
+      update: dataToSave,
       create: {
         id: "default",
-        name,
-        tagline,
-        logoText,
-        logoUrl,
-        phone,
-        whatsapp,
-        email,
-        creciJ,
-        street,
-        neighborhood,
-        city,
-        state,
-        zipCode,
-        instagram,
+        ...dataToSave,
       },
     });
 
@@ -84,7 +109,7 @@ export async function updateSiteSettingsAction(
 
     return {
       success: true,
-      message: "Configurações da imobiliária salvas e atualizadas com sucesso em todo o site!",
+      message: "Todas as configurações, textos e imagens do site foram atualizados com sucesso!",
     };
   } catch (err: any) {
     console.error("Erro ao atualizar configurações:", err);

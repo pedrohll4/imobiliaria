@@ -35,7 +35,7 @@ export default async function AdminLayout({
     { label: "Gestão Global de Imóveis", href: "/admin/imoveis", icon: Building },
     { label: "Gerenciar Corretores", href: "/admin/corretores", icon: UserCheck },
     { label: "Todos os Leads", href: "/admin/leads", icon: Inbox },
-    { label: "Configurações da Marca", href: "/admin/configuracoes", icon: Sliders },
+    { label: "Textos, Imagens & Marca", href: "/admin/configuracoes", icon: Sliders },
   ];
 
   return (

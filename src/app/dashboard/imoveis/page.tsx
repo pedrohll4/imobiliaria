@@ -11,8 +11,13 @@ export default async function DashboardImoveisPage() {
   const session = await getSession();
   if (!session) redirect("/login");
 
-  const brokerId = session.brokerId;
-  const where = brokerId ? { brokerId } : {};
+  // Isolamento estrito de dados: se for BROKER, nunca exibe carteira de outros corretores
+  const where =
+    session.role === "ADMIN"
+      ? session.brokerId
+        ? { brokerId: session.brokerId }
+        : {}
+      : { brokerId: session.brokerId || "unassigned-security-block" };
 
   const properties = await prisma.property.findMany({
     where,

@@ -51,8 +51,8 @@ export default async function HomePage() {
           {/* Fotografia Arquitetônica Monumental de Fundo com Tratamento Editorial */}
           <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
             <img
-              src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2400&q=85"
-              alt="Residência de alto padrão"
+              src={settings.heroBgImage || "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2400&q=85"}
+              alt={settings.name}
               className="w-full h-full object-cover object-center opacity-30 filter grayscale-[20%] contrast-110 scale-100 transition-transform duration-1000"
             />
             {/* Gradientes sutis para legibilidade impecável */}
@@ -77,17 +77,16 @@ export default async function HomePage() {
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/[0.06] border border-white/[0.12] rounded-xs backdrop-blur-sm">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
                   <span className="text-[11px] uppercase tracking-[0.22em] text-[#F6EEDA] font-medium">
-                    Curadoria Imobiliária Exclusiva
+                    {settings.heroBadge}
                   </span>
                 </div>
 
                 <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-light text-[#FBF9F5] leading-[1.12] tracking-tight">
-                  Encontre o imóvel que combina com a sua{" "}
-                  <span className="italic font-normal text-[#D4AF37]">próxima história.</span>
+                  {settings.heroTitle}
                 </h1>
 
                 <p className="text-base sm:text-lg text-[#C8C5BD] font-light max-w-xl leading-relaxed">
-                  Residências singulares, coberturas e refúgios contemporâneos selecionados com rigor arquitetônico e discrição inegociável.
+                  {settings.heroSubtitle}
                 </p>
               </div>
 
@@ -115,10 +114,10 @@ export default async function HomePage() {
                 Portfólio Privado
               </span>
               <h2 className="font-serif text-3xl sm:text-4xl font-normal text-[#0F1115] tracking-tight">
-                Imóveis Selecionados
+                {settings.featuredTitle}
               </h2>
               <p className="text-sm text-[#6F6C66] font-light max-w-lg">
-                Coleção de residências notáveis que transcendem o convencional pela localização privilegiada e excelência construtiva.
+                {settings.featuredSubtitle}
               </p>
             </div>
 
@@ -190,13 +189,13 @@ export default async function HomePage() {
               
               <div className="lg:col-span-5 space-y-6">
                 <span className="text-xs uppercase tracking-[0.25em] text-[#D4AF37] font-medium">
-                  Nossa Filosofia
+                  {settings.philosophyBadge}
                 </span>
                 <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light text-[#FBF9F5] leading-tight">
-                  A arquitetura como expressão máxima do bem-viver.
+                  {settings.philosophyTitle}
                 </h2>
                 <p className="text-sm sm:text-base text-[#A8A59E] font-light leading-relaxed">
-                  Não comercializamos apenas metros quadrados. Representamos residências que inspiram, acolhem e valorizam o patrimônio das famílias mais exigentes com curadoria cirúrgica.
+                  {settings.philosophyText}
                 </p>
                 <div className="pt-4">
                   <Link

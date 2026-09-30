@@ -10,7 +10,14 @@ export default async function DashboardLeadsPage() {
   if (!session) redirect("/login");
 
   const brokerId = session.brokerId;
-  const where = brokerId ? { brokerId } : {};
+
+  // Isolamento estrito de dados: se for BROKER, nunca pode ver leads de outros
+  const where =
+    session.role === "ADMIN"
+      ? brokerId
+        ? { brokerId }
+        : {}
+      : { brokerId: brokerId || "unassigned-security-block" };
 
   // Busca os leads vinculados ao corretor (ou todos se for administrador)
   const leads = await prisma.lead.findMany({

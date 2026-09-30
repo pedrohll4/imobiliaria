@@ -10,11 +10,41 @@ export interface LeadActionResult {
   error?: string;
 }
 
+// Rate limiting em memória para submissão pública de leads
+const leadSubmissions = new Map<string, number[]>();
+function checkLeadRateLimit(identifier: string): boolean {
+  const now = Date.now();
+  const windowMs = 5 * 60 * 1000; // 5 minutos
+  const maxSubmissions = 3;
+
+  const timestamps = (leadSubmissions.get(identifier) || []).filter(
+    (t) => now - t < windowMs
+  );
+
+  if (timestamps.length >= maxSubmissions) {
+    return true; // Excedeu o limite
+  }
+
+  timestamps.push(now);
+  leadSubmissions.set(identifier, timestamps);
+  return false;
+}
+
 export async function createLeadAction(
   prevState: LeadActionResult | null,
   formData: FormData
 ): Promise<LeadActionResult> {
-  const propertyId = (formData.get("propertyId") as string) || null;
+  // 1. Verificação Honeypot (campo armadilha invisível preenchido por robôs)
+  const honeypot = (formData.get("website_hp") as string)?.trim();
+  if (honeypot) {
+    // Se o bot preencheu o honeypot, finge sucesso mas descarta a gravação
+    return {
+      success: true,
+      message: "Sua solicitação foi recebida com sucesso. Nosso especialista entrará em contato em breve.",
+    };
+  }
+
+  const propertyId = (formData.get("propertyId") as string)?.trim() || null;
   const name = (formData.get("name") as string)?.trim();
   const email = (formData.get("email") as string)?.trim().toLowerCase();
   const phone = (formData.get("phone") as string)?.trim();
@@ -24,6 +54,33 @@ export async function createLeadAction(
     return {
       success: false,
       error: "Por favor, preencha seu nome, e-mail e telefone para contato.",
+    };
+  }
+
+  // Validação de comprimento para evitar ataques de DoS com payloads gigantes
+  if (name.length > 150) {
+    return { success: false, error: "Nome muito longo." };
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email) || email.length > 150) {
+    return { success: false, error: "E-mail inválido." };
+  }
+
+  const digitsOnly = phone.replace(/\D/g, "");
+  if (digitsOnly.length < 8 || digitsOnly.length > 16) {
+    return { success: false, error: "Número de telefone inválido." };
+  }
+
+  if (message.length > 3000) {
+    return { success: false, error: "A mensagem excede o limite máximo permitido." };
+  }
+
+  // 2. Rate limiting por e-mail ou telefone
+  if (checkLeadRateLimit(email) || checkLeadRateLimit(digitsOnly)) {
+    return {
+      success: false,
+      error: "Muitas mensagens enviadas recentemente. Por favor, aguarde alguns minutos antes de tentar novamente.",
     };
   }
 
@@ -70,6 +127,15 @@ export async function createLeadAction(
   }
 }
 
+const ALLOWED_LEAD_STATUSES = [
+  "NOVO",
+  "EM_ATENDIMENTO",
+  "VISITA_AGENDADA",
+  "PROPOSTA",
+  "FECHADO",
+  "PERDIDO",
+];
+
 export async function updateLeadStatusAction(
   leadId: string,
   newStatus: string
@@ -79,14 +145,23 @@ export async function updateLeadStatusAction(
     return { success: false, error: "Não autorizado." };
   }
 
+  if (!ALLOWED_LEAD_STATUSES.includes(newStatus)) {
+    return { success: false, error: "Status inválido." };
+  }
+
   try {
-    // Se for corretor, garantir que o lead pertence a ele
-    if (session.role === "BROKER" && session.brokerId) {
+    // Se for corretor, garantir estritamente que o lead pertence a ele
+    if (session.role === "BROKER") {
+      if (!session.brokerId) {
+        return { success: false, error: "Acesso negado: Perfil de corretor não localizado." };
+      }
+
       const existing = await prisma.lead.findUnique({
         where: { id: leadId },
         select: { brokerId: true },
       });
-      if (existing?.brokerId !== session.brokerId) {
+
+      if (!existing || existing.brokerId !== session.brokerId) {
         return { success: false, error: "Acesso negado a este atendimento." };
       }
     }
@@ -126,13 +201,10 @@ export async function saveLeadCurationAction(
       return { success: false, error: "Lead não encontrado." };
     }
 
-    if (
-      session.role === "BROKER" &&
-      session.brokerId &&
-      existing.brokerId &&
-      existing.brokerId !== session.brokerId
-    ) {
-      return { success: false, error: "Acesso negado a este atendimento." };
+    if (session.role === "BROKER") {
+      if (!session.brokerId || existing.brokerId !== session.brokerId) {
+        return { success: false, error: "Acesso negado a este atendimento." };
+      }
     }
 
     const updatedStatus = existing.status === "NOVO" ? "PROPOSTA" : existing.status;

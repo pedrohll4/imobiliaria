@@ -14,9 +14,16 @@ async function main() {
   await prisma.broker.deleteMany();
   await prisma.user.deleteMany();
 
-  // Senhas hash
-  const adminPassword = await bcrypt.hash("admin123", 10);
-  const brokerPassword = await bcrypt.hash("corretor123", 10);
+  // Senhas hash configuráveis via ambiente (com aviso de segurança para senhas padrão)
+  const adminRaw = process.env.INITIAL_ADMIN_PASSWORD || "admin123";
+  const brokerRaw = process.env.INITIAL_BROKER_PASSWORD || "corretor123";
+
+  if (!process.env.INITIAL_ADMIN_PASSWORD) {
+    console.warn("⚠️ AVISO DE SEGURANÇA: Usando senha padrão para o administrador ('admin123'). Defina INITIAL_ADMIN_PASSWORD no .env!");
+  }
+
+  const adminPassword = await bcrypt.hash(adminRaw, 10);
+  const brokerPassword = await bcrypt.hash(brokerRaw, 10);
 
   // 1. Administrador Geral
   const adminUser = await prisma.user.create({

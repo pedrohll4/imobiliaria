@@ -136,6 +136,28 @@ model SiteSetting {
   state        String   @default("SP")
   zipCode      String   @default("01000-000")
   instagram    String   @default("https://instagram.com")
+
+  // Personalização da Home (Hero, Textos, Frases e Imagens)
+  heroBadge        String?  @default("Curadoria Imobiliária Exclusiva")
+  heroTitle        String?  @default("Encontre o imóvel que combina com a sua próxima história.")
+  heroSubtitle     String?  @default("Residências singulares, coberturas e refúgios contemporâneos selecionados com rigor arquitetônico e discrição inegociável.")
+  heroBgImage      String?  @default("https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2400&q=85")
+  
+  philosophyBadge  String?  @default("Nossa Filosofia")
+  philosophyTitle  String?  @default("A arquitetura como expressão máxima do bem-viver.")
+  philosophyText   String?  @default("Não comercializamos apenas metros quadrados. Representamos residências que inspiram, acolhem e valorizam o patrimônio das famílias mais exigentes com curadoria cirúrgica.")
+
+  featuredTitle    String?  @default("Imóveis Selecionados")
+  featuredSubtitle String?  @default("Coleção de residências notáveis que transcendem o convencional pela localização privilegiada e excelência construtiva.")
+
+  // Personalização da Página Sobre
+  aboutTitle        String?  @default("A Arte de Viver com Distinção")
+  aboutSubtitle     String?  @default("Fundada sob a premissa de que uma residência transcende paredes e metragem: ela é o cenário onde vidas extraordinárias se desenrolam.")
+  aboutHistoryTitle String?  @default("Curadoria Imobiliária Inspirada na Alta Arquitetura")
+  aboutHistoryText1 String?  @default("Nascemos para atender um público que valoriza design atemporal, materiais nobres e privacidade inegociável. Nossa equipe não atua com volume indiscriminado de imóveis, mas com uma seleção criteriosa de casas com assinaturas prestigiadas, coberturas singulares e propriedades rurais com vocação para o lazer refinado.")
+  aboutHistoryText2 String?  @default("Cada empreendimento inserido em nosso acervo passa por rigorosa auditoria jurídica e técnica, garantindo segurança patrimonial absoluta tanto para quem adquire quanto para quem aliena.")
+  aboutImage        String?  @default("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80")
+
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

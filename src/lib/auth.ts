@@ -2,9 +2,20 @@ import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "imobiliaria-vanguard-luxury-jwt-secret-key-2026-production"
-);
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "FATAL: A variável de ambiente JWT_SECRET não está definida. Defina um segredo forte em produção."
+      );
+    }
+    // Em desenvolvimento local apenas, usa fallback com aviso
+    console.warn("⚠️ AVISO: JWT_SECRET não definido no .env. Usando chave temporária de desenvolvimento.");
+    return new TextEncoder().encode("dev-secret-local-do-not-use-in-production-only-2026");
+  }
+  return new TextEncoder().encode(secret);
+}
 
 const SESSION_COOKIE_NAME = "imob_auth_session";
 
@@ -30,12 +41,12 @@ export async function createSessionToken(payload: SessionPayload): Promise<strin
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
-    .sign(JWT_SECRET);
+    .sign(getJwtSecret());
 }
 
 export async function verifySessionToken(token: string): Promise<SessionPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(token, getJwtSecret());
     return payload as unknown as SessionPayload;
   } catch {
     return null;

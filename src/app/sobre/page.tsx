@@ -22,10 +22,10 @@ export default async function SobrePage() {
               Institucional
             </span>
             <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight">
-              A Arte de Viver com Distinção
+              {settings.aboutTitle}
             </h1>
             <p className="text-base sm:text-lg text-[#A5A29A] font-light max-w-2xl mx-auto leading-relaxed">
-              Fundada sob a premissa de que uma residência transcende paredes e metragem: ela é o cenário onde vidas extraordinárias se desenrolam.
+              {settings.aboutSubtitle}
             </p>
           </div>
         </section>
@@ -38,19 +38,23 @@ export default async function SobrePage() {
                 Nossa Trajetória
               </span>
               <h2 className="font-serif text-3xl sm:text-4xl text-[#0F1115] leading-tight">
-                Curadoria Imobiliária Inspirada na Alta Arquitetura
+                {settings.aboutHistoryTitle}
               </h2>
-              <p className="text-sm sm:text-base text-[#55524D] font-light leading-relaxed">
-                Nascemos para atender um público que valoriza design atemporal, materiais nobres e privacidade inegociável. Nossa equipe não atua com volume indiscriminado de imóveis, mas com uma seleção criteriosa de casas com assinaturas prestigiadas, coberturas singulares e propriedades rurais com vocação para o lazer refinado.
-              </p>
-              <p className="text-sm sm:text-base text-[#55524D] font-light leading-relaxed">
-                Cada empreendimento inserido em nosso acervo passa por rigorosa auditoria jurídica e técnica, garantindo segurança patrimonial absoluta tanto para quem adquire quanto para quem aliena.
-              </p>
+              {settings.aboutHistoryText1 && (
+                <p className="text-sm sm:text-base text-[#55524D] font-light leading-relaxed">
+                  {settings.aboutHistoryText1}
+                </p>
+              )}
+              {settings.aboutHistoryText2 && (
+                <p className="text-sm sm:text-base text-[#55524D] font-light leading-relaxed">
+                  {settings.aboutHistoryText2}
+                </p>
+              )}
             </div>
 
             <div className="relative aspect-[4/3] rounded-sm overflow-hidden border border-[#0F1115]/10 shadow-elevation">
               <img
-                src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
+                src={settings.aboutImage || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"}
                 alt="Living de alto padrão"
                 className="w-full h-full object-cover"
               />

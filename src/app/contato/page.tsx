@@ -4,10 +4,8 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { siteConfig } from "@/config/site";
 import { Phone, Mail, MapPin, MessageSquare, ArrowUpRight } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
 import { getSiteSettings } from "@/lib/settings";
+import { ContactForm } from "./ContactForm";
 
 export default async function ContatoPage() {
   const session = await getSession();
@@ -93,27 +91,7 @@ export default async function ContatoPage() {
               </p>
             </div>
 
-            <form className="space-y-4">
-              <Input label="Seu Nome Completo *" placeholder="Ex: Roberto Silveira" required />
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Input label="E-mail *" type="email" placeholder="seu.email@exemplo.com" required />
-                <Input label="Telefone / WhatsApp *" type="tel" placeholder="(11) 98765-4321" required />
-              </div>
-
-              <Textarea
-                label="Como podemos assessorar sua busca patrimonial? *"
-                rows={4}
-                placeholder="Ex: Procuro cobertura no quadrilátero dos Jardins ou Itaim Bibi com 4 suítes e metragem acima de 500m²..."
-                required
-              />
-
-              <div className="pt-2">
-                <Button type="button" variant="primary" className="w-full sm:w-auto px-8 py-3.5 text-xs uppercase tracking-widest">
-                  Encaminhar Mensagem Privativa
-                </Button>
-              </div>
-            </form>
+            <ContactForm />
           </div>
         </div>
       </main>

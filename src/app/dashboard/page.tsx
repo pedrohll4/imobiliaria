@@ -20,10 +20,19 @@ export default async function DashboardOverviewPage() {
   if (!session) redirect("/login");
 
   // Buscar dados associados ao corretor ou geral se for admin
-  const brokerId = session.brokerId;
+  const propertyWhere =
+    session.role === "ADMIN"
+      ? session.brokerId
+        ? { brokerId: session.brokerId }
+        : {}
+      : { brokerId: session.brokerId || "unassigned-security-block" };
 
-  const propertyWhere = brokerId ? { brokerId } : {};
-  const leadWhere = brokerId ? { brokerId } : {};
+  const leadWhere =
+    session.role === "ADMIN"
+      ? session.brokerId
+        ? { brokerId: session.brokerId }
+        : {}
+      : { brokerId: session.brokerId || "unassigned-security-block" };
 
   const [totalProperties, activeProperties, soldProperties, totalViews, leads] =
     await Promise.all([
