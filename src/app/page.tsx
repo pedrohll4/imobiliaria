@@ -5,7 +5,7 @@ import { getSession } from "@/lib/auth";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { HeroSearchBar } from "@/components/home/HeroSearchBar";
-import { ArchitecturalPavilion } from "@/components/3d/ArchitecturalPavilion";
+import { LuxuryLogo3D } from "@/components/3d/LuxuryLogo3D";
 import { PropertyCard } from "@/components/property/PropertyCard";
 import { siteConfig } from "@/config/site";
 import { getSiteSettings } from "@/lib/settings";
@@ -90,11 +90,11 @@ export default async function HomePage() {
                 </p>
               </div>
 
-              {/* Elemento 3D Arquitetônico de Grande Porte */}
+              {/* Emblema 3D Escultural da Marca */}
               <div className="lg:col-span-6 relative flex items-center justify-center">
-                <div className="relative w-full max-w-2xl">
-                  <div className="absolute -inset-8 bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none" />
-                  <ArchitecturalPavilion />
+                <div className="relative w-full max-w-xl">
+                  <div className="absolute -inset-10 bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none" />
+                  <LuxuryLogo3D />
                 </div>
               </div>
             </div>

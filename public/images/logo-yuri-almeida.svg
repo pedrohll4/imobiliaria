@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" width="100%" height="100%">
+  <defs>
+    <linearGradient id="goldGradLg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF1CE" />
+      <stop offset="20%" stop-color="#F1CE7D" />
+      <stop offset="48%" stop-color="#BF8A28" />
+      <stop offset="75%" stop-color="#ECC66B" />
+      <stop offset="100%" stop-color="#8A5E12" />
+    </linearGradient>
+    <linearGradient id="silverGradLg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="70%" stop-color="#ECEAE5" />
+      <stop offset="100%" stop-color="#CBC7BD" />
+    </linearGradient>
+    <filter id="textShadowLg" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3.5" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+
+  <!-- YA Emblem Center -->
+  <g transform="translate(189, 35) scale(0.96)">
+    <!-- Letter A -->
+    <path
+      d="M 148 25 L 216 156 L 194 156 L 176 124 L 108 124 L 88 155 L 65 155 Z M 145 63 L 167 106 L 119 106 Z"
+      fill="url(#goldGradLg)"
+      fill-rule="evenodd"
+      filter="url(#textShadowLg)"
+    />
+    <!-- Letter Y -->
+    <polygon
+      points="6,5 33,6 74,69 116,6 142,6 41,155 18,155 62,88"
+      fill="url(#goldGradLg)"
+      filter="url(#textShadowLg)"
+    />
+  </g>
+
+  <!-- Typography YURI ALMEIDA -->
+  <g filter="url(#textShadowLg)">
+    <text
+      x="300"
+      y="265"
+      text-anchor="middle"
+      font-family="'Cormorant Garamond', 'Cinzel', 'Times New Roman', serif"
+      font-size="48"
+      font-weight="500"
+      letter-spacing="5"
+      fill="url(#silverGradLg)"
+      stroke="#FFFFFF"
+      stroke-width="0.4"
+    >YURI ALMEIDA</text>
+  </g>
+
+  <!-- IMÓVEIS with Lines -->
+  <g filter="url(#textShadowLg)">
+    <!-- Left gold divider line -->
+    <line x1="60" y1="302" x2="195" y2="302" stroke="url(#goldGradLg)" stroke-width="2" stroke-linecap="round" />
+    
+    <!-- Central text IMÓVEIS -->
+    <text
+      x="300"
+      y="310"
+      text-anchor="middle"
+      font-family="'Cinzel', 'Plus Jakarta Sans', sans-serif"
+      font-size="23"
+      font-weight="700"
+      letter-spacing="13"
+      fill="url(#goldGradLg)"
+    >IMÓVEIS</text>
+    
+    <!-- Right gold divider line -->
+    <line x1="405" y1="302" x2="540" y2="302" stroke="url(#goldGradLg)" stroke-width="2" stroke-linecap="round" />
+  </g>
+</svg>

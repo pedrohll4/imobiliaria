@@ -40,13 +40,13 @@ export interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  name: "IMOBILIÁRIA CONCEITO",
+  name: "YURI ALMEIDA IMÓVEIS",
   tagline: "Residências e Empreendimentos de Alto Padrão",
-  shortName: "Conceito",
-  logoText: "IC",
-  logoPlaceholder: "[ IMOBILIÁRIA CONCEITO ]",
-  // Quando possuir a imagem da logo oficial, insira a URL aqui:
-  logoUrl: undefined,
+  shortName: "Yuri Almeida",
+  logoText: "YA",
+  logoPlaceholder: "[ YURI ALMEIDA IMÓVEIS ]",
+  // Logo oficial vetorizada em SVG
+  logoUrl: "/images/logo-ya-emblem.svg",
   
   contact: {
     phone: "(69) 3211-9000",
