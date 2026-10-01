@@ -163,6 +163,23 @@ export function Navbar({ session, settings }: NavbarProps) {
               </Link>
             )}
 
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                if (typeof window !== "undefined") {
+                  window.dispatchEvent(new CustomEvent("trigger-pwa-install"));
+                }
+              }}
+              className="w-full text-center text-xs uppercase tracking-widest bg-gradient-to-r from-[#0B0D12] to-[#1E2330] text-[#D4AF37] border border-[#D4AF37]/40 font-medium py-3 rounded-sm flex items-center justify-center gap-2 shadow-sm"
+            >
+              <img
+                src="/icons/icon-192x192.png"
+                alt="App"
+                className="w-4 h-4 rounded-sm object-cover"
+              />
+              <span>Baixar / Instalar App</span>
+            </button>
+
             <a
               href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Olá! Gostaria de receber uma consultoria privativa sobre os imóveis de alto padrão.")}`}
               target="_blank"

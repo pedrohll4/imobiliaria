@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { ArrowUpRight } from "lucide-react";
+import { PwaInstallButton } from "@/components/pwa/PwaInstallButton";
 
 interface FooterProps {
   settings?: {
@@ -101,6 +102,9 @@ export function Footer({ settings }: FooterProps) {
                 <Link href="/sobre" className="hover:text-[#FBF9F5] transition-colors">
                   Sobre a Imobiliária
                 </Link>
+              </li>
+              <li className="pt-2 border-t border-white/[0.06]">
+                <PwaInstallButton variant="link" />
               </li>
             </ul>
           </div>

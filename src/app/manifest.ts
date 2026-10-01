@@ -1,0 +1,44 @@
+import type { MetadataRoute } from "next";
+import { siteConfig } from "@/config/site";
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: `${siteConfig.name} - Imóveis Exclusivos`,
+    short_name: "YA Imóveis",
+    description: "Curadoria exclusiva de imóveis de alto padrão, coberturas e residências assinadas.",
+    start_url: "/",
+    id: "/",
+    display: "standalone",
+    background_color: "#0E1117",
+    theme_color: "#0E1117",
+    orientation: "portrait-primary",
+    scope: "/",
+    lang: "pt-BR",
+    icons: [
+      {
+        src: "/icons/icon-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "/icons/icon-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "/icons/icon-maskable-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable",
+      },
+      {
+        src: "/icons/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+    categories: ["business", "lifestyle", "real-estate"],
+  };
+}

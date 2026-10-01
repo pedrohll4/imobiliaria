@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
+import { PwaInstallPrompt } from "@/components/pwa/PwaInstallPrompt";
 
 const serifFont = Cormorant_Garamond({
   variable: "--font-serif",
@@ -17,6 +18,13 @@ const sansFont = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+export const viewport: Viewport = {
+  themeColor: "#0E1117",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
   title: {
     default: `${siteConfig.name} | ${siteConfig.tagline}`,
@@ -24,6 +32,21 @@ export const metadata: Metadata = {
   },
   description: "Curadoria exclusiva de imóveis de alto padrão, coberturas, residências assinadas e propriedades singulares.",
   keywords: ["imóveis de luxo", "coberturas", "alto padrão", "imobiliária boutique", "arquitetura contemporânea"],
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "YA Imóveis",
+  },
+  icons: {
+    icon: [
+      { url: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
   openGraph: {
     title: `${siteConfig.name} | ${siteConfig.tagline}`,
     description: "Curadoria de imóveis singulares e residências de alto padrão.",
@@ -44,6 +67,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-sans bg-[#FBF9F5] text-[#0F1115]">
         {children}
+        <PwaInstallPrompt />
       </body>
     </html>
   );
