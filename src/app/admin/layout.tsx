@@ -1,8 +1,9 @@
 import React from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
+import { getSession, setSessionCookie } from "@/lib/auth";
 import { logoutAction } from "@/actions/authActions";
+import { prisma } from "@/lib/prisma";
 import { siteConfig } from "@/config/site";
 import {
   ShieldAlert,
@@ -25,8 +26,30 @@ export default async function AdminLayout({
     redirect("/login");
   }
 
+  // Se o admin estava em modo de impersonação de corretor e voltou para o Admin, restaura o admin automaticamente
+  if (session.impersonatedBy) {
+    const adminUser = await prisma.user.findUnique({
+      where: { id: session.impersonatedBy },
+      include: { brokerProfile: true },
+    });
+
+    if (adminUser && adminUser.role === "ADMIN") {
+      await setSessionCookie({
+        userId: adminUser.id,
+        email: adminUser.email,
+        name: adminUser.name,
+        role: "ADMIN",
+        brokerId: adminUser.brokerProfile?.id,
+      });
+      session.role = "ADMIN";
+      session.name = adminUser.name;
+      session.email = adminUser.email;
+      session.impersonatedBy = undefined;
+    }
+  }
+
   // Estrito para ADMIN
-  if (session.role !== "ADMIN" && !session.impersonatedBy) {
+  if (session.role !== "ADMIN") {
     redirect("/dashboard");
   }
 

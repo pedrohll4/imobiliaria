@@ -12,6 +12,7 @@ import {
   TrendingUp,
   Clock,
   Plus,
+  Shield,
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 
@@ -34,7 +35,7 @@ export default async function DashboardOverviewPage() {
         : {}
       : { brokerId: session.brokerId || "unassigned-security-block" };
 
-  const [totalProperties, activeProperties, soldProperties, totalViews, leads] =
+  const [totalProperties, activeProperties, soldProperties, totalViews, leads, topProperties] =
     await Promise.all([
       prisma.property.count({ where: propertyWhere }),
       prisma.property.count({ where: { ...propertyWhere, status: "PUBLICADO" } }),
@@ -51,8 +52,23 @@ export default async function DashboardOverviewPage() {
         orderBy: { createdAt: "desc" },
         take: 6,
       }),
+      prisma.property.findMany({
+        where: propertyWhere,
+        orderBy: { views: "desc" },
+        take: 5,
+        select: {
+          id: true,
+          title: true,
+          views: true,
+          code: true,
+          neighborhood: true,
+          city: true,
+          status: true,
+        },
+      }),
     ]);
 
+  const maxViews = Math.max(...topProperties.map((p) => p.views), 1);
   const totalLeadsCount = await prisma.lead.count({ where: leadWhere });
   const scheduledVisitsCount = await prisma.lead.count({
     where: { ...leadWhere, status: "VISITA_AGENDADA" },
@@ -93,13 +109,35 @@ export default async function DashboardOverviewPage() {
           </p>
         </div>
 
-        <Link
-          href="/dashboard/imoveis/novo"
-          className="inline-flex items-center gap-2 bg-[#0B0D12] text-[#FBF9F5] text-xs uppercase tracking-widest px-5 py-3 rounded-sm font-semibold hover:bg-[#1E2330] transition-all shadow-sm shrink-0"
-        >
-          <Plus className="w-4 h-4 text-[#D4AF37]" />
-          <span>Cadastrar Novo Imóvel</span>
-        </Link>
+        <div className="flex flex-wrap items-center gap-3 shrink-0">
+          {session.impersonatedBy ? (
+            <a
+              href="/api/auth/exit-impersonation"
+              className="inline-flex items-center gap-2 bg-[#D4AF37] text-[#0B0D12] text-xs uppercase tracking-widest px-4 py-3 rounded-sm font-semibold hover:bg-[#C29F2D] transition-all shadow-sm"
+            >
+              <Shield className="w-4 h-4 text-[#0B0D12]" />
+              <span>Voltar ao Admin Master</span>
+            </a>
+          ) : (
+            session.role === "ADMIN" && (
+              <Link
+                href="/admin"
+                className="inline-flex items-center gap-2 bg-white border border-[#0F1115]/15 text-[#0F1115] text-xs uppercase tracking-widest px-4 py-3 rounded-sm font-semibold hover:bg-[#F4F1EA] transition-all shadow-sm"
+              >
+                <Shield className="w-4 h-4 text-[#D4AF37]" />
+                <span>Painel Admin Geral</span>
+              </Link>
+            )
+          )}
+
+          <Link
+            href="/dashboard/imoveis/novo"
+            className="inline-flex items-center gap-2 bg-[#0B0D12] text-[#FBF9F5] text-xs uppercase tracking-widest px-5 py-3 rounded-sm font-semibold hover:bg-[#1E2330] transition-all shadow-sm shrink-0"
+          >
+            <Plus className="w-4 h-4 text-[#D4AF37]" />
+            <span>Cadastrar Novo Imóvel</span>
+          </Link>
+        </div>
       </div>
 
       {/* Grid de Métricas Principais */}
@@ -195,45 +233,75 @@ export default async function DashboardOverviewPage() {
       {/* Gráficos de Performance e Resumo de Atividades */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        {/* Gráfico Visual Elegante de Desempenho */}
+        {/* Gráfico Visual Elegante de Desempenho Real */}
         <div className="lg:col-span-7 bg-[#FFFFFF] border border-[#0F1115]/[0.08] p-6 sm:p-8 rounded-sm shadow-subtle space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="font-serif text-xl text-[#0F1115]">
-                Interesse e Acessos nos Últimos Dias
+                Imóveis Mais Acessados
               </h2>
               <p className="text-xs text-[#8C8983] font-light">
-                Média semanal estimada de engajamento do portfólio
+                Métricas reais de visualizações e interesse dos clientes
               </p>
             </div>
             <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-wider">
-              Últimos 30 Dias
+              {topProperties.length > 0 ? `${topProperties.length} imóveis no ranking` : "Sem dados"}
             </span>
           </div>
 
-          {/* Gráfico em barras minimalista */}
-          <div className="space-y-4 pt-4">
-            {[
-              { label: "Triplex Bauhaus Jardins", views: 820, percent: 92 },
-              { label: "Villa Pé na Areia Trancoso", views: 640, percent: 74 },
-              { label: "Pavilhão Fazenda Boa Vista", views: 510, percent: 62 },
-              { label: "Apartamento Vista Mar Leblon", views: 480, percent: 55 },
-              { label: "Mansão Alphaville 01", views: 390, percent: 45 },
-            ].map((bar, i) => (
-              <div key={i} className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-medium text-[#0F1115]">{bar.label}</span>
-                  <span className="font-mono text-[#8C8983]">{bar.views} views</span>
-                </div>
-                <div className="w-full h-2 bg-[#F4F1EA] rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-[#0B0D12] to-[#D4AF37] rounded-full transition-all duration-1000"
-                    style={{ width: `${bar.percent}%` }}
-                  />
-                </div>
+          {topProperties.length === 0 ? (
+            <div className="py-12 px-4 text-center space-y-3 bg-[#FBF9F5] rounded-sm border border-[#0F1115]/5">
+              <div className="w-10 h-10 rounded-full bg-[#F4F1EA] flex items-center justify-center mx-auto text-[#D4AF37]">
+                <Building2 className="w-5 h-5" />
               </div>
-            ))}
-          </div>
+              <p className="text-sm text-[#0F1115] font-medium">Nenhum imóvel com acessos registrados ainda</p>
+              <p className="text-xs text-[#8C8983] max-w-sm mx-auto leading-relaxed font-light">
+                Assim que os imóveis deste consultor forem cadastrados e acessados no portal, o ranking de engajamento aparecerá aqui em tempo real.
+              </p>
+              <div className="pt-2">
+                <Link
+                  href="/dashboard/imoveis/novo"
+                  className="inline-flex items-center gap-1.5 text-xs text-[#D4AF37] font-semibold hover:underline"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Cadastrar primeiro imóvel</span>
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4 pt-4">
+              {topProperties.map((prop) => {
+                const percent = prop.views > 0 ? Math.max(Math.round((prop.views / maxViews) * 100), 8) : 0;
+                return (
+                  <div key={prop.id} className="space-y-1.5">
+                    <div className="flex items-center justify-between text-xs gap-3">
+                      <div className="flex items-center gap-2 truncate">
+                        <Link
+                          href={`/imoveis/${prop.id}`}
+                          target="_blank"
+                          className="font-medium text-[#0F1115] hover:text-[#D4AF37] transition-colors truncate"
+                        >
+                          {prop.title}
+                        </Link>
+                        <span className="text-[10px] text-[#8C8983] font-mono shrink-0">
+                          ({prop.code})
+                        </span>
+                      </div>
+                      <span className="font-mono text-[#8C8983] shrink-0">
+                        {prop.views} {prop.views === 1 ? "view" : "views"}
+                      </span>
+                    </div>
+                    <div className="w-full h-2 bg-[#F4F1EA] rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-[#0B0D12] to-[#D4AF37] rounded-full transition-all duration-1000"
+                        style={{ width: `${percent}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Últimos Leads Recebidos */}

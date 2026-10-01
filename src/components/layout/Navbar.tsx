@@ -35,6 +35,21 @@ export function Navbar({ session, settings }: NavbarProps) {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[#FBF9F5]/90 backdrop-blur-md border-b border-[#0F1115]/[0.06] transition-all">
+      {session?.impersonatedBy && (
+        <div className="bg-[#D4AF37] text-[#0B0D12] px-4 py-2 text-xs flex items-center justify-between font-medium">
+          <div className="flex items-center gap-2">
+            <Shield className="w-3.5 h-3.5 text-[#0B0D12]" />
+            <span>Navegando como corretor: <strong>{session.name}</strong></span>
+          </div>
+          <a
+            href="/api/auth/exit-impersonation"
+            className="inline-flex items-center gap-1 font-bold underline hover:text-black uppercase tracking-wider text-[11px]"
+          >
+            <span>Voltar ao Painel Admin</span>
+            <ArrowUpRight className="w-3 h-3" />
+          </a>
+        </div>
+      )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
@@ -80,22 +95,32 @@ export function Navbar({ session, settings }: NavbarProps) {
           <div className="hidden md:flex items-center gap-4">
             {session ? (
               <div className="flex items-center gap-3">
-                <Link
-                  href={session.role === "ADMIN" ? "/admin" : "/dashboard"}
-                  className="inline-flex items-center gap-2 text-xs uppercase tracking-widest bg-[#0B0D12] text-[#FBF9F5] px-4 py-2.5 rounded-sm hover:bg-[#1E2330] transition-colors font-medium"
-                >
-                  {session.role === "ADMIN" ? (
-                    <>
-                      <Shield className="w-3.5 h-3.5 text-[#D4AF37]" />
-                      Painel Admin
-                    </>
-                  ) : (
-                    <>
-                      <User className="w-3.5 h-3.5 text-[#D4AF37]" />
-                      Meu Painel
-                    </>
-                  )}
-                </Link>
+                {session.impersonatedBy ? (
+                  <a
+                    href="/api/auth/exit-impersonation"
+                    className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest bg-[#D4AF37] text-[#0B0D12] font-semibold px-4 py-2.5 rounded-sm hover:bg-[#C29F2D] transition-all shadow-sm"
+                  >
+                    <Shield className="w-3.5 h-3.5" />
+                    <span>Voltar ao Admin</span>
+                  </a>
+                ) : (
+                  <Link
+                    href={session.role === "ADMIN" ? "/admin" : "/dashboard"}
+                    className="inline-flex items-center gap-2 text-xs uppercase tracking-widest bg-[#0B0D12] text-[#FBF9F5] px-4 py-2.5 rounded-sm hover:bg-[#1E2330] transition-colors font-medium"
+                  >
+                    {session.role === "ADMIN" ? (
+                      <>
+                        <Shield className="w-3.5 h-3.5 text-[#D4AF37]" />
+                        Painel Admin
+                      </>
+                    ) : (
+                      <>
+                        <User className="w-3.5 h-3.5 text-[#D4AF37]" />
+                        Meu Painel
+                      </>
+                    )}
+                  </Link>
+                )}
               </div>
             ) : (
               <Link
@@ -146,13 +171,24 @@ export function Navbar({ session, settings }: NavbarProps) {
 
           <div className="pt-2 flex flex-col gap-3">
             {session ? (
-              <Link
-                href={session.role === "ADMIN" ? "/admin" : "/dashboard"}
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center text-xs uppercase tracking-widest bg-[#0B0D12] text-[#FBF9F5] py-3 rounded-sm"
-              >
-                {session.role === "ADMIN" ? "Painel Admin" : "Meu Painel"}
-              </Link>
+              session.impersonatedBy ? (
+                <a
+                  href="/api/auth/exit-impersonation"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full text-center text-xs uppercase tracking-widest bg-[#D4AF37] text-[#0B0D12] font-semibold py-3 rounded-sm flex items-center justify-center gap-2"
+                >
+                  <Shield className="w-4 h-4" />
+                  <span>Voltar ao Painel Admin</span>
+                </a>
+              ) : (
+                <Link
+                  href={session.role === "ADMIN" ? "/admin" : "/dashboard"}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full text-center text-xs uppercase tracking-widest bg-[#0B0D12] text-[#FBF9F5] py-3 rounded-sm"
+                >
+                  {session.role === "ADMIN" ? "Painel Admin" : "Meu Painel"}
+                </Link>
+              )
             ) : (
               <Link
                 href="/login"

@@ -96,15 +96,13 @@ export default async function DashboardLayout({
           {(session.role === "ADMIN" || session.impersonatedBy) && (
             <div className="pt-4 mt-4 border-t border-white/[0.08]">
               {session.impersonatedBy ? (
-                <form action={stopImpersonationAction}>
-                  <button
-                    type="submit"
-                    className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xs text-xs uppercase tracking-wider text-[#D4AF37] hover:bg-white/[0.05] transition-all font-medium text-left"
-                  >
-                    <ArrowLeft className="w-4 h-4 text-[#D4AF37]" />
-                    <span>Voltar ao Admin</span>
-                  </button>
-                </form>
+                <a
+                  href="/api/auth/exit-impersonation"
+                  className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xs text-xs uppercase tracking-wider text-[#D4AF37] hover:bg-white/[0.05] transition-all font-medium text-left"
+                >
+                  <ArrowLeft className="w-4 h-4 text-[#D4AF37]" />
+                  <span>Voltar ao Admin Master</span>
+                </a>
               ) : (
                 <Link
                   href="/admin"
@@ -143,8 +141,8 @@ export default async function DashboardLayout({
 
       {/* Conteúdo Dinâmico da Página */}
       <div className="flex-1 flex flex-col min-w-0">
-        {session.impersonatedBy && (
-          <div className="bg-[#D4AF37] text-[#0B0D12] px-6 py-3 flex flex-wrap items-center justify-between gap-4 shadow-subtle border-b border-[#0B0D12]/10 sticky top-0 z-40">
+        {session.impersonatedBy ? (
+          <div className="bg-[#D4AF37] text-[#0B0D12] px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-md border-b border-[#0B0D12]/10 sticky top-0 z-40">
             <div className="flex items-center gap-2.5">
               <ShieldAlert className="w-5 h-5 text-[#0B0D12] shrink-0" />
               <div className="text-xs">
@@ -154,16 +152,30 @@ export default async function DashboardLayout({
                 </span>
               </div>
             </div>
-            <form action={stopImpersonationAction}>
-              <button
-                type="submit"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-[#0B0D12] text-[#FBF9F5] text-xs uppercase tracking-widest font-semibold rounded-xs hover:bg-[#1E2330] transition-all shadow-sm"
-              >
-                <ArrowLeft className="w-4 h-4 text-[#D4AF37]" />
-                <span>Voltar ao Painel Master (Admin)</span>
-              </button>
-            </form>
+            <a
+              href="/api/auth/exit-impersonation"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#0B0D12] text-[#FBF9F5] text-xs uppercase tracking-widest font-semibold rounded-xs hover:bg-[#1E2330] transition-all shadow-sm"
+            >
+              <ArrowLeft className="w-4 h-4 text-[#D4AF37]" />
+              <span>Voltar ao Painel Master (Admin)</span>
+            </a>
           </div>
+        ) : (
+          session.role === "ADMIN" && (
+            <div className="bg-[#0B0D12] text-[#FBF9F5] px-6 py-2.5 flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.08] sticky top-0 z-40">
+              <div className="flex items-center gap-2 text-xs">
+                <Shield className="w-4 h-4 text-[#D4AF37]" />
+                <span className="text-[#A5A29A]">Modo Administrador: visualizando painel individual.</span>
+              </div>
+              <Link
+                href="/admin"
+                className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#D4AF37] text-[#0B0D12] text-[11px] uppercase tracking-wider font-semibold rounded-xs hover:bg-[#C29F2D] transition-all shadow-xs"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Voltar ao Painel Geral</span>
+              </Link>
+            </div>
+          )
         )}
 
         <main className="flex-1 p-6 sm:p-10 max-w-7xl w-full mx-auto">
