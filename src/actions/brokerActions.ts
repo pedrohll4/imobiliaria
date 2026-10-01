@@ -460,13 +460,15 @@ export async function impersonateBrokerAction(brokerId: string) {
     throw new Error("Corretor ou usuário correspondente não encontrado.");
   }
 
+  const isSelf = broker.user.id === originalAdminId;
+
   await setSessionCookie({
     userId: broker.user.id,
     email: broker.user.email,
     name: broker.name,
-    role: "BROKER",
+    role: isSelf ? "ADMIN" : "BROKER",
     brokerId: broker.id,
-    impersonatedBy: originalAdminId,
+    impersonatedBy: isSelf ? undefined : originalAdminId,
   });
 
   redirect("/dashboard");
@@ -476,27 +478,5 @@ export async function impersonateBrokerAction(brokerId: string) {
  * Encerra a impersonação e retorna a sessão para o Administrador original
  */
 export async function stopImpersonationAction() {
-  const session = await getSession();
-  if (!session || !session.impersonatedBy) {
-    redirect("/dashboard");
-  }
-
-  const adminUser = await prisma.user.findUnique({
-    where: { id: session.impersonatedBy },
-    include: { brokerProfile: true },
-  });
-
-  if (!adminUser || adminUser.role !== "ADMIN") {
-    redirect("/login");
-  }
-
-  await setSessionCookie({
-    userId: adminUser.id,
-    email: adminUser.email,
-    name: adminUser.name,
-    role: "ADMIN",
-    brokerId: adminUser.brokerProfile?.id,
-  });
-
-  redirect("/admin/corretores");
+  redirect("/api/auth/exit-impersonation");
 }

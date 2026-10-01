@@ -109,35 +109,13 @@ export default async function DashboardOverviewPage() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 shrink-0">
-          {session.impersonatedBy ? (
-            <a
-              href="/api/auth/exit-impersonation"
-              className="inline-flex items-center gap-2 bg-[#D4AF37] text-[#0B0D12] text-xs uppercase tracking-widest px-4 py-3 rounded-sm font-semibold hover:bg-[#C29F2D] transition-all shadow-sm"
-            >
-              <Shield className="w-4 h-4 text-[#0B0D12]" />
-              <span>Voltar ao Admin Master</span>
-            </a>
-          ) : (
-            session.role === "ADMIN" && (
-              <Link
-                href="/admin"
-                className="inline-flex items-center gap-2 bg-white border border-[#0F1115]/15 text-[#0F1115] text-xs uppercase tracking-widest px-4 py-3 rounded-sm font-semibold hover:bg-[#F4F1EA] transition-all shadow-sm"
-              >
-                <Shield className="w-4 h-4 text-[#D4AF37]" />
-                <span>Painel Admin Geral</span>
-              </Link>
-            )
-          )}
-
-          <Link
-            href="/dashboard/imoveis/novo"
-            className="inline-flex items-center gap-2 bg-[#0B0D12] text-[#FBF9F5] text-xs uppercase tracking-widest px-5 py-3 rounded-sm font-semibold hover:bg-[#1E2330] transition-all shadow-sm shrink-0"
-          >
-            <Plus className="w-4 h-4 text-[#D4AF37]" />
-            <span>Cadastrar Novo Imóvel</span>
-          </Link>
-        </div>
+        <Link
+          href="/dashboard/imoveis/novo"
+          className="inline-flex items-center gap-2 bg-[#0B0D12] text-[#FBF9F5] text-xs uppercase tracking-widest px-5 py-3 rounded-sm font-semibold hover:bg-[#1E2330] transition-all shadow-sm shrink-0"
+        >
+          <Plus className="w-4 h-4 text-[#D4AF37]" />
+          <span>Cadastrar Novo Imóvel</span>
+        </Link>
       </div>
 
       {/* Grid de Métricas Principais */}
