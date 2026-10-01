@@ -2,6 +2,115 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import cinzelFontData from "./cinzelFont.json";
+
+interface GlyphData {
+  ha: number;
+  x_min: number;
+  x_max: number;
+  o: string;
+}
+
+interface FontDataStructure {
+  resolution: number;
+  glyphs: Record<string, GlyphData>;
+}
+
+// Converte texto em THREE.Shape[] vetoriais precisos com espaçamento configurável (tracking)
+function createTextShapes(
+  fontData: FontDataStructure,
+  text: string,
+  size: number,
+  tracking = 0
+) {
+  const chars = Array.from(text);
+  const scale = size / fontData.resolution;
+  const shapes: THREE.Shape[] = [];
+  let offsetX = 0;
+
+  for (let i = 0; i < chars.length; i++) {
+    const char = chars[i];
+    const glyph = fontData.glyphs[char] || fontData.glyphs["?"];
+    if (!glyph) {
+      if (char === " ") {
+        offsetX += 300 * scale + tracking;
+      }
+      continue;
+    }
+
+    if (glyph.o && glyph.o.trim().length > 0) {
+      const outline = glyph.o.trim().split(/\s+/);
+      const shapePath = new THREE.ShapePath();
+      let x = 0;
+      let y = 0;
+      let cpx = 0;
+      let cpy = 0;
+      let cpx1 = 0;
+      let cpy1 = 0;
+      let cpx2 = 0;
+      let cpy2 = 0;
+
+      for (let j = 0; j < outline.length; ) {
+        const action = outline[j++];
+        switch (action) {
+          case "m":
+            x = parseFloat(outline[j++]) * scale + offsetX;
+            y = parseFloat(outline[j++]) * scale;
+            shapePath.moveTo(x, y);
+            break;
+          case "l":
+            x = parseFloat(outline[j++]) * scale + offsetX;
+            y = parseFloat(outline[j++]) * scale;
+            shapePath.lineTo(x, y);
+            break;
+          case "q":
+            cpx = parseFloat(outline[j++]) * scale + offsetX;
+            cpy = parseFloat(outline[j++]) * scale;
+            cpx1 = parseFloat(outline[j++]) * scale + offsetX;
+            cpy1 = parseFloat(outline[j++]) * scale;
+            shapePath.quadraticCurveTo(cpx1, cpy1, cpx, cpy);
+            break;
+          case "b":
+            cpx = parseFloat(outline[j++]) * scale + offsetX;
+            cpy = parseFloat(outline[j++]) * scale;
+            cpx1 = parseFloat(outline[j++]) * scale + offsetX;
+            cpy1 = parseFloat(outline[j++]) * scale;
+            cpx2 = parseFloat(outline[j++]) * scale + offsetX;
+            cpy2 = parseFloat(outline[j++]) * scale;
+            shapePath.bezierCurveTo(cpx1, cpy1, cpx2, cpy2, cpx, cpy);
+            break;
+        }
+      }
+      shapes.push(...shapePath.toShapes());
+    }
+
+    offsetX += (glyph.ha !== undefined ? glyph.ha * scale : 300 * scale) + tracking;
+  }
+
+  return { shapes, width: offsetX - tracking };
+}
+
+// Cria a geometria de barra divisora 3D estilizada com pontas arredondadas e chanfro suave
+function createDividerGeometry(width: number, height: number, depth: number) {
+  const shape = new THREE.Shape();
+  const hw = width / 2;
+  const hh = height / 2;
+  const r = hh; // extremidades curvas em cápsula
+  shape.moveTo(-hw + r, -hh);
+  shape.lineTo(hw - r, -hh);
+  shape.absarc(hw - r, 0, r, -Math.PI / 2, Math.PI / 2, false);
+  shape.lineTo(-hw + r, hh);
+  shape.absarc(-hw + r, 0, r, Math.PI / 2, (3 * Math.PI) / 2, false);
+
+  return new THREE.ExtrudeGeometry(shape, {
+    depth: depth,
+    bevelEnabled: true,
+    bevelThickness: 0.012,
+    bevelSize: 0.008,
+    bevelSegments: 2,
+    curveSegments: 8,
+  });
+}
 
 export function LuxuryLogo3D() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -27,14 +136,13 @@ export function LuxuryLogo3D() {
     const container = containerRef.current;
     if (!container) return;
 
-    let width = container.clientWidth || 500;
-    let height = container.clientHeight || 450;
+    let width = container.clientWidth || 520;
+    let height = container.clientHeight || 480;
 
-    // 2. Cena & Câmera (Com recuo amplo para NUNCA encostar ou cortar nas bordas)
+    // 2. Cena & Câmera com amplo enquadramento e perspectiva nobre
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(34, width / height, 0.1, 100);
-    // Câmera posicionada a 9.6 unidades garante muito respiro e zero clipping
-    camera.position.set(0, 0, 9.6);
+    const camera = new THREE.PerspectiveCamera(35, width / height, 0.1, 100);
+    camera.position.set(0, 0, 10.2);
     camera.lookAt(0, 0, 0);
 
     // 3. Renderer com Fundo 100% Transparente e Antialias Suave
@@ -48,11 +156,11 @@ export function LuxuryLogo3D() {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
-    renderer.setClearColor(0x000000, 0); // 100% transparente, sem qualquer quadrado ou caixa
+    renderer.toneMappingExposure = 1.25;
+    renderer.setClearColor(0x000000, 0);
     container.appendChild(renderer.domElement);
 
-    // 4. MAPA DE ILUMINAÇÃO DE AMBIENTE (IBL de Estúdio de Joalheria)
+    // 4. MAPA DE ILUMINAÇÃO DE AMBIENTE (Estúdio de Alta Joalheria Dourada)
     const pmremGenerator = new THREE.PMREMGenerator(renderer);
     pmremGenerator.compileEquirectangularShader();
 
@@ -63,21 +171,19 @@ export function LuxuryLogo3D() {
     envCanvas.height = 256;
     const envCtx = envCanvas.getContext("2d")!;
 
-    // Gradiente de Estúdio Dourado Suave
     const envGrad = envCtx.createLinearGradient(0, 0, 512, 256);
-    envGrad.addColorStop(0.0, "#0e1117");
-    envGrad.addColorStop(0.3, "#2d2315");
-    envGrad.addColorStop(0.5, "#fff2d6"); // Reflexo de luz alta
-    envGrad.addColorStop(0.56, "#d4af37"); // Tom rico ouro
-    envGrad.addColorStop(0.78, "#1f1a14");
+    envGrad.addColorStop(0.0, "#0a0c10");
+    envGrad.addColorStop(0.25, "#2a1f12");
+    envGrad.addColorStop(0.48, "#fff5dd"); // Brilho especular dourado alto
+    envGrad.addColorStop(0.55, "#d4af37"); // Tom rico ouro 18k
+    envGrad.addColorStop(0.75, "#1e1811");
     envGrad.addColorStop(1.0, "#080a0e");
     envCtx.fillStyle = envGrad;
     envCtx.fillRect(0, 0, 512, 256);
 
-    // Pontos de reflexo suave
-    envCtx.fillStyle = "rgba(255, 248, 230, 0.9)";
+    envCtx.fillStyle = "rgba(255, 250, 235, 0.92)";
     envCtx.beginPath();
-    envCtx.arc(256, 80, 60, 0, Math.PI * 2);
+    envCtx.arc(256, 75, 65, 0, Math.PI * 2);
     envCtx.fill();
 
     const envTexture = new THREE.CanvasTexture(envCanvas);
@@ -90,18 +196,61 @@ export function LuxuryLogo3D() {
     const generatedEnvMap = pmremGenerator.fromScene(envScene).texture;
     scene.environment = generatedEnvMap;
 
-    // 5. GRUPO PRINCIPAL DO LOGO 3D (Escala equilibrada, sem encostar nas bordas)
+    // 5. GRUPO PRINCIPAL DO LOGO 3D COMPLETO
     const logoGroup = new THREE.Group();
-    // Escala calibrada para ficar perfeitamente enquadrado com margem de segurança
-    logoGroup.scale.set(0.72, 0.72, 0.72);
+    // Escala calibrada com margem de segurança perfeita para nunca cortar em resoluções mobile/desktop
+    logoGroup.scale.set(0.66, 0.66, 0.66);
     scene.add(logoGroup);
 
-    // Subgrupo flutuante para o movimento sutil
+    // Subgrupo flutuante para a movimentação física suave
     const floatingGroup = new THREE.Group();
     logoGroup.add(floatingGroup);
 
+    // Grupo de composição interna com centro de massa nivelado em (0,0,0)
+    const compositionGroup = new THREE.Group();
+    floatingGroup.add(compositionGroup);
+
     // ==========================================
-    // GEOMETRIA VETORIAL PRECISA DO MONOGRAMA YA
+    // MATERIAIS LUXUOSOS ULTRA REFINADOS
+    // ==========================================
+    // Ouro 18K com alto brilho, verniz e reflexo especular vívido
+    const goldMaterialPrimary = new THREE.MeshPhysicalMaterial({
+      color: 0xebc46a,
+      emissive: 0x221603,
+      metalness: 0.95,
+      roughness: 0.15,
+      clearcoat: 0.65,
+      clearcoatRoughness: 0.1,
+      reflectivity: 1.0,
+      envMapIntensity: 2.7,
+    });
+
+    // Ouro 18K levemente contrastado para relevo escultural
+    const goldMaterialSecondary = new THREE.MeshPhysicalMaterial({
+      color: 0xdfb455,
+      emissive: 0x1d1302,
+      metalness: 0.93,
+      roughness: 0.17,
+      clearcoat: 0.55,
+      clearcoatRoughness: 0.12,
+      reflectivity: 0.95,
+      envMapIntensity: 2.5,
+    });
+
+    // Platina / Ouro Branco para "YURI ALMEIDA" (máxima legibilidade + elegância nobre)
+    const platinumMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0xfcfcfd,
+      emissive: 0x121215,
+      metalness: 0.82,
+      roughness: 0.16,
+      clearcoat: 0.75,
+      clearcoatRoughness: 0.08,
+      reflectivity: 1.0,
+      envMapIntensity: 2.4,
+    });
+
+    // ==========================================
+    // 1. GEOMETRIA 3D DO EMBLEMA MONOGRAMA YA
     // ==========================================
     const yPtsRaw = [
       [6, 5],
@@ -145,7 +294,7 @@ export function LuxuryLogo3D() {
     }
     shapeY.closePath();
 
-    // Shape da letra A com furo interno
+    // Shape da letra A com vazamento interno
     const shapeA = new THREE.Shape();
     const ptsA = aOuterRaw.map(toThree);
     shapeA.moveTo(ptsA[0].x, ptsA[0].y);
@@ -163,72 +312,118 @@ export function LuxuryLogo3D() {
     holeA.closePath();
     shapeA.holes.push(holeA);
 
-    // Extrusão lapidada de alta definição
-    const extrudeSettings = {
+    // Extrusão facetada de alta definição
+    const yaExtrudeSettings = {
       depth: 0.35,
       bevelEnabled: true,
       bevelThickness: 0.075,
       bevelSize: 0.045,
-      bevelSegments: 5,
-      curveSegments: 16,
+      bevelSegments: 4,
+      curveSegments: 14,
     };
 
-    const geoY = new THREE.ExtrudeGeometry(shapeY, extrudeSettings);
-    const geoA = new THREE.ExtrudeGeometry(shapeA, extrudeSettings);
-
+    const geoY = new THREE.ExtrudeGeometry(shapeY, yaExtrudeSettings);
+    const geoA = new THREE.ExtrudeGeometry(shapeA, yaExtrudeSettings);
     geoY.center();
     geoA.center();
 
-    // MATERIAIS DE OURO 18K ULTRA REFINADOS
-    const goldMaterialY = new THREE.MeshPhysicalMaterial({
-      color: 0xebc46a,
-      emissive: 0x221603,
-      metalness: 0.95,
-      roughness: 0.15,
-      clearcoat: 0.6,
-      clearcoatRoughness: 0.1,
-      reflectivity: 1.0,
-      envMapIntensity: 2.6,
-    });
-
-    const goldMaterialA = new THREE.MeshPhysicalMaterial({
-      color: 0xdfb455,
-      emissive: 0x1d1302,
-      metalness: 0.93,
-      roughness: 0.18,
-      clearcoat: 0.5,
-      clearcoatRoughness: 0.12,
-      reflectivity: 0.95,
-      envMapIntensity: 2.4,
-    });
-
-    const meshY = new THREE.Mesh(geoY, goldMaterialY);
-    const meshA = new THREE.Mesh(geoA, goldMaterialA);
-
+    const meshY = new THREE.Mesh(geoY, goldMaterialPrimary);
+    const meshA = new THREE.Mesh(geoA, goldMaterialSecondary);
     meshY.castShadow = true;
     meshY.receiveShadow = true;
     meshA.castShadow = true;
     meshA.receiveShadow = true;
 
-    // Posicionamento harmônico (Y ligeiramente à frente, criando profundidade escultural)
+    // Y ligeiramente à frente de A para profundidade escultural
     meshY.position.set(-0.82, 0.05, 0.06);
     meshA.position.set(0.72, -0.05, -0.06);
 
-    floatingGroup.add(meshY);
-    floatingGroup.add(meshA);
+    const yaGroup = new THREE.Group();
+    yaGroup.add(meshY);
+    yaGroup.add(meshA);
+    yaGroup.scale.set(0.84, 0.84, 0.84);
+    yaGroup.position.set(0, 1.05, 0);
+    compositionGroup.add(yaGroup);
 
     // ==========================================
-    // PARTÍCULAS DOURADAS ULTRA DISCRETAS (SEM BORDA)
+    // 2. GEOMETRIA 3D DA TIPOGRAFIA "YURI ALMEIDA"
     // ==========================================
-    const particleCount = 30;
+    const fontData = cinzelFontData as unknown as FontDataStructure;
+    const yuriData = createTextShapes(fontData, "YURI ALMEIDA", 0.51, 0.055);
+    const geoYuri = new THREE.ExtrudeGeometry(yuriData.shapes, {
+      depth: 0.12,
+      bevelEnabled: true,
+      bevelThickness: 0.024,
+      bevelSize: 0.015,
+      bevelSegments: 2,
+      curveSegments: 3,
+    });
+    geoYuri.center();
+    const meshYuri = new THREE.Mesh(geoYuri, platinumMaterial);
+    meshYuri.castShadow = true;
+    meshYuri.receiveShadow = true;
+    meshYuri.position.set(0, -1.25, 0.02);
+    compositionGroup.add(meshYuri);
+
+    // ==========================================
+    // 3. GEOMETRIA 3D DE "IMÓVEIS"
+    // ==========================================
+    const imoveisData = createTextShapes(fontData, "IMÓVEIS", 0.23, 0.11);
+    const geoImoveis = new THREE.ExtrudeGeometry(imoveisData.shapes, {
+      depth: 0.10,
+      bevelEnabled: true,
+      bevelThickness: 0.02,
+      bevelSize: 0.012,
+      bevelSegments: 2,
+      curveSegments: 3,
+    });
+    geoImoveis.center();
+    const meshImoveis = new THREE.Mesh(geoImoveis, goldMaterialPrimary);
+    meshImoveis.castShadow = true;
+    meshImoveis.receiveShadow = true;
+    meshImoveis.position.set(0, -1.95, 0.02);
+    compositionGroup.add(meshImoveis);
+
+    // ==========================================
+    // 4. LINHAS DIVISÓRIAS DOURADAS 3D LATERAIS
+    // ==========================================
+    const lineHeight = 0.024;
+    const lineDepth = 0.06;
+    const lineWidth = 1.35;
+
+    const geoLineLeft = createDividerGeometry(lineWidth, lineHeight, lineDepth);
+    geoLineLeft.center();
+    const meshLineLeft = new THREE.Mesh(geoLineLeft, goldMaterialPrimary);
+    meshLineLeft.castShadow = true;
+    meshLineLeft.receiveShadow = true;
+    meshLineLeft.position.set(-2.05, -1.95, 0.02);
+    compositionGroup.add(meshLineLeft);
+
+    const geoLineRight = createDividerGeometry(lineWidth, lineHeight, lineDepth);
+    geoLineRight.center();
+    const meshLineRight = new THREE.Mesh(geoLineRight, goldMaterialPrimary);
+    meshLineRight.castShadow = true;
+    meshLineRight.receiveShadow = true;
+    meshLineRight.position.set(2.05, -1.95, 0.02);
+    compositionGroup.add(meshLineRight);
+
+    // ==========================================
+    // CENTRALIZAÇÃO PERFEITA DO CENTRO DE MASSA
+    // ==========================================
+    // O centro de massa geométrico fica perfeitamente alinhado em Y = 0
+    compositionGroup.position.set(0, -0.44, 0);
+
+    // ==========================================
+    // PARTÍCULAS DOURADAS ULTRA DISCRETAS NO ESPAÇO
+    // ==========================================
+    const particleCount = 35;
     const particleGeo = new THREE.BufferGeometry();
     const particlePositions = new Float32Array(particleCount * 3);
 
     for (let i = 0; i < particleCount; i++) {
-      // Concentradas perto do logo, sem espalhar até os cantos do canvas
-      particlePositions[i * 3 + 0] = (Math.random() - 0.5) * 4.2;
-      particlePositions[i * 3 + 1] = (Math.random() - 0.5) * 3.5;
-      particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 3.0;
+      particlePositions[i * 3 + 0] = (Math.random() - 0.5) * 5.5;
+      particlePositions[i * 3 + 1] = (Math.random() - 0.5) * 5.0;
+      particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 3.5;
     }
 
     particleGeo.setAttribute(
@@ -241,7 +436,7 @@ export function LuxuryLogo3D() {
     sparkCanvas.height = 64;
     const sCtx = sparkCanvas.getContext("2d")!;
     const radGrad = sCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
-    radGrad.addColorStop(0, "rgba(255, 245, 210, 1)");
+    radGrad.addColorStop(0, "rgba(255, 248, 220, 1)");
     radGrad.addColorStop(0.3, "rgba(224, 185, 91, 0.7)");
     radGrad.addColorStop(0.7, "rgba(190, 138, 40, 0.15)");
     radGrad.addColorStop(1, "rgba(0, 0, 0, 0)");
@@ -250,7 +445,7 @@ export function LuxuryLogo3D() {
     const sparkTexture = new THREE.CanvasTexture(sparkCanvas);
 
     const particleMat = new THREE.PointsMaterial({
-      size: 0.09,
+      size: 0.08,
       map: sparkTexture,
       transparent: true,
       opacity: 0.65,
@@ -263,28 +458,33 @@ export function LuxuryLogo3D() {
     // ==========================================
     // ILUMINAÇÃO DE ESTÚDIO FRONT-FACING
     // ==========================================
-    const ambientLight = new THREE.AmbientLight(0xfff5e6, 0.9);
+    const ambientLight = new THREE.AmbientLight(0xfff5e6, 0.95);
     scene.add(ambientLight);
 
     // Luz principal frontal/superior destacando a leitura e os chanfros dourados
-    const keyLight = new THREE.DirectionalLight(0xffeed1, 3.4);
+    const keyLight = new THREE.DirectionalLight(0xffeed1, 3.5);
     keyLight.position.set(3, 4, 7);
     scene.add(keyLight);
 
     // Rim light para destacar o contorno lateral 3D
-    const rimLight = new THREE.DirectionalLight(0xa5c4ff, 1.8);
+    const rimLight = new THREE.DirectionalLight(0xa5c4ff, 1.6);
     rimLight.position.set(-4, 2, -3);
     scene.add(rimLight);
 
-    // Luz frontal suave iluminando as faces
-    const frontFill = new THREE.DirectionalLight(0xfff7e8, 1.2);
+    // Luz frontal suave iluminando as faces e a tipografia
+    const frontFill = new THREE.DirectionalLight(0xfff7e8, 1.3);
     frontFill.position.set(0, -1, 6);
     scene.add(frontFill);
 
-    // Luz de cintilação que percorre suavemente as arestas de ouro
-    const glintLight = new THREE.PointLight(0xffffff, 2.8, 4.5);
-    glintLight.position.set(0, 0, 2.6);
-    scene.add(glintLight);
+    // Glint Light 1: Cintilação suave nos chanfros do emblema YA
+    const glintLightEmblem = new THREE.PointLight(0xffffff, 2.6, 5.0);
+    glintLightEmblem.position.set(0, 1.05, 2.5);
+    scene.add(glintLightEmblem);
+
+    // Glint Light 2: Cintilação suave percorrendo a tipografia inferior
+    const glintLightText = new THREE.PointLight(0xfff4d6, 2.2, 5.0);
+    glintLightText.position.set(0, -1.5, 2.5);
+    scene.add(glintLightText);
 
     // ==========================================
     // PARALAXE SUAVE DE MOUSE (SEM GIRAR 360)
@@ -298,7 +498,6 @@ export function LuxuryLogo3D() {
       const rect = container.getBoundingClientRect();
       const normX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       const normY = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-      // Limitar a influência sutil para nunca girar demais
       mouseHoverX = Math.max(-1, Math.min(1, normX));
       mouseHoverY = Math.max(-1, Math.min(1, normY));
     };
@@ -322,47 +521,51 @@ export function LuxuryLogo3D() {
     window.addEventListener("resize", handleResize);
 
     // ÂNGULO BASE ELEGANTE (Frontal com leve perspectiva 3D para valorizar o relevo)
-    const baseRotationY = -0.1; // ~ -5.7 graus: dá leitura perfeita do logo e mostra o chanfro 3D
-    const baseRotationX = 0.04; // ~ 2.3 graus: suave perspectiva frontal
+    const baseRotationY = -0.09;
+    const baseRotationX = 0.035;
 
     // ==========================================
     // LOOP DE ANIMAÇÃO ELEGANTE (SEM ROTAÇÃO 360)
     // ==========================================
-    const clock = new THREE.Clock();
+    const startTime = performance.now();
     let animationFrameId: number;
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
 
-      const elapsedTime = clock.getElapsedTime();
+      const elapsedTime = (performance.now() - startTime) * 0.001;
 
-      // Interpolação suave do mouse (inclinação sutil que acompanha o cursor sem nunca rodar)
-      const targetTiltY = mouseHoverX * 0.12; // Máximo de ±7 graus
-      const targetTiltX = -mouseHoverY * 0.08; // Máximo de ±4.5 graus
+      // Interpolação suave do mouse
+      const targetTiltY = mouseHoverX * 0.11; // Máximo ±6.3 graus
+      const targetTiltX = -mouseHoverY * 0.07; // Máximo ±4 graus
 
       currentTiltY += (targetTiltY - currentTiltY) * 0.05;
       currentTiltX += (targetTiltX - currentTiltX) * 0.05;
 
       // Movimento 1: Flutuação Harmônica suave no ar (Zero-Gravity Breathing)
-      const floatY = Math.sin(elapsedTime * 1.3) * 0.08;
+      const floatY = Math.sin(elapsedTime * 1.25) * 0.07;
       floatingGroup.position.y = floatY;
 
-      // Movimento 2: Micro-respiração angular sutil (NÃO RODA 360, apenas balanço nobre)
-      const organicWobbleY = Math.sin(elapsedTime * 0.7) * 0.035;
-      const organicWobbleX = Math.cos(elapsedTime * 0.9) * 0.02;
-      const organicWobbleZ = Math.sin(elapsedTime * 0.6) * 0.015;
+      // Movimento 2: Micro-respiração angular sutil (Nobreza escultural viva)
+      const organicWobbleY = Math.sin(elapsedTime * 0.7) * 0.028;
+      const organicWobbleX = Math.cos(elapsedTime * 0.85) * 0.018;
+      const organicWobbleZ = Math.sin(elapsedTime * 0.55) * 0.012;
 
-      // Aplica a orientação frontal com movimento vivo
       floatingGroup.rotation.y = baseRotationY + currentTiltY + organicWobbleY;
       floatingGroup.rotation.x = baseRotationX + currentTiltX + organicWobbleX;
       floatingGroup.rotation.z = organicWobbleZ;
 
-      // Movimento 3: O ponto de luz desliza suavemente pelos chanfros lapidados de ouro
-      glintLight.position.x = Math.sin(elapsedTime * 1.1) * 2.2;
-      glintLight.position.y = floatY + Math.cos(elapsedTime * 1.3) * 0.7;
-      glintLight.position.z = 2.4 + Math.sin(elapsedTime * 0.8) * 0.4;
+      // Movimento 3: O ponto de luz desliza nobremente pelos chanfros do emblema
+      glintLightEmblem.position.x = Math.sin(elapsedTime * 1.1) * 2.2;
+      glintLightEmblem.position.y = 0.61 + floatY + Math.cos(elapsedTime * 1.3) * 0.6;
+      glintLightEmblem.position.z = 2.4 + Math.sin(elapsedTime * 0.8) * 0.3;
 
-      // Partículas flutuam levemente
+      // Movimento 4: Segundo ponto de luz desliza suavemente sobre "YURI ALMEIDA" e "IMÓVEIS"
+      glintLightText.position.x = Math.sin(elapsedTime * 1.3 + 1.8) * 2.6;
+      glintLightText.position.y = -1.85 + floatY + Math.cos(elapsedTime * 1.1) * 0.4;
+      glintLightText.position.z = 2.4 + Math.cos(elapsedTime * 0.9) * 0.3;
+
+      // Partículas flutuam suavemente
       particles.position.y = Math.sin(elapsedTime * 0.4) * 0.06;
 
       renderer.render(scene, camera);
@@ -381,8 +584,13 @@ export function LuxuryLogo3D() {
 
       geoY.dispose();
       geoA.dispose();
-      goldMaterialY.dispose();
-      goldMaterialA.dispose();
+      geoYuri.dispose();
+      geoImoveis.dispose();
+      geoLineLeft.dispose();
+      geoLineRight.dispose();
+      goldMaterialPrimary.dispose();
+      goldMaterialSecondary.dispose();
+      platinumMaterial.dispose();
       particleGeo.dispose();
       particleMat.dispose();
       sparkTexture.dispose();
@@ -398,9 +606,9 @@ export function LuxuryLogo3D() {
   }, []);
 
   return (
-    <div className="relative w-full h-[400px] sm:h-[450px] flex items-center justify-center select-none overflow-visible">
+    <div className="relative w-full h-[420px] sm:h-[480px] lg:h-[500px] flex items-center justify-center select-none overflow-visible">
       {/* Halo de brilho ambiental dourado 100% difuso (sem bordas retangulares) */}
-      <div className="absolute inset-4 bg-radial from-[#D4AF37]/18 via-[#D4AF37]/4 to-transparent blur-3xl rounded-full pointer-events-none" />
+      <div className="absolute inset-4 bg-radial from-[#D4AF37]/18 via-[#D4AF37]/5 to-transparent blur-3xl rounded-full pointer-events-none" />
 
       {/* Contêiner Three.js interativo (transparente e sem qualquer borda) */}
       <div
@@ -414,7 +622,7 @@ export function LuxuryLogo3D() {
           <img
             src="/images/logo-yuri-almeida.svg"
             alt="Yuri Almeida Imóveis"
-            className="w-56 max-w-full drop-shadow-2xl"
+            className="w-64 max-w-full drop-shadow-2xl"
           />
         </div>
       )}
