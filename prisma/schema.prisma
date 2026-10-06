@@ -160,6 +160,10 @@ model SiteSetting {
   aboutHistoryText2 String?  @default("Cada empreendimento inserido em nosso acervo passa por rigorosa auditoria jurídica e técnica, garantindo segurança patrimonial absoluta tanto para quem adquire quanto para quem aliena.")
   aboutImage        String?  @default("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80")
 
+  // Personalização do Rodapé (Footer)
+  footerTitle       String?  @default("YURI ALMEIDA IMÓVEIS")
+  footerText        String?  @default("Intermediação e curadoria de imóveis singulares, residências assinadas e investimentos imobiliários com discrição e sofisticação incomparáveis.")
+
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

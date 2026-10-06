@@ -8,6 +8,8 @@ interface FooterProps {
   settings?: {
     name?: string;
     tagline?: string;
+    footerTitle?: string | null;
+    footerText?: string | null;
     logoText?: string;
     logoUrl?: string | null;
     phone?: string;
@@ -25,7 +27,8 @@ interface FooterProps {
 }
 
 export function Footer({ settings }: FooterProps) {
-  const brandName = settings?.name || siteConfig.name;
+  const brandName = settings?.footerTitle || settings?.name || siteConfig.name;
+  const footerText = settings?.footerText || siteConfig.footerText || "Intermediação e curadoria de imóveis singulares, residências assinadas e investimentos imobiliários com discrição e sofisticação incomparáveis.";
   const logoText = settings?.logoText || siteConfig.logoText;
   const logoUrl = settings?.logoUrl || siteConfig.logoUrl;
   const creciJ = settings?.creciJ || siteConfig.contact.creciJ;
@@ -62,7 +65,7 @@ export function Footer({ settings }: FooterProps) {
               </span>
             </div>
             <p className="text-sm text-[#A5A29A] font-light leading-relaxed max-w-md">
-              Intermediação e curadoria de imóveis singulares, residências assinadas e investimentos imobiliários com discrição e sofisticação incomparáveis.
+              {footerText}
             </p>
             {creciJ && (
               <div className="pt-2">

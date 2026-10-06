@@ -56,6 +56,10 @@ export async function updateSiteSettingsAction(
   const aboutHistoryText2 = (formData.get("aboutHistoryText2") as string)?.trim() || "";
   const aboutImage = (formData.get("aboutImage") as string)?.trim() || null;
 
+  // Personalização do Rodapé
+  const footerTitle = (formData.get("footerTitle") as string)?.trim() || name;
+  const footerText = (formData.get("footerText") as string)?.trim() || "Intermediação e curadoria de imóveis singulares, residências assinadas e investimentos imobiliários com discrição e sofisticação incomparáveis.";
+
   if (whatsapp && !whatsapp.startsWith("55")) {
     whatsapp = `55${whatsapp}`;
   }
@@ -92,6 +96,8 @@ export async function updateSiteSettingsAction(
       aboutHistoryText1,
       aboutHistoryText2,
       aboutImage,
+      footerTitle,
+      footerText,
     };
 
     await prisma.siteSetting.upsert({
@@ -103,11 +109,13 @@ export async function updateSiteSettingsAction(
       },
     });
 
+    revalidatePath("/", "layout");
     revalidatePath("/");
     revalidatePath("/admin/configuracoes");
     revalidatePath("/contato");
     revalidatePath("/sobre");
     revalidatePath("/imoveis");
+    revalidatePath("/corretores");
 
     return {
       success: true,

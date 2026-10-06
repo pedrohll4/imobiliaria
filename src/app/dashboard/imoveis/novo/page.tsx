@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { PropertyCreateForm } from "./PropertyCreateForm";
 import { ChevronRight } from "lucide-react";
+import { getNextPropertyCode } from "@/lib/propertyCode";
 
 export default async function NovoImovelPage() {
   const session = await getSession();
@@ -27,6 +28,8 @@ export default async function NovoImovelPage() {
       orderBy: { name: "asc" },
     });
   }
+
+  const initialCode = await getNextPropertyCode();
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
@@ -59,6 +62,7 @@ export default async function NovoImovelPage() {
         canAssignBroker={canAssignBroker}
         brokers={brokers}
         currentBrokerId={session.brokerId || undefined}
+        initialCode={initialCode}
       />
     </div>
   );

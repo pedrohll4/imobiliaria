@@ -55,6 +55,9 @@ export default async function AdminConfiguracoesPage() {
           aboutHistoryText1: settings.aboutHistoryText1,
           aboutHistoryText2: settings.aboutHistoryText2,
           aboutImage: settings.aboutImage,
+
+          footerTitle: settings.footerTitle,
+          footerText: settings.footerText,
         }}
       />
     </div>

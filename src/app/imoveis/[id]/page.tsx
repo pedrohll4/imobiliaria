@@ -219,13 +219,13 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
               </div>
             )}
 
-            {/* Localização & Privacidade */}
+            {/* Localização */}
             <div className="space-y-4 pt-6 border-t border-[#0F1115]/10">
               <h2 className="font-serif text-2xl font-normal text-[#0F1115]">
                 Localização & Entorno
               </h2>
               <p className="text-sm text-[#68655F] font-light leading-relaxed">
-                Por motivos de discrição e segurança dos proprietários, o endereço exato é compartilhado mediante agendamento prévio com nossos consultores. A propriedade está situada no quadrilátero mais nobre de {property.neighborhood}, com fácil acesso aos melhores centros gastronômicos e culturais da região.
+                O imóvel está localizado em {property.neighborhood}, na cidade de {property.city} — {property.state}. Entre em contato com um de nossos corretores e agende sua visita!
               </p>
               <div className="h-48 w-full bg-[#EAE7DF] rounded-sm border border-[#0F1115]/10 flex flex-col items-center justify-center text-center p-6 space-y-2">
                 <MapPin className="w-8 h-8 text-[#D4AF37]" />
@@ -233,7 +233,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                   {property.neighborhood}, {property.city} — {property.state}
                 </p>
                 <p className="text-xs text-[#8C8983]">
-                  Mapa confidencial • Visitas acompanhadas com credenciamento prévio
+                  Entre em contato com um de nossos corretores e agende sua visita
                 </p>
               </div>
             </div>

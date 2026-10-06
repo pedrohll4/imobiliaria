@@ -48,6 +48,10 @@ export async function getSiteSettings() {
         aboutHistoryText1: setting.aboutHistoryText1 || "Nascemos para atender um público que valoriza design atemporal, materiais nobres e privacidade inegociável. Nossa equipe não atua com volume indiscriminado de imóveis, mas com uma seleção criteriosa de casas com assinaturas prestigiadas, coberturas singulares e propriedades rurais com vocação para o lazer refinado.",
         aboutHistoryText2: setting.aboutHistoryText2 || "Cada empreendimento inserido em nosso acervo passa por rigorosa auditoria jurídica e técnica, garantindo segurança patrimonial absoluta tanto para quem adquire quanto para quem aliena.",
         aboutImage: setting.aboutImage || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+
+        // Rodapé Institucional
+        footerTitle: setting.footerTitle || setting.name || siteConfig.name,
+        footerText: setting.footerText || siteConfig.footerText,
       };
     }
   } catch (e) {
@@ -87,5 +91,9 @@ export async function getSiteSettings() {
     aboutHistoryText1: "Nascemos para atender um público que valoriza design atemporal, materiais nobres e privacidade inegociável. Nossa equipe não atua com volume indiscriminado de imóveis, mas com uma seleção criteriosa de casas com assinaturas prestigiadas, coberturas singulares e propriedades rurais com vocação para o lazer refinado.",
     aboutHistoryText2: "Cada empreendimento inserido em nosso acervo passa por rigorosa auditoria jurídica e técnica, garantindo segurança patrimonial absoluta tanto para quem adquire quanto para quem aliena.",
     aboutImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+
+    // Rodapé Institucional
+    footerTitle: siteConfig.name,
+    footerText: siteConfig.footerText,
   };
 }

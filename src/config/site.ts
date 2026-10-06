@@ -9,6 +9,8 @@
 export interface SiteConfig {
   name: string;
   tagline: string;
+  footerTitle?: string;
+  footerText: string;
   shortName: string;
   logoText: string;
   logoPlaceholder: string;
@@ -42,6 +44,8 @@ export interface SiteConfig {
 export const siteConfig: SiteConfig = {
   name: "YURI ALMEIDA IMÓVEIS",
   tagline: "Residências e Empreendimentos de Alto Padrão",
+  footerTitle: "YURI ALMEIDA IMÓVEIS",
+  footerText: "Intermediação e curadoria de imóveis singulares, residências assinadas e investimentos imobiliários com discrição e sofisticação incomparáveis.",
   shortName: "Yuri Almeida",
   logoText: "YA",
   logoPlaceholder: "[ YURI ALMEIDA IMÓVEIS ]",

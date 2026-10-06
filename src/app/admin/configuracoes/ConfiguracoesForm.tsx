@@ -64,6 +64,10 @@ interface ConfiguracoesFormProps {
     aboutHistoryText1?: string | null;
     aboutHistoryText2?: string | null;
     aboutImage?: string | null;
+
+    // Rodapé Institucional
+    footerTitle?: string | null;
+    footerText?: string | null;
   };
 }
 
@@ -83,6 +87,15 @@ export function ConfiguracoesForm({ initialSettings }: ConfiguracoesFormProps) {
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
   );
 
+  // Estados dos Textos do Rodapé
+  const [footerTitle, setFooterTitle] = useState(
+    initialSettings.footerTitle || initialSettings.name || "YURI ALMEIDA IMÓVEIS"
+  );
+  const [footerText, setFooterText] = useState(
+    initialSettings.footerText ||
+      "Intermediação e curadoria de imóveis singulares, residências assinadas e investimentos imobiliários com discrição e sofisticação incomparáveis."
+  );
+
   // Estados de Carregamento
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
   const [isUploadingHero, setIsUploadingHero] = useState(false);
@@ -98,6 +111,8 @@ export function ConfiguracoesForm({ initialSettings }: ConfiguracoesFormProps) {
       formData.set("logoUrl", logoUrl);
       formData.set("heroBgImage", heroBgImage);
       formData.set("aboutImage", aboutImage);
+      formData.set("footerTitle", footerTitle);
+      formData.set("footerText", footerText);
       return await updateSiteSettingsAction(prev, formData);
     },
     null
@@ -298,7 +313,7 @@ export function ConfiguracoesForm({ initialSettings }: ConfiguracoesFormProps) {
           }`}
         >
           <Building2 className="w-4 h-4" />
-          <span>Identidade & Contatos</span>
+          <span>Identidade, Rodapé & Contatos</span>
         </button>
 
         <button
@@ -713,6 +728,94 @@ export function ConfiguracoesForm({ initialSettings }: ConfiguracoesFormProps) {
                     Formatos recomendados: PNG ou WebP com fundo transparente. Se não houver arquivo, o monograma textual será exibido com tipografia dourada.
                   </p>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Rodapé do Portal (Footer) */}
+        <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] p-6 sm:p-8 rounded-sm shadow-subtle space-y-6">
+          <div className="border-b border-[#0F1115]/10 pb-4">
+            <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-semibold">
+              Rodapé do Portal (Footer)
+            </span>
+            <h2 className="font-serif text-2xl text-[#0F1115] mt-0.5">
+              Assinatura & Textos do Rodapé
+            </h2>
+            <p className="text-xs text-[#8C8983] font-light mt-0.5">
+              Altere o nome da marca e o parágrafo descritivo/bio que aparecem no rodapé de todas as páginas do site.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs uppercase tracking-wider font-medium text-[#4A4742] mb-1.5">
+                Nome / Título Exibido no Rodapé
+              </label>
+              <input
+                type="text"
+                name="footerTitle"
+                value={footerTitle}
+                onChange={(e) => setFooterTitle(e.target.value)}
+                placeholder="Ex: YURI ALMEIDA IMÓVEIS"
+                className="w-full bg-[#FFFFFF] text-[#0F1115] text-sm px-4 py-3 rounded-sm border border-[#0F1115]/15 focus:outline-none focus:border-[#D4AF37] transition-colors"
+              />
+              <p className="text-[11px] text-[#8C8983] mt-1 font-light">
+                Nome corporativo em destaque ao lado do logotipo no rodapé (se vazio, usa o Nome Oficial da Imobiliária).
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-xs uppercase tracking-wider font-medium text-[#4A4742] mb-1.5">
+                Texto Descritivo / Institucional do Rodapé (Bio da Empresa) *
+              </label>
+              <textarea
+                name="footerText"
+                rows={3}
+                value={footerText}
+                onChange={(e) => setFooterText(e.target.value)}
+                placeholder="Ex: Intermediação e curadoria de imóveis singulares, residências assinadas e investimentos imobiliários com discrição e sofisticação incomparáveis."
+                required
+                className="w-full bg-[#FFFFFF] text-[#0F1115] text-sm px-4 py-3 rounded-sm border border-[#0F1115]/15 focus:outline-none focus:border-[#D4AF37] transition-colors resize-y leading-relaxed"
+              />
+              <p className="text-[11px] text-[#8C8983] mt-1 font-light">
+                Parágrafo que aparece logo abaixo do nome da imobiliária e acima do selo CRECI no rodapé do portal.
+              </p>
+            </div>
+
+            {/* Pré-visualização do Bloco do Rodapé */}
+            <div className="p-5 bg-[#0B0D12] text-[#FBF9F5] rounded-xs border border-white/[0.08] space-y-3 mt-4">
+              <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-semibold block">
+                Pré-visualização do Bloco no Rodapé
+              </span>
+              <div className="space-y-3 max-w-md pt-1">
+                <div className="flex items-center gap-3">
+                  {logoUrl ? (
+                    <img
+                      src={logoUrl}
+                      alt="Logo"
+                      className="h-9 max-w-[150px] object-contain"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] font-serif text-xs tracking-widest">
+                      {initialSettings.logoText || "YA"}
+                    </div>
+                  )}
+                  <span className="font-serif text-lg tracking-widest text-[#FBF9F5] font-light uppercase">
+                    {footerTitle || initialSettings.name || "YURI ALMEIDA IMÓVEIS"}
+                  </span>
+                </div>
+                <p className="text-xs text-[#A5A29A] font-light leading-relaxed">
+                  {footerText ||
+                    "Intermediação e curadoria de imóveis singulares, residências assinadas e investimentos imobiliários com discrição e sofisticação incomparáveis."}
+                </p>
+                {initialSettings.creciJ && (
+                  <div className="pt-1">
+                    <span className="inline-block text-[10px] uppercase tracking-wider text-[#D4AF37] border border-[#D4AF37]/30 px-2.5 py-0.5">
+                      {initialSettings.creciJ}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>

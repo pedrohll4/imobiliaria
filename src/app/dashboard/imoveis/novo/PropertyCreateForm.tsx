@@ -2,7 +2,7 @@
 
 import React, { useState, useActionState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { createPropertyAction, PropertyActionResult } from "@/actions/propertyActions";
+import { createPropertyAction, getNextPropertyCodeAction, PropertyActionResult } from "@/actions/propertyActions";
 import { uploadPropertyImageAction } from "@/actions/uploadActions";
 import { uploadDirectToSupabase } from "@/lib/supabaseClient";
 import { compressImage } from "@/lib/imageOptimization";
@@ -23,6 +23,7 @@ import {
   CheckCircle2,
   ShieldCheck,
   UserCheck,
+  RefreshCw,
 } from "lucide-react";
 
 const COMMON_AMENITIES = [
@@ -50,12 +51,14 @@ interface PropertyCreateFormProps {
   canAssignBroker?: boolean;
   brokers?: { id: string; name: string; creci: string; photoUrl: string }[];
   currentBrokerId?: string;
+  initialCode?: string;
 }
 
 export function PropertyCreateForm({
   canAssignBroker = false,
   brokers = [],
   currentBrokerId,
+  initialCode = "IMV-1001",
 }: PropertyCreateFormProps) {
   const router = useRouter();
 
@@ -74,6 +77,22 @@ export function PropertyCreateForm({
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Código Interno com Preenchimento Automático
+  const [code, setCode] = useState(initialCode);
+  const [isGeneratingCode, setIsGeneratingCode] = useState(false);
+
+  const handleGenerateCode = async () => {
+    setIsGeneratingCode(true);
+    try {
+      const next = await getNextPropertyCodeAction();
+      setCode(next);
+    } catch {
+      setCode(`IMV-${Math.floor(1000 + Math.random() * 9000)}`);
+    } finally {
+      setIsGeneratingCode(false);
+    }
+  };
+
   // Características selecionadas
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([
     "Piscina de borda infinita",
@@ -83,7 +102,8 @@ export function PropertyCreateForm({
 
   const [state, formAction, isPending] = useActionState<PropertyActionResult | null, FormData>(
     async (prev, formData) => {
-      // Adicionar as imagens e diferenciais formatados
+      // Adicionar código, imagens e diferenciais formatados
+      formData.set("code", code);
       formData.set("imagesList", images.join("\n"));
       formData.set("featuresList", selectedAmenities.join("\n"));
 
@@ -272,11 +292,39 @@ export function PropertyCreateForm({
           </div>
 
           <div className="sm:col-span-4">
-            <Input
-              name="code"
-              label="Código Interno (opcional)"
-              placeholder="Ex: IMV-9021"
-            />
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs uppercase tracking-wider font-medium text-[#4A4742]">
+                Código Interno *
+              </label>
+              <span className="text-[10px] uppercase tracking-wider text-[#D4AF37] font-semibold flex items-center gap-1">
+                <Sparkles className="w-3 h-3" />
+                Automático
+              </span>
+            </div>
+            <div className="relative">
+              <input
+                type="text"
+                name="code"
+                value={code}
+                onChange={(e) => setCode(e.target.value.toUpperCase())}
+                placeholder="Ex: IMV-7122"
+                required
+                className="w-full bg-[#FFFFFF] text-[#0F1115] text-sm px-4 py-3 rounded-sm border border-[#0F1115]/15 focus:outline-none focus:border-[#D4AF37] font-mono font-medium tracking-wider transition-colors pr-24"
+              />
+              <button
+                type="button"
+                onClick={handleGenerateCode}
+                disabled={isGeneratingCode}
+                title="Gerar outro código único"
+                className="absolute right-2 top-1/2 -translate-y-1/2 px-2.5 py-1 text-[11px] uppercase tracking-wider text-[#68655F] hover:text-[#0F1115] hover:bg-[#F4F1EA] rounded-xs flex items-center gap-1.5 transition-colors border border-[#0F1115]/10 disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3 h-3 text-[#D4AF37] ${isGeneratingCode ? "animate-spin" : ""}`} />
+                <span>Gerar</span>
+              </button>
+            </div>
+            <p className="text-[11px] text-[#8C8983] mt-1 font-light">
+              Preenchido automaticamente com o próximo código disponível.
+            </p>
           </div>
 
           <div className="sm:col-span-6">

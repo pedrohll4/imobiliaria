@@ -4,12 +4,17 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { deleteImagesFromSupabase } from "@/lib/supabase";
+import { getNextPropertyCode } from "@/lib/propertyCode";
 
 export interface PropertyActionResult {
   success: boolean;
   message?: string;
   error?: string;
   propertyId?: string;
+}
+
+export async function getNextPropertyCodeAction(): Promise<string> {
+  return await getNextPropertyCode();
 }
 
 export async function createPropertyAction(
@@ -73,7 +78,18 @@ export async function createPropertyAction(
   }
 
   try {
-    const code = customCode || `IMV-${Math.floor(1000 + Math.random() * 9000)}`;
+    let code = customCode;
+    if (!code) {
+      code = await getNextPropertyCode();
+    } else {
+      const exists = await prisma.property.findUnique({
+        where: { code },
+        select: { id: true },
+      });
+      if (exists) {
+        code = await getNextPropertyCode();
+      }
+    }
     const baseSlug = title
       .toLowerCase()
       .normalize("NFD")
