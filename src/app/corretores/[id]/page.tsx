@@ -66,7 +66,7 @@ export default async function BrokerDetailPage({ params }: BrokerDetailPageProps
           <div className="lg:col-span-8 space-y-4 text-center sm:text-left">
             <div className="space-y-1">
               <span className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-semibold">
-                Consultor Associado
+                Corretor
               </span>
               <h1 className="font-serif text-3xl sm:text-4xl text-[#0F1115]">
                 {broker.name}
@@ -120,7 +120,7 @@ export default async function BrokerDetailPage({ params }: BrokerDetailPageProps
 
           {broker.properties.length === 0 ? (
             <p className="text-sm text-[#8C8983] py-8">
-              No momento este consultor não possui imóveis publicados publicamente.
+              No momento este corretor não possui imóveis publicados publicamente.
             </p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
