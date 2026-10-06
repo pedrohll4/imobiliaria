@@ -49,18 +49,18 @@ export const siteConfig: SiteConfig = {
   logoUrl: "/images/logo-ya-emblem.png",
   
   contact: {
-    phone: "(69) 3211-9000",
-    whatsapp: "5569999887766",
-    whatsappFormatted: "(69) 99988-7766",
-    email: "privativo@imobiliariaconceito.com.br",
+    phone: "(69) 99368-8063",
+    whatsapp: "5569993688063",
+    whatsappFormatted: "(69) 99368-8063",
+    email: "yurialmeidaimoveis@gmail.com",
     address: {
-      street: "Avenida Jorge Teixeira, 1850 - Edifício Amazon Corporate, 12º Andar",
-      neighborhood: "Embratel",
-      city: "Porto Velho",
+      street: "Alameda Fortaleza 2950",
+      neighborhood: "Setor 03",
+      city: "Ariquemes",
       state: "RO",
       zipCode: "76820-800",
     },
-    creciJ: "CRECI 3.820-J/RO",
+    creciJ: "CRECI 5460-J",
   },
 
   social: {

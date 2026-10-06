@@ -53,16 +53,16 @@ export function HeroSearchBar() {
         onSubmit={handleSearch}
         className="bg-[#FFFFFF] border border-[#0F1115]/10 shadow-2xl p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 sm:gap-4 items-center rounded-b-sm rounded-tr-sm relative z-30"
       >
-        {/* Localização com Autocomplete Inteligente em Rondônia */}
+        {/* Localização com Autocomplete Inteligente em Ariquemes */}
         <div className="lg:col-span-3 border-b sm:border-b-0 sm:border-r border-[#0F1115]/10 pb-2 sm:pb-0 sm:pr-3 relative">
           <label className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-[#8C8983] font-medium mb-1">
             <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
-            Localização em RO
+            Localização em Ariquemes
           </label>
           <LocationAutocomplete
             value={location}
             onChange={setLocation}
-            placeholder="Porto Velho, Alphaville, Cacoal..."
+            placeholder="Setor 01, Setor 03, Condomínios..."
             inputClassName="text-sm text-[#0F1115] placeholder:text-[#B5B2AB] bg-transparent font-normal"
           />
         </div>

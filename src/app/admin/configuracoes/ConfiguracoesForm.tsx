@@ -772,7 +772,7 @@ export function ConfiguracoesForm({ initialSettings }: ConfiguracoesFormProps) {
                 name="neighborhood"
                 label="Bairro"
                 defaultValue={initialSettings.neighborhood}
-                placeholder="Ex: Embratel"
+                placeholder="Ex: Setor 03"
               />
             </div>
             <div className="sm:col-span-5">
@@ -780,7 +780,7 @@ export function ConfiguracoesForm({ initialSettings }: ConfiguracoesFormProps) {
                 name="city"
                 label="Cidade"
                 defaultValue={initialSettings.city}
-                placeholder="Ex: Porto Velho"
+                placeholder="Ex: Ariquemes"
               />
             </div>
             <div className="sm:col-span-3">

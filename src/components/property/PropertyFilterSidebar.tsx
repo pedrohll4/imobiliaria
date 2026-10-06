@@ -76,22 +76,22 @@ export function PropertyFilterSidebar() {
         </button>
       </div>
 
-      {/* Localização em Rondônia */}
+      {/* Localização em Ariquemes */}
       <div className="space-y-2">
         <label className="text-xs uppercase tracking-wider font-semibold text-[#4A4742]">
-          Localização em Rondônia
+          Localização em Ariquemes
         </label>
         <LocationAutocomplete
           value={location}
           onChange={setLocation}
-          placeholder="Ex: Porto Velho, Alphaville, Cacoal..."
+          placeholder="Ex: Setor 01, Setor 03, Condomínios..."
           inputClassName="w-full text-xs px-3.5 py-2.5 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#D4AF37]"
           dropdownClassName="w-full sm:w-[320px]"
         />
 
-        {/* Chips de Cidades Principais de RO */}
+        {/* Chips dos Principais Setores & Condomínios de Ariquemes */}
         <div className="flex flex-wrap gap-1.5 pt-1">
-          {["Porto Velho", "Alphaville", "Ji-Paraná", "Cacoal", "Vilhena"].map((city) => (
+          {["Setor 01", "Setor 03", "Setor Institucional", "Portal das Flores", "Jardim Europa"].map((city) => (
             <button
               key={city}
               type="button"

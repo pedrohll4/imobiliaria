@@ -10,23 +10,30 @@ export interface LocationOption {
   type: "CONDOMINIO" | "BAIRRO" | "CIDADE" | "AGRO";
 }
 
-export const RONDONIA_LOCATIONS: LocationOption[] = [
-  { label: "Alphaville Porto Velho", value: "Alphaville", city: "Porto Velho, RO", type: "CONDOMINIO" },
-  { label: "Ecoville Porto Velho", value: "Ecoville", city: "Porto Velho, RO", type: "CONDOMINIO" },
-  { label: "Bairro Olaria", value: "Olaria", city: "Porto Velho, RO", type: "BAIRRO" },
-  { label: "Bairro Liberdade", value: "Liberdade", city: "Porto Velho, RO", type: "BAIRRO" },
-  { label: "Bairro Rio Madeira & Orla Náutica", value: "Rio Madeira", city: "Porto Velho, RO", type: "BAIRRO" },
-  { label: "San Pelegrino", value: "San Pelegrino", city: "Porto Velho, RO", type: "CONDOMINIO" },
-  { label: "Porto Velho (Toda a Capital)", value: "Porto Velho", city: "Rondônia", type: "CIDADE" },
-  { label: "Ji-Paraná", value: "Ji-Paraná", city: "Rondônia", type: "CIDADE" },
-  { label: "Bairro Dois de Abril", value: "Dois de Abril", city: "Ji-Paraná, RO", type: "BAIRRO" },
-  { label: "Cacoal", value: "Cacoal", city: "Rondônia", type: "CIDADE" },
-  { label: "Bosque dos Ipês", value: "Bosque dos Ipês", city: "Cacoal, RO", type: "CONDOMINIO" },
-  { label: "Vilhena", value: "Vilhena", city: "Rondônia", type: "CIDADE" },
-  { label: "Jardim Eldorado", value: "Jardim Eldorado", city: "Vilhena, RO", type: "BAIRRO" },
-  { label: "Ariquemes", value: "Ariquemes", city: "Rondônia", type: "CIDADE" },
-  { label: "Grandes Fazendas & Haras em RO", value: "Fazenda", city: "Rondônia (Agronegócio)", type: "AGRO" },
+export const ARIQUEMES_LOCATIONS: LocationOption[] = [
+  { label: "Setor 01 (Centro)", value: "Setor 01", city: "Ariquemes, RO", type: "BAIRRO" },
+  { label: "Setor 02", value: "Setor 02", city: "Ariquemes, RO", type: "BAIRRO" },
+  { label: "Setor 03 (Sede Yuri Almeida)", value: "Setor 03", city: "Ariquemes, RO", type: "BAIRRO" },
+  { label: "Setor 04", value: "Setor 04", city: "Ariquemes, RO", type: "BAIRRO" },
+  { label: "Setor 05", value: "Setor 05", city: "Ariquemes, RO", type: "BAIRRO" },
+  { label: "Setor 06", value: "Setor 06", city: "Ariquemes, RO", type: "BAIRRO" },
+  { label: "Setor 08", value: "Setor 08", city: "Ariquemes, RO", type: "BAIRRO" },
+  { label: "Setor 09", value: "Setor 09", city: "Ariquemes, RO", type: "BAIRRO" },
+  { label: "Setor 10", value: "Setor 10", city: "Ariquemes, RO", type: "BAIRRO" },
+  { label: "Setor 11", value: "Setor 11", city: "Ariquemes, RO", type: "BAIRRO" },
+  { label: "Setor Institucional", value: "Setor Institucional", city: "Ariquemes, RO", type: "BAIRRO" },
+  { label: "Setor de Grandes Áreas", value: "Grandes Áreas", city: "Ariquemes, RO", type: "BAIRRO" },
+  { label: "Jardim Europa", value: "Jardim Europa", city: "Ariquemes, RO", type: "BAIRRO" },
+  { label: "Jardim Paraná", value: "Jardim Paraná", city: "Ariquemes, RO", type: "BAIRRO" },
+  { label: "Jardim das Pedras", value: "Jardim das Pedras", city: "Ariquemes, RO", type: "BAIRRO" },
+  { label: "Condomínio Portal das Flores", value: "Portal das Flores", city: "Ariquemes, RO", type: "CONDOMINIO" },
+  { label: "Condomínio Bosque dos Ipês", value: "Bosque dos Ipês", city: "Ariquemes, RO", type: "CONDOMINIO" },
+  { label: "Condomínio Morada do Sol", value: "Morada do Sol", city: "Ariquemes, RO", type: "CONDOMINIO" },
+  { label: "Ariquemes (Toda a Cidade)", value: "Ariquemes", city: "Rondônia", type: "CIDADE" },
+  { label: "Chácaras & Fazendas em Ariquemes", value: "Rural", city: "Ariquemes (Agronegócio)", type: "AGRO" },
 ];
+
+export const RONDONIA_LOCATIONS = ARIQUEMES_LOCATIONS;
 
 interface LocationAutocompleteProps {
   value: string;
@@ -41,7 +48,7 @@ interface LocationAutocompleteProps {
 export function LocationAutocomplete({
   value,
   onChange,
-  placeholder = "Porto Velho, Alphaville, Cacoal...",
+  placeholder = "Setor 01, Setor 03, Condomínios...",
   className = "",
   inputClassName = "",
   dropdownClassName = "w-[360px] sm:w-[420px] max-w-[calc(100vw-2.5rem)]",
@@ -180,9 +187,9 @@ export function LocationAutocomplete({
         <div className={`absolute left-0 top-full mt-2.5 bg-[#FFFFFF] border border-[#0F1115]/15 rounded-sm shadow-2xl z-[100] max-h-80 flex flex-col animate-in fade-in slide-in-from-top-1 duration-200 overflow-hidden ${dropdownClassName}`}>
           <div className="px-3.5 py-2.5 bg-[#FBF9F5] border-b border-[#0F1115]/10 flex items-center justify-between whitespace-nowrap">
             <span className="text-[10px] font-semibold uppercase tracking-wider text-[#8C8983]">
-              {value.trim() ? "Resultados em Rondônia" : "Principais Regiões de Rondônia"}
+              {value.trim() ? "Resultados em Ariquemes" : "Setores & Bairros de Ariquemes"}
             </span>
-            <span className="text-[10px] font-mono text-[#D4AF37]">RO • Brasil</span>
+            <span className="text-[10px] font-mono text-[#D4AF37]">Ariquemes • RO</span>
           </div>
 
           <div className="overflow-y-auto divide-y divide-[#0F1115]/5">
