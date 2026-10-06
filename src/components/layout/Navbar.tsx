@@ -34,7 +34,7 @@ export function Navbar({ session, settings }: NavbarProps) {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#FBF9F5]/90 backdrop-blur-md border-b border-[#0F1115]/[0.06] transition-all">
+    <header className="sticky top-0 z-40 w-full bg-[#0B0D12]/95 backdrop-blur-md border-b border-white/[0.08] shadow-md transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
@@ -47,16 +47,16 @@ export function Navbar({ session, settings }: NavbarProps) {
                 className="h-10 max-w-[160px] object-contain transition-transform group-hover:scale-95 duration-300"
               />
             ) : (
-              <div className="w-10 h-10 border border-[#0B0D12] flex items-center justify-center bg-[#0B0D12] text-[#FBF9F5] font-serif text-lg tracking-widest transition-transform group-hover:scale-95 duration-300">
+              <div className="w-10 h-10 border border-[#D4AF37]/50 flex items-center justify-center bg-[#161920] text-[#D4AF37] font-serif text-lg tracking-widest transition-transform group-hover:scale-95 duration-300 shadow-sm">
                 {logoText}
               </div>
             )}
             <div className="flex flex-col">
-              <span className="font-serif text-lg tracking-widest text-[#0B0D12] font-medium leading-none uppercase">
+              <span className="font-serif text-lg tracking-widest text-[#FBF9F5] font-medium leading-none uppercase group-hover:text-[#D4AF37] transition-colors">
                 {brandName}
               </span>
               {logoSubtitle && (
-                <span className="text-[10px] tracking-[0.2em] text-[#8C8983] uppercase mt-1 font-light">
+                <span className="text-[10px] tracking-[0.2em] text-[#A39E93] uppercase mt-1 font-light">
                   {logoSubtitle}
                 </span>
               )}
@@ -69,7 +69,7 @@ export function Navbar({ session, settings }: NavbarProps) {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-xs uppercase tracking-[0.18em] text-[#4A4742] hover:text-[#0B0D12] transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-[#D4AF37] hover:after:w-full after:transition-all after:duration-300 font-medium"
+                className="text-xs uppercase tracking-[0.18em] text-[#C4C0B6] hover:text-[#FBF9F5] transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-[#D4AF37] hover:after:w-full after:transition-all after:duration-300 font-medium"
               >
                 {link.label}
               </Link>
@@ -91,7 +91,7 @@ export function Navbar({ session, settings }: NavbarProps) {
                 ) : (
                   <Link
                     href={session.role === "ADMIN" ? "/admin" : "/dashboard"}
-                    className="inline-flex items-center gap-2 text-xs uppercase tracking-widest bg-[#0B0D12] text-[#FBF9F5] px-4 py-2.5 rounded-sm hover:bg-[#1E2330] transition-colors font-medium"
+                    className="inline-flex items-center gap-2 text-xs uppercase tracking-widest bg-[#1E2330] text-[#FBF9F5] px-4 py-2.5 rounded-sm hover:bg-[#282F3E] border border-white/10 hover:border-[#D4AF37]/40 transition-colors font-medium"
                   >
                     {session.role === "ADMIN" ? (
                       <>
@@ -110,19 +110,19 @@ export function Navbar({ session, settings }: NavbarProps) {
             ) : (
               <Link
                 href="/login"
-                className="text-xs uppercase tracking-widest text-[#4A4742] hover:text-[#0B0D12] px-3 py-2 border border-transparent hover:border-[#0F1115]/20 rounded-sm transition-all font-medium"
+                className="text-xs uppercase tracking-widest text-[#C4C0B6] hover:text-[#FBF9F5] px-3 py-2 border border-transparent hover:border-white/20 rounded-sm transition-all font-medium"
               >
                 Acesso Corretor
               </Link>
             )}
 
             <a
-              href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Olá! Gostaria de receber uma consultoria privativa sobre os imóveis de alto padrão.")}`}
+              href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Olá! Gostaria de falar com um corretor sobre os imóveis de alto padrão.")}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest bg-[#D4AF37] text-[#0B0D12] font-semibold px-4 py-2.5 rounded-sm hover:bg-[#C29F2D] transition-all shadow-sm"
+              className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest bg-[#D4AF37] text-[#0B0D12] font-semibold px-4 py-2.5 rounded-sm hover:bg-[#E5C158] transition-all shadow-sm hover:shadow-md"
             >
-              Atendimento Privativo
+              Falar com um corretor
               <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
           </div>
@@ -130,7 +130,7 @@ export function Navbar({ session, settings }: NavbarProps) {
           {/* Botão Mobile Menu */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-[#0B0D12] focus:outline-none"
+            className="md:hidden p-2 text-[#FBF9F5] hover:text-[#D4AF37] focus:outline-none transition-colors"
             aria-label="Abrir menu"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -140,14 +140,14 @@ export function Navbar({ session, settings }: NavbarProps) {
 
       {/* Menu Gaveta Mobile */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[#FBF9F5] border-b border-[#0F1115]/10 px-4 pt-3 pb-6 space-y-4 animate-in slide-in-from-top duration-200">
+        <div className="md:hidden bg-[#0B0D12] border-b border-white/10 px-4 pt-3 pb-6 space-y-4 animate-in slide-in-from-top duration-200">
           <nav className="flex flex-col space-y-3">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-sm uppercase tracking-wider text-[#0B0D12] py-2 border-b border-[#0F1115]/5"
+                className="text-sm uppercase tracking-wider text-[#E8E6DF] hover:text-[#D4AF37] py-2 border-b border-white/[0.06] transition-colors"
               >
                 {link.label}
               </Link>
@@ -169,7 +169,7 @@ export function Navbar({ session, settings }: NavbarProps) {
                 <Link
                   href={session.role === "ADMIN" ? "/admin" : "/dashboard"}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center text-xs uppercase tracking-widest bg-[#0B0D12] text-[#FBF9F5] py-3 rounded-sm"
+                  className="w-full text-center text-xs uppercase tracking-widest bg-[#1E2330] text-[#FBF9F5] py-3 rounded-sm border border-white/10"
                 >
                   {session.role === "ADMIN" ? "Painel Admin" : "Meu Painel"}
                 </Link>
@@ -178,7 +178,7 @@ export function Navbar({ session, settings }: NavbarProps) {
               <Link
                 href="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center text-xs uppercase tracking-widest border border-[#0B0D12]/20 text-[#0B0D12] py-3 rounded-sm"
+                className="w-full text-center text-xs uppercase tracking-widest border border-white/20 text-[#E8E6DF] hover:border-white/40 hover:text-white py-3 rounded-sm transition-all"
               >
                 Acesso Corretor
               </Link>
@@ -191,7 +191,7 @@ export function Navbar({ session, settings }: NavbarProps) {
                   window.dispatchEvent(new CustomEvent("trigger-pwa-install"));
                 }
               }}
-              className="w-full text-center text-xs uppercase tracking-widest bg-gradient-to-r from-[#0B0D12] to-[#1E2330] text-[#D4AF37] border border-[#D4AF37]/40 font-medium py-3 rounded-sm flex items-center justify-center gap-2 shadow-sm"
+              className="w-full text-center text-xs uppercase tracking-widest bg-gradient-to-r from-[#161920] to-[#1E2330] text-[#D4AF37] border border-[#D4AF37]/40 font-medium py-3 rounded-sm flex items-center justify-center gap-2 shadow-sm"
             >
               <img
                 src="/icons/icon-192x192.png"
@@ -202,12 +202,12 @@ export function Navbar({ session, settings }: NavbarProps) {
             </button>
 
             <a
-              href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Olá! Gostaria de receber uma consultoria privativa sobre os imóveis de alto padrão.")}`}
+              href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Olá! Gostaria de falar com um corretor sobre os imóveis de alto padrão.")}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full text-center text-xs uppercase tracking-widest bg-[#D4AF37] text-[#0B0D12] font-semibold py-3 rounded-sm flex items-center justify-center gap-1.5"
+              className="w-full text-center text-xs uppercase tracking-widest bg-[#D4AF37] text-[#0B0D12] font-semibold py-3 rounded-sm flex items-center justify-center gap-1.5 hover:bg-[#E5C158] transition-colors"
             >
-              Atendimento Privativo
+              Falar com um corretor
               <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
           </div>

@@ -148,12 +148,12 @@ export default async function HomePage() {
               </p>
               <div className="pt-2">
                 <a
-                  href={`https://wa.me/${settings.whatsapp}?text=${encodeURIComponent("Olá! Gostaria de consultar oportunidades de imóveis off-market.")}`}
+                  href={`https://wa.me/${settings.whatsapp}?text=${encodeURIComponent("Olá! Gostaria de falar com um corretor sobre oportunidades de imóveis off-market.")}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-[#0B0D12] text-[#FBF9F5] text-xs uppercase tracking-widest font-semibold hover:bg-[#1E2330] rounded-sm transition-all"
                 >
-                  Falar com a Diretoria no WhatsApp
+                  Falar com um corretor
                   <ArrowUpRight className="w-4 h-4 text-[#D4AF37]" />
                 </a>
               </div>
@@ -265,7 +265,7 @@ export default async function HomePage() {
                 Corpo Consultivo Dedicado
               </h3>
               <p className="text-xs sm:text-sm text-[#6F6C66] font-light leading-relaxed">
-                Nosso time de consultores atua sob estrita governança e sigilo. Para atendimento privativo ou agendamento de reuniões, contate nossa central corporativa.
+                Nosso time de consultores atua sob estrita governança e sigilo. Para falar com um corretor ou agendamento de reuniões, contate nossa central corporativa.
               </p>
               <div className="pt-2">
                 <a
@@ -274,7 +274,7 @@ export default async function HomePage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-[#0B0D12] text-[#FBF9F5] text-xs uppercase tracking-widest font-semibold hover:bg-[#1E2330] rounded-sm transition-all"
                 >
-                  Falar com Atendimento Geral
+                  Falar com um corretor
                   <ArrowUpRight className="w-4 h-4 text-[#D4AF37]" />
                 </a>
               </div>
