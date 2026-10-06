@@ -45,8 +45,8 @@ export const siteConfig: SiteConfig = {
   shortName: "Yuri Almeida",
   logoText: "YA",
   logoPlaceholder: "[ YURI ALMEIDA IMÓVEIS ]",
-  // Logo oficial vetorizada em SVG
-  logoUrl: "/images/logo-ya-emblem.svg",
+  // Logo oficial da marca
+  logoUrl: "/images/logo-ya-emblem.png",
   
   contact: {
     phone: "(69) 3211-9000",

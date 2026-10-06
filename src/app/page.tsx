@@ -5,7 +5,6 @@ import { getSession } from "@/lib/auth";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { HeroSearchBar } from "@/components/home/HeroSearchBar";
-import { LuxuryLogo3D } from "@/components/3d/LuxuryLogo3D";
 import { PropertyCard } from "@/components/property/PropertyCard";
 import { siteConfig } from "@/config/site";
 import { getSiteSettings } from "@/lib/settings";
@@ -90,10 +89,18 @@ export default async function HomePage() {
                 </p>
               </div>
 
-              {/* Emblema 3D Escultural da Marca */}
-              <div className="lg:col-span-6 relative flex items-center justify-center">
-                <div className="relative w-full max-w-xl flex items-center justify-center">
-                  <LuxuryLogo3D />
+              {/* Logotipo Oficial Yuri Almeida Imóveis */}
+              <div className="lg:col-span-6 relative flex items-center justify-center py-6 lg:py-0">
+                <div className="relative w-full max-w-lg flex items-center justify-center">
+                  {/* Halo de iluminação sutil (ambient gold glow) */}
+                  <div className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-[#D4AF37]/15 blur-3xl pointer-events-none -z-0" />
+                  
+                  {/* Imagem Oficial da Logotipo */}
+                  <img
+                    src="/images/logo-yuri-almeida.png"
+                    alt={settings.name || "YURI ALMEIDA IMÓVEIS"}
+                    className="relative z-10 w-full max-w-[340px] sm:max-w-[420px] lg:max-w-[480px] h-auto object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.7)] transition-transform duration-500 hover:scale-[1.02]"
+                  />
                 </div>
               </div>
             </div>

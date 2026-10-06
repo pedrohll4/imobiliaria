@@ -1,13 +1,13 @@
 // Service Worker para Yuri Almeida Imóveis PWA
-const CACHE_NAME = 'ya-imoveis-v2';
+const CACHE_NAME = 'ya-imoveis-v3';
 const PRECACHE_ASSETS = [
   '/',
   '/manifest.json',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
   '/icons/apple-touch-icon.png',
-  '/images/logo-ya-emblem.svg',
-  '/images/logo-yuri-almeida.svg',
+  '/images/logo-ya-emblem.png',
+  '/images/logo-yuri-almeida.png',
 ];
 
 // Instalação do Service Worker
