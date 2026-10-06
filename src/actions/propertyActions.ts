@@ -320,3 +320,204 @@ export async function togglePropertyFeaturedAction(propertyId: string): Promise<
     return { success: false, error: "Falha ao alterar destaque." };
   }
 }
+
+export async function updatePropertyAction(
+  prevState: PropertyActionResult | null,
+  formData: FormData
+): Promise<PropertyActionResult> {
+  const session = await getSession();
+  if (!session) {
+    return { success: false, error: "Apenas usuários autorizados podem editar imóveis." };
+  }
+
+  const propertyId = (formData.get("propertyId") as string)?.trim();
+  if (!propertyId) {
+    return { success: false, error: "ID do imóvel não informado." };
+  }
+
+  // Verificar se o imóvel existe
+  const existing = await prisma.property.findUnique({
+    where: { id: propertyId },
+    include: { broker: true, images: true, features: true },
+  });
+
+  if (!existing) {
+    return { success: false, error: "Imóvel não encontrado." };
+  }
+
+  // Permissão: ADMIN pode tudo; BROKER pode se for o responsável ou tiver delegação
+  let canEdit = session.role === "ADMIN";
+  let canAssignBroker = session.role === "ADMIN";
+  if (session.brokerId) {
+    if (existing.brokerId === session.brokerId) {
+      canEdit = true;
+    }
+    const brokerRec = await prisma.broker.findUnique({
+      where: { id: session.brokerId },
+      select: { canAssignBroker: true },
+    });
+    if (brokerRec?.canAssignBroker) {
+      canEdit = true;
+      canAssignBroker = true;
+    }
+  }
+
+  if (!canEdit) {
+    return { success: false, error: "Você não tem permissão para editar este imóvel." };
+  }
+
+  const title = (formData.get("title") as string)?.trim();
+  const description = (formData.get("description") as string)?.trim();
+  const customCode = (formData.get("code") as string)?.trim().toUpperCase() || existing.code;
+  const type = (formData.get("type") as string)?.trim();
+  const purpose = (formData.get("purpose") as string)?.trim() || "VENDA";
+  const price = parseFloat(formData.get("price") as string) || 0;
+  const condoFee = parseFloat(formData.get("condoFee") as string) || null;
+  const propertyTax = parseFloat(formData.get("propertyTax") as string) || null;
+  const city = (formData.get("city") as string)?.trim();
+  const state = (formData.get("state") as string)?.trim().toUpperCase();
+  const neighborhood = (formData.get("neighborhood") as string)?.trim();
+  const address = (formData.get("address") as string)?.trim() || null;
+  const number = (formData.get("number") as string)?.trim() || null;
+  const zipCode = (formData.get("zipCode") as string)?.trim() || null;
+  const bedrooms = parseInt(formData.get("bedrooms") as string, 10) || 0;
+  const suites = parseInt(formData.get("suites") as string, 10) || 0;
+  const bathrooms = parseInt(formData.get("bathrooms") as string, 10) || 0;
+  const parkingSpaces = parseInt(formData.get("parkingSpaces") as string, 10) || 0;
+  const builtArea = parseFloat(formData.get("builtArea") as string) || 0;
+  const totalArea = parseFloat(formData.get("totalArea") as string) || 0;
+  const status = (formData.get("status") as string)?.trim() || "PUBLICADO";
+  const assigned = (formData.get("assignedBrokerId") as string)?.trim();
+
+  const rawImages = (formData.get("imagesList") as string) || "";
+  const rawFeatures = (formData.get("featuresList") as string) || "";
+
+  if (!title || !description || !type || !purpose || price <= 0 || !city || !state || !neighborhood) {
+    return { success: false, error: "Por favor, preencha todos os campos obrigatórios com valores válidos." };
+  }
+
+  // Se o código foi alterado, checar duplicidade
+  if (customCode !== existing.code) {
+    const codeConflict = await prisma.property.findFirst({
+      where: { code: customCode, id: { not: propertyId } },
+      select: { id: true },
+    });
+    if (codeConflict) {
+      return { success: false, error: `O código ${customCode} já está em uso por outro imóvel.` };
+    }
+  }
+
+  // Definir corretor responsável
+  let brokerId = existing.brokerId;
+  if (canAssignBroker) {
+    if (assigned === "NONE") {
+      brokerId = null;
+    } else if (assigned) {
+      brokerId = assigned;
+    }
+  }
+
+  // Atualizar slug se o título foi modificado
+  let slug = existing.slug;
+  if (title !== existing.title) {
+    const baseSlug = title
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    slug = `${baseSlug}-${Math.floor(100 + Math.random() * 900)}`;
+  }
+
+  // Processar imagens
+  const imageLines = rawImages
+    .split(/[\n,]+/)
+    .map((url) => url.trim())
+    .filter((url) => url.startsWith("http") || url.startsWith("/"));
+
+  // Processar diferenciais
+  const featureLines = rawFeatures
+    .split(/[\n,]+/)
+    .map((f) => f.trim())
+    .filter((f) => f.length > 0);
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      // 1. Atualizar dados principais
+      await tx.property.update({
+        where: { id: propertyId },
+        data: {
+          code: customCode,
+          title,
+          slug,
+          description,
+          type,
+          purpose,
+          price,
+          condoFee,
+          propertyTax,
+          city,
+          state,
+          neighborhood,
+          address,
+          number,
+          zipCode,
+          bedrooms,
+          suites,
+          bathrooms,
+          parkingSpaces,
+          builtArea,
+          totalArea,
+          status,
+          brokerId,
+        },
+      });
+
+      // 2. Atualizar imagens se houver lista
+      if (imageLines.length > 0) {
+        await tx.propertyImage.deleteMany({ where: { propertyId } });
+        await tx.propertyImage.createMany({
+          data: imageLines.map((url, index) => ({
+            propertyId,
+            url,
+            isMain: index === 0,
+            order: index + 1,
+            alt: `${title} - Imagem ${index + 1}`,
+          })),
+        });
+      }
+
+      // 3. Atualizar características
+      await tx.propertyFeature.deleteMany({ where: { propertyId } });
+      if (featureLines.length > 0) {
+        await tx.propertyFeature.createMany({
+          data: featureLines.map((name) => ({
+            propertyId,
+            name,
+            category: "Diferenciais",
+          })),
+        });
+      }
+    });
+
+    revalidatePath("/");
+    revalidatePath("/imoveis");
+    revalidatePath(`/imoveis/${propertyId}`);
+    revalidatePath(`/imoveis/${slug}`);
+    revalidatePath("/dashboard/imoveis");
+    revalidatePath("/admin/imoveis");
+
+    return {
+      success: true,
+      message: "Imóvel atualizado com sucesso!",
+      propertyId,
+    };
+  } catch (err: any) {
+    console.error("Erro ao atualizar imóvel:", err);
+    return {
+      success: false,
+      error: err?.message || "Erro ao atualizar dados do imóvel. Tente novamente.",
+    };
+  }
+}
+

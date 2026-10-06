@@ -18,6 +18,7 @@ import {
   ChevronRight,
   MapPin,
   Sparkles,
+  Pencil,
 } from "lucide-react";
 import { getSiteSettings } from "@/lib/settings";
 
@@ -86,24 +87,54 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
     take: 3,
   });
 
+  // Verificar se o usuário autenticado pode editar este imóvel
+  let canEditProperty = false;
+  if (session) {
+    if (session.role === "ADMIN") {
+      canEditProperty = true;
+    } else if (session.role === "BROKER" && session.brokerId) {
+      if (property.brokerId === session.brokerId) {
+        canEditProperty = true;
+      } else {
+        const brokerRec = await prisma.broker.findUnique({
+          where: { id: session.brokerId },
+          select: { canAssignBroker: true },
+        });
+        canEditProperty = !!brokerRec?.canAssignBroker;
+      }
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-[#FBF9F5]">
       <Navbar session={session} settings={settings} />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-10">
         {/* Breadcrumb e Identificação */}
-        <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wider text-[#8C8983]">
-          <Link href="/" className="hover:text-[#0F1115] transition-colors">
-            Início
-          </Link>
-          <ChevronRight className="w-3 h-3" />
-          <Link href="/imoveis" className="hover:text-[#0F1115] transition-colors">
-            Imóveis
-          </Link>
-          <ChevronRight className="w-3 h-3" />
-          <span className="text-[#0F1115] font-medium">{property.city}</span>
-          <ChevronRight className="w-3 h-3" />
-          <span className="text-[#8C8983] truncate max-w-xs">{property.neighborhood}</span>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wider text-[#8C8983]">
+            <Link href="/" className="hover:text-[#0F1115] transition-colors">
+              Início
+            </Link>
+            <ChevronRight className="w-3 h-3" />
+            <Link href="/imoveis" className="hover:text-[#0F1115] transition-colors">
+              Imóveis
+            </Link>
+            <ChevronRight className="w-3 h-3" />
+            <span className="text-[#0F1115] font-medium">{property.city}</span>
+            <ChevronRight className="w-3 h-3" />
+            <span className="text-[#8C8983] truncate max-w-xs">{property.neighborhood}</span>
+          </div>
+
+          {canEditProperty && (
+            <Link
+              href={`/dashboard/imoveis/${property.id}/editar`}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#0F1115] hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#0F1115] text-xs font-semibold uppercase tracking-wider rounded border border-[#D4AF37]/30 transition-colors shadow-sm"
+            >
+              <Pencil className="w-3.5 h-3.5" />
+              Editar Imóvel
+            </Link>
+          )}
         </div>
 
         {/* Título & Badges de Cabeçalho */}

@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { deletePropertyAction } from "@/actions/propertyActions";
 import { PropertyBrokerReassignSelect } from "@/components/property/PropertyBrokerReassignSelect";
-import { Plus, Eye, ExternalLink, Trash2, Building, ShieldCheck, Users } from "lucide-react";
+import { Plus, Eye, ExternalLink, Trash2, Building, ShieldCheck, Users, Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 
 interface DashboardImoveisPageProps {
@@ -233,6 +233,14 @@ export default async function DashboardImoveisPage({ searchParams }: DashboardIm
                       </td>
                       <td className="py-3.5 px-4 text-right">
                         <div className="flex items-center justify-end gap-2">
+                          <Link
+                            href={`/dashboard/imoveis/${prop.id}/editar`}
+                            className="p-1.5 text-[#8C8983] hover:text-[#D4AF37] transition-colors"
+                            title="Editar imóvel"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </Link>
+
                           <Link
                             href={`/imoveis/${prop.id}`}
                             target="_blank"
