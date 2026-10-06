@@ -606,7 +606,7 @@ export function LuxuryLogo3D() {
   }, []);
 
   return (
-    <div className="relative w-full h-[420px] sm:h-[480px] lg:h-[500px] flex items-center justify-center select-none overflow-visible">
+    <div className="relative w-full h-[360px] sm:h-[420px] lg:h-[450px] flex items-center justify-center select-none overflow-visible">
       {/* Halo de brilho ambiental dourado 100% difuso (sem bordas retangulares) */}
       <div className="absolute inset-4 bg-radial from-[#D4AF37]/18 via-[#D4AF37]/5 to-transparent blur-3xl rounded-full pointer-events-none" />
 

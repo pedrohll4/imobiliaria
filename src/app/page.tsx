@@ -46,7 +46,7 @@ export default async function HomePage() {
 
       <main className="flex-1">
         {/* HERO CINEMATOGRÁFICO */}
-        <section className="relative min-h-[92vh] flex flex-col justify-between bg-[#0B0D12] text-[#FBF9F5] pt-12 pb-16 z-10">
+        <section className="relative min-h-[calc(100vh-5rem)] flex flex-col justify-between bg-[#0B0D12] text-[#FBF9F5] pt-12 sm:pt-16 pb-12 sm:pb-16 z-10">
           
           {/* Fotografia Arquitetônica Monumental de Fundo com Tratamento Editorial */}
           <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -69,14 +69,14 @@ export default async function HomePage() {
           </div>
 
           {/* Conteúdo Central do Hero + Elemento 3D */}
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full my-auto py-8">
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 flex flex-col justify-center py-6 sm:py-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               
               {/* Texto Editorial */}
               <div className="lg:col-span-6 space-y-6">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/[0.06] border border-white/[0.12] rounded-xs backdrop-blur-sm">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white/[0.06] border border-white/[0.15] rounded-sm backdrop-blur-sm shadow-sm">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
-                  <span className="text-[11px] uppercase tracking-[0.22em] text-[#F6EEDA] font-medium">
+                  <span className="text-[11px] uppercase tracking-[0.22em] text-[#F6EEDA] font-medium leading-none">
                     {settings.heroBadge}
                   </span>
                 </div>
