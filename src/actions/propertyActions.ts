@@ -47,10 +47,25 @@ export async function createPropertyAction(
   const rawImages = (formData.get("imagesList") as string)?.trim() || "";
   const rawFeatures = (formData.get("featuresList") as string)?.trim() || "";
 
-  // Determinar corretor responsável
+  // Determinar corretor responsável e permissão de delegação
   let brokerId = session.brokerId || null;
-  if (session.role === "ADMIN" && formData.get("assignedBrokerId")) {
-    brokerId = formData.get("assignedBrokerId") as string;
+
+  let canAssignBroker = session.role === "ADMIN";
+  if (!canAssignBroker && session.brokerId) {
+    const brokerRec = await prisma.broker.findUnique({
+      where: { id: session.brokerId },
+      select: { canAssignBroker: true },
+    });
+    canAssignBroker = !!brokerRec?.canAssignBroker;
+  }
+
+  if (canAssignBroker && formData.has("assignedBrokerId")) {
+    const assigned = (formData.get("assignedBrokerId") as string)?.trim();
+    if (!assigned || assigned === "NONE" || assigned === "null") {
+      brokerId = null; // Imobiliária geral / sem corretor exclusivo
+    } else {
+      brokerId = assigned;
+    }
   }
 
   if (!title || !description || !type || !purpose || price <= 0 || !city || !state || !neighborhood) {
@@ -172,7 +187,18 @@ export async function deletePropertyAction(propertyId: string): Promise<Property
     }
 
     if (session.role === "BROKER" && existing.brokerId !== session.brokerId) {
-      return { success: false, error: "Você não tem permissão para excluir este imóvel." };
+      let canManageTeam = false;
+      if (session.brokerId) {
+        const b = await prisma.broker.findUnique({
+          where: { id: session.brokerId },
+          select: { canAssignBroker: true },
+        });
+        canManageTeam = !!b?.canAssignBroker;
+      }
+
+      if (!canManageTeam) {
+        return { success: false, error: "Você não tem permissão para excluir este imóvel." };
+      }
     }
 
     // Coleta URLs das fotos antes de excluir no banco
@@ -198,6 +224,52 @@ export async function deletePropertyAction(propertyId: string): Promise<Property
   } catch (err) {
     console.error("Erro ao excluir imóvel:", err);
     return { success: false, error: "Falha ao excluir imóvel." };
+  }
+}
+
+export async function reassignPropertyBrokerAction(
+  propertyId: string,
+  assignedBrokerId: string | null
+): Promise<PropertyActionResult> {
+  const session = await getSession();
+  if (!session) {
+    return { success: false, error: "Não autorizado." };
+  }
+
+  let canAssign = session.role === "ADMIN";
+  if (!canAssign && session.brokerId) {
+    const b = await prisma.broker.findUnique({
+      where: { id: session.brokerId },
+      select: { canAssignBroker: true },
+    });
+    canAssign = !!b?.canAssignBroker;
+  }
+
+  if (!canAssign) {
+    return { success: false, error: "Você não tem permissão para alterar a titularidade do imóvel." };
+  }
+
+  try {
+    const targetBrokerId =
+      assignedBrokerId && assignedBrokerId !== "NONE" && assignedBrokerId !== "null"
+        ? assignedBrokerId
+        : null;
+
+    await prisma.property.update({
+      where: { id: propertyId },
+      data: { brokerId: targetBrokerId },
+    });
+
+    revalidatePath("/");
+    revalidatePath("/imoveis");
+    revalidatePath(`/imoveis/${propertyId}`);
+    revalidatePath("/dashboard/imoveis");
+    revalidatePath("/admin/imoveis");
+
+    return { success: true, message: "Corretor responsável atualizado com sucesso." };
+  } catch (err) {
+    console.error("Erro ao reatribuir corretor:", err);
+    return { success: false, error: "Falha ao atualizar corretor do imóvel." };
   }
 }
 

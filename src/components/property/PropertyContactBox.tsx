@@ -1,7 +1,18 @@
 "use client";
 
-import React, { useState, useActionState } from "react";
-import { ArrowUpRight, Calendar, MessageSquare, Share2, Check, User } from "lucide-react";
+import React, { useState, useTransition } from "react";
+import {
+  ArrowUpRight,
+  Calendar,
+  MessageSquare,
+  Share2,
+  Check,
+  User,
+  ShieldCheck,
+  Sparkles,
+  PhoneCall,
+  AlertCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
@@ -31,13 +42,10 @@ interface PropertyContactBoxProps {
 
 export function PropertyContactBox({ property, broker }: PropertyContactBoxProps) {
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<"INTEREST" | "VISIT">("INTEREST");
+  const [modalType, setModalType] = useState<"WHATSAPP" | "INTEREST" | "VISIT">("WHATSAPP");
   const [copied, setCopied] = useState(false);
-
-  const [state, formAction, isPending] = useActionState<LeadActionResult | null, FormData>(
-    createLeadAction,
-    null
-  );
+  const [isPending, startTransition] = useTransition();
+  const [submissionResult, setSubmissionResult] = useState<LeadActionResult | null>(null);
 
   const formattedPrice = new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -47,11 +55,6 @@ export function PropertyContactBox({ property, broker }: PropertyContactBoxProps
 
   const displayPrice = formattedPrice;
 
-  // WhatsApp link formatado com o número real do corretor
-  const brokerWhatsApp = broker?.whatsapp || "5511987654321";
-  const whatsappMessage = `Olá! Tenho interesse no imóvel ${property.title}, código ${property.code}. Gostaria de mais informações.`;
-  const whatsappUrl = `https://wa.me/${brokerWhatsApp}?text=${encodeURIComponent(whatsappMessage)}`;
-
   const handleShare = () => {
     if (typeof window !== "undefined") {
       navigator.clipboard.writeText(window.location.href);
@@ -60,15 +63,33 @@ export function PropertyContactBox({ property, broker }: PropertyContactBoxProps
     }
   };
 
-  const openLeadModal = (type: "INTEREST" | "VISIT") => {
+  const openLeadModal = (type: "WHATSAPP" | "INTEREST" | "VISIT") => {
     setModalType(type);
+    setSubmissionResult(null);
     setModalOpen(true);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    formData.set("source", modalType);
+
+    startTransition(async () => {
+      const res = await createLeadAction(null, formData);
+      setSubmissionResult(res);
+
+      if (res.success && res.whatsappUrl) {
+        if (typeof window !== "undefined") {
+          // Abre a conversa no WhatsApp em uma nova aba
+          window.open(res.whatsappUrl, "_blank");
+        }
+      }
+    });
   };
 
   return (
     <>
       <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] p-6 sm:p-7 rounded-sm shadow-subtle space-y-6 sticky top-28">
-        
         {/* Preço e Encargos */}
         <div>
           <span className="text-[11px] uppercase tracking-widest text-[#8C8983] font-medium">
@@ -140,26 +161,25 @@ export function PropertyContactBox({ property, broker }: PropertyContactBoxProps
               <h4 className="font-serif text-sm font-medium text-[#0F1115]">
                 Equipe de Atendimento Privado
               </h4>
-              <p className="text-xs text-[#8C8983]">Consultoria especializada</p>
+              <p className="text-xs text-[#8C8983]">Consultoria imobiliária especializada</p>
             </div>
           </div>
         )}
 
-        {/* Botões de Ação */}
+        {/* Botões de Ação com Captura Prévia de Lead */}
         <div className="space-y-2.5 pt-2">
-          {/* Botão WhatsApp com mensagem pré-formatada */}
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 bg-[#D4AF37] hover:bg-[#C29F2D] text-[#0B0D12] text-xs uppercase tracking-widest font-semibold rounded-sm transition-all shadow-sm"
+          {/* Botão Falar no WhatsApp: captura lead e inicia WhatsApp */}
+          <button
+            type="button"
+            onClick={() => openLeadModal("WHATSAPP")}
+            className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 bg-[#D4AF37] hover:bg-[#C29F2D] text-[#0B0D12] text-xs uppercase tracking-widest font-semibold rounded-sm transition-all shadow-sm active:scale-[0.99]"
           >
-            <MessageSquare className="w-4 h-4" />
+            <MessageSquare className="w-4 h-4 text-[#0B0D12]" />
             <span>Falar no WhatsApp</span>
-            <ArrowUpRight className="w-3.5 h-3.5 ml-auto" />
-          </a>
+            <ArrowUpRight className="w-3.5 h-3.5 ml-auto text-[#0B0D12]" />
+          </button>
 
-          {/* Botão Tenho Interesse (Abre formulário de lead) */}
+          {/* Botão Tenho Interesse */}
           <Button
             variant="primary"
             onClick={() => openLeadModal("INTEREST")}
@@ -168,7 +188,7 @@ export function PropertyContactBox({ property, broker }: PropertyContactBoxProps
             Tenho Interesse
           </Button>
 
-          {/* Botão Agendar Visita */}
+          {/* Botão Agendar Visita Privada */}
           <Button
             variant="outline"
             onClick={() => openLeadModal("VISIT")}
@@ -201,81 +221,122 @@ export function PropertyContactBox({ property, broker }: PropertyContactBoxProps
         </div>
       </div>
 
-      {/* Modal de Envio de Lead */}
+      {/* Modal de Captura de Lead & Conexão WhatsApp */}
       <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={modalType === "INTEREST" ? "Demonstração de Interesse" : "Agendamento de Visita"}
+        title={
+          modalType === "WHATSAPP"
+            ? "Falar no WhatsApp com o Consultor"
+            : modalType === "INTEREST"
+            ? "Demonstração de Interesse"
+            : "Agendamento de Visita Privada"
+        }
         subtitle={`Referente ao imóvel: ${property.title} (Cód. ${property.code})`}
       >
-        {state?.success ? (
+        {submissionResult?.success ? (
           <div className="py-6 text-center space-y-4">
-            <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
-              <Check className="w-6 h-6" />
+            <div className="w-14 h-14 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200">
+              <Check className="w-7 h-7" />
             </div>
-            <h4 className="font-serif text-xl text-[#0F1115]">
-              Solicitação Enviada com Sucesso
-            </h4>
-            <p className="text-sm text-[#6B6862] font-light max-w-sm mx-auto">
-              {state.message}
-            </p>
-            <div className="pt-4">
-              <Button variant="primary" onClick={() => setModalOpen(false)}>
-                Concluir
+
+            <div className="space-y-1">
+              <h4 className="font-serif text-2xl text-[#0F1115]">
+                {modalType === "WHATSAPP"
+                  ? "Atendimento Solicitado com Sucesso!"
+                  : "Solicitação Enviada com Sucesso"}
+              </h4>
+              <p className="text-xs text-[#6B6862] font-light max-w-sm mx-auto leading-relaxed">
+                Seu contato foi salvo em nossa central de atendimento e direcionado diretamente para{" "}
+                <strong>{broker?.name || "nossa equipe"}</strong>.
+              </p>
+            </div>
+
+            {submissionResult.whatsappUrl && (
+              <div className="pt-3 pb-1">
+                <a
+                  href={submissionResult.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2 py-3 px-5 bg-[#D4AF37] hover:bg-[#C29F2D] text-[#0B0D12] text-xs uppercase tracking-widest font-semibold rounded-xs shadow-sm transition-all"
+                >
+                  <MessageSquare className="w-4 h-4 text-[#0B0D12]" />
+                  <span>Continuar para a Conversa no WhatsApp</span>
+                  <ArrowUpRight className="w-4 h-4 text-[#0B0D12]" />
+                </a>
+                <p className="text-[11px] text-[#8C8983] font-light mt-1.5">
+                  Uma nova janela do WhatsApp deve ter sido aberta automaticamente.
+                </p>
+              </div>
+            )}
+
+            <div className="pt-2">
+              <Button
+                variant="ghost"
+                onClick={() => setModalOpen(false)}
+                className="text-xs uppercase tracking-wider"
+              >
+                Fechar Janela
               </Button>
             </div>
           </div>
         ) : (
-          <form action={formAction} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <input type="hidden" name="propertyId" value={property.id} />
 
-            {/* Honeypot invisível contra robôs de spam */}
+            {/* Honeypot anti-spam */}
             <div className="hidden" aria-hidden="true" style={{ display: "none" }}>
-              <input
-                type="text"
-                name="website_hp"
-                tabIndex={-1}
-                autoComplete="off"
-              />
+              <input type="text" name="website_hp" tabIndex={-1} autoComplete="off" />
             </div>
 
-            {state?.error && (
-              <div className="p-3 bg-red-50 text-red-700 text-xs border border-red-200 rounded-xs">
-                {state.error}
+            {submissionResult?.error && (
+              <div className="p-3 bg-red-50 text-red-700 text-xs border border-red-200 rounded-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+                <span>{submissionResult.error}</span>
               </div>
             )}
 
+            <div className="p-3 bg-[#FBF9F5] border border-[#0F1115]/10 rounded-xs text-xs text-[#6B6862] leading-relaxed flex items-start gap-2.5">
+              <Sparkles className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
+              <span>
+                {modalType === "WHATSAPP"
+                  ? "Informe seu nome e WhatsApp para iniciarmos seu atendimento exclusivo com o consultor responsável."
+                  : "Preencha seus dados para que nosso consultor prepare as informações completas do imóvel para você."}
+              </span>
+            </div>
+
             <Input
               name="name"
-              label="Nome Completo *"
+              label="Seu Nome Completo *"
               placeholder="Ex: Dra. Mariana Albuquerque"
               required
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
-                name="email"
-                type="email"
-                label="E-mail Corporativo ou Pessoal *"
-                placeholder="seu.email@exemplo.com"
+                name="phone"
+                type="tel"
+                label="WhatsApp com DDD *"
+                placeholder="(69) 99234-5678"
                 required
               />
               <Input
-                name="phone"
-                type="tel"
-                label="Telefone / WhatsApp *"
-                placeholder="(11) 98765-4321"
-                required
+                name="email"
+                type="email"
+                label="E-mail (opcional)"
+                placeholder="seu.email@exemplo.com"
               />
             </div>
 
             <Textarea
               name="message"
-              label="Mensagem / Observações"
+              label="Mensagem ou Dúvida Inicial"
               rows={3}
               defaultValue={
                 modalType === "VISIT"
-                  ? `Olá! Gostaria de agendar uma visita ao imóvel ${property.title}. Tenho preferência para o período da tarde.`
+                  ? `Olá! Gostaria de agendar uma visita privada ao imóvel ${property.title} (${property.code}).`
+                  : modalType === "WHATSAPP"
+                  ? `Olá! Tenho interesse no imóvel ${property.title} (${property.code}) e gostaria de atendimento.`
                   : `Olá! Tenho interesse no imóvel ${property.title} (${property.code}) e gostaria de mais informações.`
               }
             />
@@ -289,13 +350,29 @@ export function PropertyContactBox({ property, broker }: PropertyContactBoxProps
               >
                 Cancelar
               </Button>
+
               <Button
                 type="submit"
-                variant="primary"
+                variant="champagne"
                 isLoading={isPending}
-                className="px-6"
+                className="px-6 text-xs uppercase tracking-widest font-semibold flex items-center gap-2"
               >
-                {modalType === "INTEREST" ? "Enviar Interesse" : "Confirmar Solicitação"}
+                {modalType === "WHATSAPP" ? (
+                  <>
+                    <MessageSquare className="w-4 h-4" />
+                    <span>Iniciar no WhatsApp</span>
+                  </>
+                ) : modalType === "INTEREST" ? (
+                  <>
+                    <Check className="w-4 h-4" />
+                    <span>Enviar e Conversar</span>
+                  </>
+                ) : (
+                  <>
+                    <Calendar className="w-4 h-4" />
+                    <span>Confirmar Solicitação</span>
+                  </>
+                )}
               </Button>
             </div>
           </form>

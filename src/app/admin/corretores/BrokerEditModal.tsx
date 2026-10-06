@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Modal } from "@/components/ui/Modal";
-import { Edit2, UploadCloud, Loader2, Sparkles, CheckCircle2, AlertCircle } from "lucide-react";
+import { Edit2, UploadCloud, Loader2, Sparkles, CheckCircle2, AlertCircle, ShieldCheck } from "lucide-react";
 
 interface BrokerEditModalProps {
   broker: {
@@ -20,12 +20,14 @@ interface BrokerEditModalProps {
     creci: string;
     photoUrl: string;
     bio: string;
+    canAssignBroker?: boolean;
   };
 }
 
 export function BrokerEditModal({ broker }: BrokerEditModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [photoUrl, setPhotoUrl] = useState(broker.photoUrl);
+  const [canAssignBroker, setCanAssignBroker] = useState(broker.canAssignBroker ?? false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [uploadFeedback, setUploadFeedback] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -34,6 +36,7 @@ export function BrokerEditModal({ broker }: BrokerEditModalProps) {
     async (prev, formData) => {
       formData.set("brokerId", broker.id);
       formData.set("photoUrl", photoUrl);
+      formData.set("canAssignBroker", String(canAssignBroker));
       const res = await updateBrokerByAdminAction(prev, formData);
       if (res.success) {
         setIsOpen(false);
@@ -231,6 +234,27 @@ export function BrokerEditModal({ broker }: BrokerEditModalProps) {
             rows={3}
             defaultValue={broker.bio}
           />
+
+          {/* Permissão Especial de Gestão & Delegação */}
+          <div className="p-3.5 bg-[#FBF9F5] border border-[#D4AF37]/40 rounded-xs space-y-1.5">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={canAssignBroker}
+                onChange={(e) => setCanAssignBroker(e.target.checked)}
+                className="mt-1 h-4 w-4 rounded border-[#0F1115]/20 text-[#D4AF37] focus:ring-[#D4AF37] accent-[#D4AF37]"
+              />
+              <div className="space-y-0.5">
+                <span className="text-xs font-semibold text-[#0F1115] flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-[#D4AF37]" />
+                  Permissão para Delegar e Atribuir Imóveis
+                </span>
+                <p className="text-[11px] text-[#6B6862] font-light leading-relaxed">
+                  Permite que este corretor cadastre imóveis em nome de outros consultores da equipe (para ajudar colegas) ou sem corretor exclusivo (acervo geral da imobiliária).
+                </p>
+              </div>
+            </label>
+          </div>
 
           <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#0F1115]/10">
             <Button

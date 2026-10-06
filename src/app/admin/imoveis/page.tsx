@@ -2,18 +2,26 @@ import React from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { togglePropertyFeaturedAction, deletePropertyAction } from "@/actions/propertyActions";
+import { PropertyBrokerReassignSelect } from "@/components/property/PropertyBrokerReassignSelect";
 import { Star, Trash2, ExternalLink, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 
 export default async function AdminImoveisPage() {
-  const properties = await prisma.property.findMany({
-    include: {
-      broker: { select: { name: true, creci: true } },
-      images: { where: { isMain: true }, take: 1 },
-      _count: { select: { leads: true } },
-    },
-    orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
-  });
+  const [properties, brokers] = await Promise.all([
+    prisma.property.findMany({
+      include: {
+        broker: { select: { id: true, name: true, creci: true } },
+        images: { where: { isMain: true }, take: 1 },
+        _count: { select: { leads: true } },
+      },
+      orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+    }),
+    prisma.broker.findMany({
+      where: { active: true },
+      select: { id: true, name: true, creci: true },
+      orderBy: { name: "asc" },
+    }),
+  ]);
 
   return (
     <div className="space-y-6">
@@ -108,12 +116,11 @@ export default async function AdminImoveisPage() {
                     </td>
 
                     <td className="py-3.5 px-4">
-                      <span className="font-medium text-[#0F1115] block">
-                        {prop.broker?.name || "Sem corretor"}
-                      </span>
-                      <span className="text-[10px] text-[#8C8983] font-mono">
-                        {prop.broker?.creci || "Diretoria"}
-                      </span>
+                      <PropertyBrokerReassignSelect
+                        propertyId={prop.id}
+                        currentBrokerId={prop.brokerId}
+                        brokers={brokers}
+                      />
                     </td>
 
                     <td className="py-3.5 px-4">

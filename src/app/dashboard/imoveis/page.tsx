@@ -4,24 +4,55 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { deletePropertyAction } from "@/actions/propertyActions";
-import { Plus, Eye, ExternalLink, Trash2, Building } from "lucide-react";
+import { PropertyBrokerReassignSelect } from "@/components/property/PropertyBrokerReassignSelect";
+import { Plus, Eye, ExternalLink, Trash2, Building, ShieldCheck, Users } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 
-export default async function DashboardImoveisPage() {
+interface DashboardImoveisPageProps {
+  searchParams?: Promise<{ filter?: string }>;
+}
+
+export default async function DashboardImoveisPage({ searchParams }: DashboardImoveisPageProps) {
   const session = await getSession();
   if (!session) redirect("/login");
 
-  // Isolamento estrito de dados: se for BROKER, nunca exibe carteira de outros corretores
-  const where =
-    session.role === "ADMIN"
-      ? session.brokerId
-        ? { brokerId: session.brokerId }
-        : {}
-      : { brokerId: session.brokerId || "unassigned-security-block" };
+  let canManageTeam = session.role === "ADMIN";
+  if (!canManageTeam && session.brokerId) {
+    const brokerRec = await prisma.broker.findUnique({
+      where: { id: session.brokerId },
+      select: { canAssignBroker: true },
+    });
+    canManageTeam = !!brokerRec?.canAssignBroker;
+  }
+
+  const { filter = canManageTeam ? "todos" : "meus" } = (await searchParams) || {};
+
+  const where = canManageTeam
+    ? filter === "meus" && session.brokerId
+      ? { brokerId: session.brokerId }
+      : {}
+    : { brokerId: session.brokerId || "unassigned-security-block" };
+
+  let brokers: { id: string; name: string; creci: string }[] = [];
+  if (canManageTeam) {
+    brokers = await prisma.broker.findMany({
+      where: { active: true },
+      select: { id: true, name: true, creci: true },
+      orderBy: { name: "asc" },
+    });
+  }
 
   const properties = await prisma.property.findMany({
     where,
     include: {
+      broker: {
+        select: {
+          id: true,
+          name: true,
+          creci: true,
+          photoUrl: true,
+        },
+      },
       images: { where: { isMain: true }, take: 1 },
       _count: { select: { leads: true } },
     },
@@ -32,14 +63,21 @@ export default async function DashboardImoveisPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#0F1115]/10">
         <div>
-          <span className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-semibold">
-            Gestão de Carteira
+          <span className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-semibold flex items-center gap-1.5">
+            {canManageTeam && <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37]" />}
+            {canManageTeam ? "Gestão de Carteira & Equipe" : "Gestão de Carteira"}
           </span>
           <h1 className="font-serif text-3xl font-normal text-[#0F1115] mt-1">
-            Meus Imóveis Cadastrados ({properties.length})
+            {canManageTeam
+              ? filter === "meus"
+                ? `Meus Imóveis Pessoais (${properties.length})`
+                : `Acervo Completo & Equipe (${properties.length})`
+              : `Meus Imóveis Cadastrados (${properties.length})`}
           </h1>
           <p className="text-xs text-[#68655F] font-light mt-0.5">
-            Gerencie o status, visualizações e detalhes das suas propriedades ativas.
+            {canManageTeam
+              ? "Você possui permissão especial para gerenciar e cadastrar imóveis em nome de outros consultores da equipe."
+              : "Gerencie o status, visualizações e detalhes das suas propriedades ativas."}
           </p>
         </div>
 
@@ -52,14 +90,42 @@ export default async function DashboardImoveisPage() {
         </Link>
       </div>
 
+      {/* Abas de Filtro para Corretores Gestores e Admins */}
+      {canManageTeam && (
+        <div className="flex items-center gap-2">
+          <Link
+            href="/dashboard/imoveis?filter=todos"
+            className={`px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-xs transition-all ${
+              filter === "todos"
+                ? "bg-[#0B0D12] text-[#D4AF37] shadow-xs"
+                : "bg-white text-[#68655F] hover:text-[#0F1115] border border-[#0F1115]/10"
+            }`}
+          >
+            Todos os Imóveis da Equipe
+          </Link>
+          <Link
+            href="/dashboard/imoveis?filter=meus"
+            className={`px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-xs transition-all ${
+              filter === "meus"
+                ? "bg-[#0B0D12] text-[#D4AF37] shadow-xs"
+                : "bg-white text-[#68655F] hover:text-[#0F1115] border border-[#0F1115]/10"
+            }`}
+          >
+            Apenas Meus Imóveis
+          </Link>
+        </div>
+      )}
+
       {properties.length === 0 ? (
         <div className="bg-[#FFFFFF] border border-[#0F1115]/10 p-12 text-center rounded-sm space-y-4">
           <Building className="w-10 h-10 text-[#D4AF37] mx-auto" />
           <h3 className="font-serif text-xl text-[#0F1115]">
-            Nenhum imóvel cadastrado ainda
+            Nenhum imóvel encontrado
           </h3>
           <p className="text-xs text-[#8C8983] max-w-sm mx-auto">
-            Comece a cadastrar sua primeira residência de alto padrão para exibi-la no portal público.
+            {filter === "meus"
+              ? "Você ainda não possui imóveis diretamente atribuídos a você."
+              : "Nenhuma residência de alto padrão foi cadastrada no sistema ainda."}
           </p>
           <div className="pt-2">
             <Link
@@ -77,6 +143,9 @@ export default async function DashboardImoveisPage() {
               <thead className="bg-[#F4F1EA] text-[11px] uppercase tracking-wider text-[#6B6862] border-b border-[#0F1115]/10">
                 <tr>
                   <th className="py-3.5 px-4 font-semibold">Imóvel / Código</th>
+                  {canManageTeam && (
+                    <th className="py-3.5 px-4 font-semibold">Corretor Titular</th>
+                  )}
                   <th className="py-3.5 px-4 font-semibold">Tipologia</th>
                   <th className="py-3.5 px-4 font-semibold">Finalidade</th>
                   <th className="py-3.5 px-4 font-semibold">Valor</th>
@@ -114,6 +183,15 @@ export default async function DashboardImoveisPage() {
                           </div>
                         </div>
                       </td>
+                      {canManageTeam && (
+                        <td className="py-3.5 px-4">
+                          <PropertyBrokerReassignSelect
+                            propertyId={prop.id}
+                            currentBrokerId={prop.brokerId}
+                            brokers={brokers}
+                          />
+                        </td>
+                      )}
                       <td className="py-3.5 px-4">
                         <Badge variant="sand" className="text-[10px]">
                           {prop.type}

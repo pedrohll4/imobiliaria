@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Modal } from "@/components/ui/Modal";
-import { Plus, UploadCloud, Loader2, CheckCircle2, AlertCircle, Sparkles } from "lucide-react";
+import { Plus, UploadCloud, Loader2, CheckCircle2, AlertCircle, Sparkles, ShieldCheck } from "lucide-react";
 
 export function BrokerCreateModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -187,6 +187,27 @@ export function BrokerCreateModal() {
             placeholder="Breve resumo da trajetória, áreas de especialização e diferenciais do corretor..."
             defaultValue="Especialista em propriedades de alto padrão e investimentos imobiliários com atendimento consultivo."
           />
+
+          {/* Permissão Especial de Gestão & Delegação */}
+          <div className="p-3.5 bg-[#FBF9F5] border border-[#D4AF37]/40 rounded-xs space-y-1.5">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                name="canAssignBroker"
+                value="true"
+                className="mt-1 h-4 w-4 rounded border-[#0F1115]/20 text-[#D4AF37] focus:ring-[#D4AF37] accent-[#D4AF37]"
+              />
+              <div className="space-y-0.5">
+                <span className="text-xs font-semibold text-[#0F1115] flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-[#D4AF37]" />
+                  Permissão para Delegar e Atribuir Imóveis
+                </span>
+                <p className="text-[11px] text-[#6B6862] font-light leading-relaxed">
+                  Permite que este corretor cadastre imóveis em nome de outros consultores da equipe (para ajudar colegas) ou sem corretor exclusivo (acervo geral da imobiliária).
+                </p>
+              </div>
+            </label>
+          </div>
 
           <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#0F1115]/10">
             <Button

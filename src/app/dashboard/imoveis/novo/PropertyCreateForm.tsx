@@ -20,6 +20,8 @@ import {
   Sparkles,
   AlertCircle,
   CheckCircle2,
+  ShieldCheck,
+  UserCheck,
 } from "lucide-react";
 
 const COMMON_AMENITIES = [
@@ -43,7 +45,17 @@ const COMMON_AMENITIES = [
   "Pé-direito duplo",
 ];
 
-export function PropertyCreateForm() {
+interface PropertyCreateFormProps {
+  canAssignBroker?: boolean;
+  brokers?: { id: string; name: string; creci: string; photoUrl: string }[];
+  currentBrokerId?: string;
+}
+
+export function PropertyCreateForm({
+  canAssignBroker = false,
+  brokers = [],
+  currentBrokerId,
+}: PropertyCreateFormProps) {
   const router = useRouter();
 
   // Imagens dinâmicas
@@ -209,6 +221,34 @@ export function PropertyCreateForm() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+          {/* Delegação / Seleção do Corretor Titular (Apenas com permissão) */}
+          {canAssignBroker && (
+            <div className="sm:col-span-12 p-4 bg-[#FBF9F5] border border-[#D4AF37]/50 rounded-xs space-y-2">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-[#D4AF37]" />
+                <label className="text-xs font-semibold text-[#0F1115] uppercase tracking-wider">
+                  Corretor Responsável pelo Imóvel (Delegação de Carteira)
+                </label>
+              </div>
+              <p className="text-[11px] text-[#6B6862] font-light leading-relaxed">
+                Você possui permissão especial para definir a titularidade deste imóvel. Escolha o corretor responsável (caso esteja cadastrando para outro colega da equipe) ou marque como Acervo Geral da Imobiliária.
+              </p>
+              <Select
+                name="assignedBrokerId"
+                label=""
+                defaultValue={currentBrokerId || "NONE"}
+                className="bg-white text-xs"
+              >
+                <option value="NONE">🏢 Acervo Geral da Imobiliária (Sem corretor exclusivo)</option>
+                {brokers.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    👤 {b.name} — CRECI {b.creci} {b.id === currentBrokerId ? "★ (Você)" : ""}
+                  </option>
+                ))}
+              </Select>
+            </div>
+          )}
+
           <div className="sm:col-span-8">
             <Input
               name="title"

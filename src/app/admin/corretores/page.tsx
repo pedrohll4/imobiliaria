@@ -1,11 +1,11 @@
 import React from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { toggleBrokerStatusAction, deleteBrokerAction, impersonateBrokerAction } from "@/actions/brokerActions";
+import { toggleBrokerStatusAction, deleteBrokerAction, impersonateBrokerAction, toggleBrokerAssignPermissionAction } from "@/actions/brokerActions";
 import { BrokerCreateModal } from "./BrokerCreateModal";
 import { BrokerEditModal } from "./BrokerEditModal";
 import { Badge } from "@/components/ui/Badge";
-import { ExternalLink, Building2, Users, Trash2, LogIn } from "lucide-react";
+import { ExternalLink, Building2, Users, Trash2, LogIn, ShieldCheck } from "lucide-react";
 
 export default async function AdminCorretoresPage() {
   const brokers = await prisma.broker.findMany({
@@ -81,9 +81,15 @@ export default async function AdminCorretoresPage() {
                         <span className="font-semibold text-[#0F1115] block">
                           {broker.name}
                         </span>
-                        <span className="text-[11px] text-[#8C8983]">
+                        <span className="text-[11px] text-[#8C8983] block">
                           {broker.email}
                         </span>
+                        {broker.canAssignBroker && (
+                          <span className="inline-flex items-center gap-1 mt-1 px-1.5 py-0.5 bg-[#D4AF37]/15 text-[#8C6D1F] border border-[#D4AF37]/30 rounded-xs text-[9px] font-semibold uppercase tracking-wider">
+                            <ShieldCheck className="w-2.5 h-2.5" />
+                            Delegador de Imóveis
+                          </span>
+                        )}
                       </div>
                     </div>
                   </td>
@@ -131,6 +137,30 @@ export default async function AdminCorretoresPage() {
                         </button>
                       </form>
 
+                      {/* Botão de Toggle Rápido para Permissão de Delegar */}
+                      <form
+                        action={async () => {
+                          "use server";
+                          await toggleBrokerAssignPermissionAction(broker.id);
+                        }}
+                      >
+                        <button
+                          type="submit"
+                          className={`p-1.5 rounded-xs transition-colors border ${
+                            broker.canAssignBroker
+                              ? "bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100"
+                              : "bg-[#F4F1EA] text-[#8C8983] border-[#0F1115]/10 hover:text-[#0F1115] hover:bg-[#EAE7DF]"
+                          }`}
+                          title={
+                            broker.canAssignBroker
+                              ? "Permissão de delegação ATIVA (pode cadastrar para a equipe). Clique para revogar."
+                              : "Conceder permissão para delegar e cadastrar imóveis para a equipe."
+                          }
+                        >
+                          <ShieldCheck className="w-3.5 h-3.5" />
+                        </button>
+                      </form>
+
                       <BrokerEditModal
                         broker={{
                           id: broker.id,
@@ -141,6 +171,7 @@ export default async function AdminCorretoresPage() {
                           creci: broker.creci,
                           photoUrl: broker.photoUrl,
                           bio: broker.bio,
+                          canAssignBroker: broker.canAssignBroker,
                         }}
                       />
 

@@ -28,6 +28,7 @@ export async function createBrokerAction(
   const creci = (formData.get("creci") as string)?.trim();
   const photoUrl = (formData.get("photoUrl") as string)?.trim() || "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&q=80";
   const bio = (formData.get("bio") as string)?.trim() || "Consultor imobiliário de alto padrão.";
+  const canAssignBroker = formData.get("canAssignBroker") === "true" || formData.get("canAssignBroker") === "on";
 
   if (!name || !email || !password || !phone || !creci) {
     return { success: false, error: "Preencha todos os campos obrigatórios." };
@@ -63,6 +64,7 @@ export async function createBrokerAction(
         creci,
         photoUrl,
         bio,
+        canAssignBroker,
       },
     });
 
@@ -111,6 +113,43 @@ export async function toggleBrokerStatusAction(brokerId: string): Promise<Broker
   } catch (err) {
     console.error("Erro ao alterar status:", err);
     return { success: false, error: "Erro ao atualizar status do corretor." };
+  }
+}
+
+export async function toggleBrokerAssignPermissionAction(brokerId: string): Promise<BrokerActionResult> {
+  const session = await getSession();
+  if (!session || session.role !== "ADMIN") {
+    return { success: false, error: "Apenas administradores podem alterar permissões de delegação." };
+  }
+
+  try {
+    const broker = await prisma.broker.findUnique({
+      where: { id: brokerId },
+      select: { id: true, name: true, canAssignBroker: true },
+    });
+
+    if (!broker) {
+      return { success: false, error: "Corretor não encontrado." };
+    }
+
+    const newPermission = !broker.canAssignBroker;
+
+    await prisma.broker.update({
+      where: { id: brokerId },
+      data: { canAssignBroker: newPermission },
+    });
+
+    revalidatePath("/admin/corretores");
+    revalidatePath("/dashboard/imoveis");
+    revalidatePath("/dashboard/imoveis/novo");
+
+    return {
+      success: true,
+      message: `Permissão de delegação para ${broker.name} ${newPermission ? "ativada" : "desativada"} com sucesso.`,
+    };
+  } catch (err) {
+    console.error("Erro ao alterar permissão de delegação:", err);
+    return { success: false, error: "Erro ao atualizar permissão do corretor." };
   }
 }
 
@@ -251,6 +290,10 @@ export async function updateBrokerByAdminAction(
   const photoUrl = (formData.get("photoUrl") as string)?.trim();
   const bio = (formData.get("bio") as string)?.trim();
   const newPassword = (formData.get("newPassword") as string)?.trim();
+  const canAssignBrokerField = formData.get("canAssignBroker");
+  const canAssignBroker = canAssignBrokerField !== null
+    ? canAssignBrokerField === "true" || canAssignBrokerField === "on"
+    : undefined;
 
   if (!brokerId || !name || !email) {
     return { success: false, error: "Nome e e-mail são obrigatórios." };
@@ -303,6 +346,7 @@ export async function updateBrokerByAdminAction(
         creci: creci || broker.creci,
         photoUrl: photoUrl || broker.photoUrl,
         bio: bio || broker.bio,
+        ...(canAssignBroker !== undefined ? { canAssignBroker } : {}),
       },
     });
 

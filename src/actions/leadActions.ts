@@ -2,12 +2,14 @@
 
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { getSiteSettings } from "@/lib/settings";
 import { revalidatePath } from "next/cache";
 
 export interface LeadActionResult {
   success: boolean;
   message?: string;
   error?: string;
+  whatsappUrl?: string;
 }
 
 // Rate limiting em memória para submissão pública de leads
@@ -15,7 +17,7 @@ const leadSubmissions = new Map<string, number[]>();
 function checkLeadRateLimit(identifier: string): boolean {
   const now = Date.now();
   const windowMs = 5 * 60 * 1000; // 5 minutos
-  const maxSubmissions = 3;
+  const maxSubmissions = 4;
 
   const timestamps = (leadSubmissions.get(identifier) || []).filter(
     (t) => now - t < windowMs
@@ -37,7 +39,6 @@ export async function createLeadAction(
   // 1. Verificação Honeypot (campo armadilha invisível preenchido por robôs)
   const honeypot = (formData.get("website_hp") as string)?.trim();
   if (honeypot) {
-    // Se o bot preencheu o honeypot, finge sucesso mas descarta a gravação
     return {
       success: true,
       message: "Sua solicitação foi recebida com sucesso. Nosso especialista entrará em contato em breve.",
@@ -46,30 +47,37 @@ export async function createLeadAction(
 
   const propertyId = (formData.get("propertyId") as string)?.trim() || null;
   const name = (formData.get("name") as string)?.trim();
-  const email = (formData.get("email") as string)?.trim().toLowerCase();
+  const rawEmail = (formData.get("email") as string)?.trim().toLowerCase() || "";
   const phone = (formData.get("phone") as string)?.trim();
   const message = (formData.get("message") as string)?.trim() || "";
+  const source = (formData.get("source") as string)?.trim() || "PORTAL";
 
-  if (!name || !email || !phone) {
+  if (!name || !phone) {
     return {
       success: false,
-      error: "Por favor, preencha seu nome, e-mail e telefone para contato.",
+      error: "Por favor, informe seu nome e telefone/WhatsApp para contato.",
     };
   }
 
   // Validação de comprimento para evitar ataques de DoS com payloads gigantes
   if (name.length > 150) {
-    return { success: false, error: "Nome muito longo." };
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email) || email.length > 150) {
-    return { success: false, error: "E-mail inválido." };
+    return { success: false, error: "Nome muito extenso." };
   }
 
   const digitsOnly = phone.replace(/\D/g, "");
   if (digitsOnly.length < 8 || digitsOnly.length > 16) {
-    return { success: false, error: "Número de telefone inválido." };
+    return { success: false, error: "Número de telefone/WhatsApp inválido." };
+  }
+
+  // E-mail: se não informado pelo cliente no fluxo rápido de WhatsApp, cria fallback válido
+  let validEmail = rawEmail;
+  if (!validEmail) {
+    validEmail = `${digitsOnly}@lead.whatsapp.com`;
+  } else {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(validEmail) || validEmail.length > 150) {
+      return { success: false, error: "E-mail inválido." };
+    }
   }
 
   if (message.length > 3000) {
@@ -77,36 +85,89 @@ export async function createLeadAction(
   }
 
   // 2. Rate limiting por e-mail ou telefone
-  if (checkLeadRateLimit(email) || checkLeadRateLimit(digitsOnly)) {
+  if (checkLeadRateLimit(validEmail) || checkLeadRateLimit(digitsOnly)) {
     return {
       success: false,
-      error: "Muitas mensagens enviadas recentemente. Por favor, aguarde alguns minutos antes de tentar novamente.",
+      error: "Muitas tentativas recentemente. Por favor, aguarde alguns minutos antes de enviar novamente.",
     };
   }
 
   try {
     let brokerId: string | null = null;
+    let brokerWhatsApp: string | null = null;
+    let brokerName: string | null = null;
+    let propertyTitle: string = "Imóvel de Alto Padrão";
+    let propertyCode: string = "";
 
     if (propertyId) {
       const prop = await prisma.property.findUnique({
         where: { id: propertyId },
-        select: { brokerId: true },
+        select: {
+          id: true,
+          title: true,
+          code: true,
+          brokerId: true,
+          broker: {
+            select: {
+              id: true,
+              name: true,
+              whatsapp: true,
+            },
+          },
+        },
       });
-      brokerId = prop?.brokerId || null;
+
+      if (prop) {
+        brokerId = prop.brokerId || null;
+        propertyTitle = prop.title;
+        propertyCode = prop.code;
+        if (prop.broker?.whatsapp) {
+          brokerWhatsApp = prop.broker.whatsapp.replace(/\D/g, "");
+          brokerName = prop.broker.name;
+        }
+      }
     }
 
+    // Se o imóvel não tiver corretor exclusivo ou o corretor não tiver WhatsApp cadastrado, usa o da empresa
+    if (!brokerWhatsApp) {
+      try {
+        const settings = await getSiteSettings();
+        if (settings?.whatsapp) {
+          brokerWhatsApp = settings.whatsapp.replace(/\D/g, "");
+        }
+      } catch (e) {
+        console.error("Erro ao carregar configurações de WhatsApp:", e);
+      }
+    }
+
+    if (!brokerWhatsApp) {
+      brokerWhatsApp = "5569999999999";
+    } else if (!brokerWhatsApp.startsWith("55")) {
+      brokerWhatsApp = `55${brokerWhatsApp}`;
+    }
+
+    // Grava o lead no banco de dados com vínculo de corretor e imóvel
     await prisma.lead.create({
       data: {
         propertyId,
         brokerId,
         name,
-        email,
+        email: validEmail,
         phone,
         message,
         status: "NOVO",
-        source: "PORTAL",
+        source,
       },
     });
+
+    // Monta a mensagem pré-formatada para iniciar a conversa no WhatsApp
+    const greetingHeader = brokerName ? `Olá ${brokerName}!` : "Olá!";
+    const propRef = propertyCode
+      ? ` referente ao imóvel "${propertyTitle}" (Cód. ${propertyCode})`
+      : "";
+    const extraMsg = message ? ` ${message}` : ` Gostaria de receber mais detalhes e atendimento.`;
+    const fullWaText = `${greetingHeader} Meu nome é ${name} (${phone}). Tenho interesse${propRef}.${extraMsg}`;
+    const whatsappUrl = `https://wa.me/${brokerWhatsApp}?text=${encodeURIComponent(fullWaText)}`;
 
     if (propertyId) {
       revalidatePath(`/imoveis/${propertyId}`);
@@ -116,13 +177,14 @@ export async function createLeadAction(
 
     return {
       success: true,
-      message: "Sua solicitação foi recebida com sucesso. Nosso especialista entrará em contato em breve.",
+      message: "Lead registrado com sucesso! Redirecionando para a conversa no WhatsApp...",
+      whatsappUrl,
     };
   } catch (err) {
     console.error("Erro ao registrar lead:", err);
     return {
       success: false,
-      error: "Não foi possível enviar sua mensagem no momento. Tente novamente mais tarde.",
+      error: "Não foi possível registrar seu contato no momento. Tente novamente mais tarde.",
     };
   }
 }
