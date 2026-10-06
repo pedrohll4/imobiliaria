@@ -227,16 +227,16 @@ export function PropertyCreateForm() {
           </div>
 
           <div className="sm:col-span-6">
-            <Select name="type" label="Tipologia *" required>
+            <Select name="type" label="Tipo de Imóvel *" required>
+              <option value="CASA">Casa</option>
+              <option value="CONDOMINIO">Casa em Condomínio Fechado</option>
               <option value="APARTAMENTO">Apartamento</option>
-              <option value="COBERTURA">Cobertura & Penthouse</option>
-              <option value="CASA">Casa de Alto Padrão</option>
-              <option value="CONDOMINIO">Residência em Condomínio Fechado</option>
-              <option value="FAZENDA">Fazenda & Haras Nobre</option>
-              <option value="CHACARA">Chácara Contemporânea</option>
-              <option value="SOBRADO">Sobrado de Vila</option>
               <option value="TERRENO">Terreno / Lote</option>
-              <option value="COMERCIAL">Corporativo Boutique</option>
+              <option value="CHACARA">Chácara / Sítio</option>
+              <option value="FAZENDA">Fazenda</option>
+              <option value="COMERCIAL">Comercial / Sala / Ponto</option>
+              <option value="SOBRADO">Sobrado</option>
+              <option value="COBERTURA">Cobertura</option>
             </Select>
           </div>
 

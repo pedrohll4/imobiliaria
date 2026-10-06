@@ -119,15 +119,15 @@ export function PropertyFilterSidebar() {
           className="w-full text-xs px-3.5 py-2.5 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#D4AF37] cursor-pointer"
         >
           <option value="">Todos os Tipos</option>
-          <option value="APARTAMENTO">Apartamento</option>
-          <option value="COBERTURA">Cobertura</option>
           <option value="CASA">Casa</option>
           <option value="CONDOMINIO">Casa em Condomínio</option>
-          <option value="FAZENDA">Fazenda / Haras</option>
-          <option value="CHACARA">Chácara</option>
-          <option value="SOBRADO">Sobrado</option>
+          <option value="APARTAMENTO">Apartamento</option>
           <option value="TERRENO">Terreno / Lote</option>
-          <option value="COMERCIAL">Comercial Boutique</option>
+          <option value="CHACARA">Chácara / Sítio</option>
+          <option value="FAZENDA">Fazenda</option>
+          <option value="COMERCIAL">Comercial / Sala / Ponto</option>
+          <option value="SOBRADO">Sobrado</option>
+          <option value="COBERTURA">Cobertura</option>
         </select>
       </div>
 
@@ -139,18 +139,55 @@ export function PropertyFilterSidebar() {
         <div className="grid grid-cols-2 gap-2">
           <input
             type="number"
+            step="10000"
             value={minPrice}
             onChange={(e) => setMinPrice(e.target.value)}
-            placeholder="Mínimo"
+            placeholder="Mínimo (R$)"
             className="w-full text-xs px-3 py-2 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#D4AF37]"
           />
           <input
             type="number"
+            step="10000"
             value={maxPrice}
             onChange={(e) => setMaxPrice(e.target.value)}
-            placeholder="Máximo"
+            placeholder="Máximo (R$)"
             className="w-full text-xs px-3 py-2 bg-white border border-[#0F1115]/15 rounded-xs focus:outline-none focus:border-[#D4AF37]"
           />
+        </div>
+
+        {/* Chips de Valores Mais Buscados */}
+        <div className="flex flex-wrap gap-1 pt-1">
+          {[
+            { label: "Até 250k", min: "", max: "250000" },
+            { label: "250k - 500k", min: "250000", max: "500000" },
+            { label: "500k - 1M", min: "500000", max: "1000000" },
+            { label: "1M - 2.5M", min: "1000000", max: "2500000" },
+            { label: "+ 2.5M", min: "2500000", max: "" },
+          ].map((preset) => {
+            const isSelected = minPrice === preset.min && maxPrice === preset.max;
+            return (
+              <button
+                key={preset.label}
+                type="button"
+                onClick={() => {
+                  if (isSelected) {
+                    setMinPrice("");
+                    setMaxPrice("");
+                  } else {
+                    setMinPrice(preset.min);
+                    setMaxPrice(preset.max);
+                  }
+                }}
+                className={`text-[10px] px-2 py-0.5 rounded-xs border transition-colors ${
+                  isSelected
+                    ? "bg-[#D4AF37] text-[#0B0D12] border-[#D4AF37] font-semibold"
+                    : "bg-white text-[#68655F] border-[#0F1115]/10 hover:border-[#0F1115]/30 hover:text-[#0F1115]"
+                }`}
+              >
+                {preset.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 

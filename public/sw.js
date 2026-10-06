@@ -1,5 +1,5 @@
 // Service Worker para Yuri Almeida Imóveis PWA
-const CACHE_NAME = 'ya-imoveis-v4';
+const CACHE_NAME = 'ya-imoveis-v5';
 const PRECACHE_ASSETS = [
   '/',
   '/manifest.json',
