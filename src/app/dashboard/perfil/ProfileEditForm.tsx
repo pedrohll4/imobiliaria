@@ -8,6 +8,7 @@ import {
   BrokerActionResult,
 } from "@/actions/brokerActions";
 import { uploadBrokerImageAction } from "@/actions/uploadActions";
+import { uploadDirectToSupabase } from "@/lib/supabaseClient";
 import { compressImage } from "@/lib/imageOptimization";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
@@ -98,21 +99,28 @@ export function ProfileEditForm({
         mimeType: "image/webp",
       });
 
-      const fd = new FormData();
-      fd.append("file", compressed.file);
-
-      const res = await uploadBrokerImageAction(fd);
-      if (res.success && res.url) {
-        setPhotoUrl(res.url);
-        // Persistir imediatamente no banco de dados para nunca perder a foto
-        await updateBrokerAvatarInstantAction(res.url, initialBroker?.id);
-        setPhotoFeedback({
-          type: "success",
-          message: "Foto de perfil enviada e salva com sucesso no banco de dados e CDN!",
-        });
+      let uploadedUrl: string | null = null;
+      const directRes = await uploadDirectToSupabase(compressed.file, "brokers");
+      if (directRes.success && directRes.url) {
+        uploadedUrl = directRes.url;
       } else {
-        throw new Error(res.error || "Erro ao salvar foto no Supabase.");
+        const fd = new FormData();
+        fd.append("file", compressed.file);
+        const res = await uploadBrokerImageAction(fd);
+        if (res.success && res.url) {
+          uploadedUrl = res.url;
+        } else {
+          throw new Error(directRes.error || res.error || "Erro ao salvar foto no Supabase.");
+        }
       }
+
+      setPhotoUrl(uploadedUrl);
+      // Persistir imediatamente no banco de dados para nunca perder a foto
+      await updateBrokerAvatarInstantAction(uploadedUrl, initialBroker?.id);
+      setPhotoFeedback({
+        type: "success",
+        message: "Foto de perfil enviada e salva com sucesso no banco de dados e CDN!",
+      });
     } catch (err: any) {
       console.error("Erro no upload de foto de perfil:", err);
       setPhotoFeedback({

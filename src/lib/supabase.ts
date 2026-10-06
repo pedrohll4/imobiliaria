@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 const supabaseUrl =
   process.env.NEXT_PUBLIC_SUPABASE_URL || "https://jvcknnpsjylcmvpmcwxd.supabase.co";
 
-// Usa Service Role Key (privilegiada para backend) ou Anon Key (pública)
+// Usa Service Role Key ou Anon Key das variáveis de ambiente
 const supabaseKey =
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
@@ -34,7 +34,7 @@ export async function uploadImageToSupabase(
     return {
       success: false,
       error:
-        "Supabase Storage não configurado. Adicione NEXT_PUBLIC_SUPABASE_ANON_KEY ou SUPABASE_SERVICE_ROLE_KEY no seu arquivo .env.",
+        "Supabase Storage não inicializado no servidor. Verifique as credenciais no .env.",
     };
   }
 
@@ -75,14 +75,12 @@ export async function uploadImageToSupabase(
  */
 export async function deleteImagesFromSupabase(
   imageUrls: string[]
-): Promise<{ success: boolean; removedCount: number }> {
+): Promise<{ success: boolean; removedCount: number; error?: string }> {
   if (!supabase || !imageUrls || imageUrls.length === 0) {
     return { success: false, removedCount: 0 };
   }
 
   try {
-    // Filtrar apenas URLs que pertencem ao nosso bucket no Supabase
-    // Formato típico: https://<project>.supabase.co/storage/v1/object/public/properties/properties/123-foto.webp
     const filePaths: string[] = [];
 
     for (const url of imageUrls) {
@@ -102,12 +100,12 @@ export async function deleteImagesFromSupabase(
 
     if (error) {
       console.error("Erro ao deletar arquivos do Supabase Storage:", error);
-      return { success: false, removedCount: 0 };
+      return { success: false, error: error.message, removedCount: 0 };
     }
 
     return { success: true, removedCount: filePaths.length };
-  } catch (err) {
+  } catch (err: any) {
     console.error("Exceção ao limpar imagens do Supabase:", err);
-    return { success: false, removedCount: 0 };
+    return { success: false, error: err?.message, removedCount: 0 };
   }
 }

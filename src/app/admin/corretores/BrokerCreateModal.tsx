@@ -3,6 +3,7 @@
 import React, { useState, useActionState, useRef } from "react";
 import { createBrokerAction, BrokerActionResult } from "@/actions/brokerActions";
 import { uploadBrokerImageAction } from "@/actions/uploadActions";
+import { uploadDirectToSupabase } from "@/lib/supabaseClient";
 import { compressImage } from "@/lib/imageOptimization";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -47,16 +48,23 @@ export function BrokerCreateModal() {
         mimeType: "image/webp",
       });
 
-      const fd = new FormData();
-      fd.append("file", compressed.file);
-
-      const res = await uploadBrokerImageAction(fd);
-      if (res.success && res.url) {
-        setPhotoUrl(res.url);
-        setUploadFeedback("Foto enviada com sucesso para o Supabase Storage!");
+      let uploadedUrl: string | null = null;
+      const directRes = await uploadDirectToSupabase(compressed.file, "brokers");
+      if (directRes.success && directRes.url) {
+        uploadedUrl = directRes.url;
       } else {
-        throw new Error(res.error || "Falha ao salvar foto no Supabase.");
+        const fd = new FormData();
+        fd.append("file", compressed.file);
+        const res = await uploadBrokerImageAction(fd);
+        if (res.success && res.url) {
+          uploadedUrl = res.url;
+        } else {
+          throw new Error(directRes.error || res.error || "Falha ao salvar foto no Supabase.");
+        }
       }
+
+      setPhotoUrl(uploadedUrl);
+      setUploadFeedback("Foto enviada com sucesso para o Supabase Storage!");
     } catch (err: any) {
       console.error("Erro no upload da foto do corretor:", err);
       setUploadFeedback(err?.message || "Erro ao processar imagem.");

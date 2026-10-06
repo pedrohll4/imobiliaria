@@ -4,6 +4,7 @@ import React, { useState, useActionState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createPropertyAction, PropertyActionResult } from "@/actions/propertyActions";
 import { uploadPropertyImageAction } from "@/actions/uploadActions";
+import { uploadDirectToSupabase } from "@/lib/supabaseClient";
 import { compressImage } from "@/lib/imageOptimization";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -102,7 +103,7 @@ export function PropertyCreateForm({
     setIsUploading(true);
     setUploadFeedback({
       type: "info",
-      message: `Iniciando compressão de ${files.length} foto(s) para WebP...`,
+      message: `Processando ${files.length} foto(s)...`,
     });
 
     let totalOriginal = 0;
@@ -114,14 +115,14 @@ export function PropertyCreateForm({
         const file = files[i];
         setUploadFeedback({
           type: "info",
-          message: `Otimizando foto ${i + 1} de ${files.length} (reduzindo peso para WebP)...`,
+          message: `Otimizando foto ${i + 1} de ${files.length} para o formato ideal...`,
         });
 
-        // Compacta imagem no browser antes de transmitir (economia de 90-95% do armazenamento)
+        // Compacta imagem no browser antes de transmitir (economia de 90% do armazenamento)
         const compressed = await compressImage(file, {
-          maxWidth: 1920,
-          maxHeight: 1080,
-          quality: 0.82,
+          maxWidth: 1600,
+          maxHeight: 1200,
+          quality: 0.80,
           mimeType: "image/webp",
         });
 
@@ -130,33 +131,45 @@ export function PropertyCreateForm({
 
         setUploadFeedback({
           type: "info",
-          message: `Enviando foto ${i + 1} de ${files.length} para o Supabase Storage...`,
+          message: `Enviando foto ${i + 1} de ${files.length} para o Supabase CDN...`,
         });
 
-        const formData = new FormData();
-        formData.append("file", compressed.file);
+        // 1ª Tentativa: Upload direto do navegador para o Supabase (ultrarrápido, sem limites de 4.5MB da Vercel)
+        let uploadedUrl: string | null = null;
+        const directRes = await uploadDirectToSupabase(compressed.file, "properties");
 
-        const res = await uploadPropertyImageAction(formData);
-
-        if (res.success && res.url) {
-          newUrls.push(res.url);
+        if (directRes.success && directRes.url) {
+          uploadedUrl = directRes.url;
         } else {
-          throw new Error(
-            res.error ||
-              "Falha ao enviar foto para o Supabase Storage. Verifique se o bucket 'properties' foi criado."
-          );
+          // 2ª Tentativa (Fallback): Server Action caso o navegador bloqueie conexão direta
+          const formData = new FormData();
+          formData.append("file", compressed.file);
+
+          const serverRes = await uploadPropertyImageAction(formData);
+          if (serverRes.success && serverRes.url) {
+            uploadedUrl = serverRes.url;
+          } else {
+            throw new Error(
+              directRes.error ||
+                serverRes.error ||
+                "Não foi possível salvar a imagem no servidor de armazenamento."
+            );
+          }
+        }
+
+        if (uploadedUrl) {
+          newUrls.push(uploadedUrl);
         }
       }
 
       if (newUrls.length > 0) {
         setImages((prev) => [...prev, ...newUrls]);
-        const savedBytes = totalOriginal - totalCompressed;
+        const savedBytes = Math.max(0, totalOriginal - totalCompressed);
         const savedMb = (savedBytes / (1024 * 1024)).toFixed(1);
-        const ratio = Math.max(0, Math.round((savedBytes / totalOriginal) * 100));
 
         setUploadFeedback({
           type: "success",
-          message: `${newUrls.length} foto(s) salvas no Supabase Storage! Economia de ${savedMb} MB (-${ratio}% do espaço do plano Free).`,
+          message: `${newUrls.length} foto(s) enviadas com sucesso! Economia de ${savedMb} MB de armazenamento.`,
         });
       }
     } catch (err: any) {
@@ -165,7 +178,7 @@ export function PropertyCreateForm({
         type: "error",
         message:
           err?.message ||
-          "Não foi possível salvar no Supabase. Adicione as chaves no seu .env ou use URL direta.",
+          "Erro ao enviar fotos. Verifique sua conexão e tente novamente.",
       });
     } finally {
       setIsUploading(false);

@@ -9,13 +9,16 @@ export interface UploadActionResult {
   error?: string;
 }
 
-function detectSafeImageType(buffer: Buffer): { isValid: boolean; extension: string; mimeType: string } {
-  if (!buffer || buffer.length < 12) {
+function detectSafeImageType(
+  buffer: Buffer,
+  declaredType?: string
+): { isValid: boolean; extension: string; mimeType: string } {
+  if (!buffer || buffer.length < 8) {
     return { isValid: false, extension: "", mimeType: "" };
   }
 
-  // JPEG: FF D8 FF
-  if (buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff) {
+  // JPEG: FF D8
+  if (buffer[0] === 0xff && buffer[1] === 0xd8) {
     return { isValid: true, extension: "jpg", mimeType: "image/jpeg" };
   }
 
@@ -28,9 +31,24 @@ function detectSafeImageType(buffer: Buffer): { isValid: boolean; extension: str
   const isRiff =
     buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46;
   const isWebp =
-    buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50;
+    buffer.length >= 12 &&
+    buffer[8] === 0x57 &&
+    buffer[9] === 0x45 &&
+    buffer[10] === 0x42 &&
+    buffer[11] === 0x50;
   if (isRiff && isWebp) {
     return { isValid: true, extension: "webp", mimeType: "image/webp" };
+  }
+
+  // GIF: 47 49 46
+  if (buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46) {
+    return { isValid: true, extension: "gif", mimeType: "image/gif" };
+  }
+
+  // Fallback baseado no MIME type declarado se for imagem
+  if (declaredType?.startsWith("image/")) {
+    const ext = declaredType.split("/")[1] || "jpg";
+    return { isValid: true, extension: ext, mimeType: declaredType };
   }
 
   return { isValid: false, extension: "", mimeType: "" };
@@ -39,39 +57,38 @@ function detectSafeImageType(buffer: Buffer): { isValid: boolean; extension: str
 export async function uploadPropertyImageAction(
   formData: FormData
 ): Promise<UploadActionResult> {
-  const session = await getSession();
-  if (!session) {
-    return {
-      success: false,
-      error: "Você precisa estar autenticado para enviar imagens.",
-    };
-  }
-
-  const file = formData.get("file") as File | null;
-  if (!file) {
-    return {
-      success: false,
-      error: "Nenhum arquivo enviado.",
-    };
-  }
-
-  if (file.size > 10 * 1024 * 1024) {
-    return {
-      success: false,
-      error: "Arquivo muito grande. O limite máximo é de 10 MB.",
-    };
-  }
-
   try {
+    const session = await getSession();
+    if (!session) {
+      return {
+        success: false,
+        error: "Você precisa estar autenticado para enviar imagens.",
+      };
+    }
+
+    const file = formData.get("file") as File | null;
+    if (!file) {
+      return {
+        success: false,
+        error: "Nenhum arquivo enviado.",
+      };
+    }
+
+    if (file.size > 20 * 1024 * 1024) {
+      return {
+        success: false,
+        error: "Arquivo muito grande. O limite máximo é de 20 MB.",
+      };
+    }
+
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Validação estrita por magic bytes binários (impede arquivo executável ou HTML disfarçado de imagem)
-    const { isValid, extension, mimeType } = detectSafeImageType(buffer);
+    const { isValid, extension, mimeType } = detectSafeImageType(buffer, file.type);
     if (!isValid) {
       return {
         success: false,
-        error: "Formato de imagem inválido ou corrompido. Permitidos apenas arquivos WebP, JPG ou PNG genuínos.",
+        error: "Formato de imagem inválido. Permitidos arquivos WebP, JPG ou PNG.",
       };
     }
 
@@ -91,7 +108,7 @@ export async function uploadPropertyImageAction(
     console.error("Erro no uploadPropertyImageAction:", err);
     return {
       success: false,
-      error: err?.message || "Falha ao processar upload.",
+      error: err?.message || "Falha ao processar upload da foto.",
     };
   }
 }
@@ -99,39 +116,38 @@ export async function uploadPropertyImageAction(
 export async function uploadBrokerImageAction(
   formData: FormData
 ): Promise<UploadActionResult> {
-  const session = await getSession();
-  if (!session) {
-    return {
-      success: false,
-      error: "Você precisa estar autenticado para atualizar a foto de perfil.",
-    };
-  }
-
-  const file = formData.get("file") as File | null;
-  if (!file) {
-    return {
-      success: false,
-      error: "Nenhum arquivo enviado.",
-    };
-  }
-
-  if (file.size > 10 * 1024 * 1024) {
-    return {
-      success: false,
-      error: "Arquivo muito grande. O limite máximo é de 10 MB.",
-    };
-  }
-
   try {
+    const session = await getSession();
+    if (!session) {
+      return {
+        success: false,
+        error: "Você precisa estar autenticado para atualizar a foto de perfil.",
+      };
+    }
+
+    const file = formData.get("file") as File | null;
+    if (!file) {
+      return {
+        success: false,
+        error: "Nenhum arquivo enviado.",
+      };
+    }
+
+    if (file.size > 20 * 1024 * 1024) {
+      return {
+        success: false,
+        error: "Arquivo muito grande. O limite máximo é de 20 MB.",
+      };
+    }
+
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Validação estrita por magic bytes binários
-    const { isValid, extension, mimeType } = detectSafeImageType(buffer);
+    const { isValid, extension, mimeType } = detectSafeImageType(buffer, file.type);
     if (!isValid) {
       return {
         success: false,
-        error: "Formato de foto inválido ou corrompido. Permitidos apenas arquivos WebP, JPG ou PNG genuínos.",
+        error: "Formato de foto inválido. Permitidos arquivos WebP, JPG ou PNG.",
       };
     }
 

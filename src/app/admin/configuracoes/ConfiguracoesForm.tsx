@@ -3,6 +3,7 @@
 import React, { useState, useActionState, useRef } from "react";
 import { updateSiteSettingsAction, SettingActionResult } from "@/actions/settingActions";
 import { uploadPropertyImageAction } from "@/actions/uploadActions";
+import { uploadDirectToSupabase } from "@/lib/supabaseClient";
 import { compressImage } from "@/lib/imageOptimization";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -119,16 +120,23 @@ export function ConfiguracoesForm({ initialSettings }: ConfiguracoesFormProps) {
         mimeType: "image/webp",
       });
 
-      const fd = new FormData();
-      fd.append("file", compressed.file);
-
-      const res = await uploadPropertyImageAction(fd);
-      if (res.success && res.url) {
-        setHeroBgImage(res.url);
-        setUploadFeedback("Imagem de fundo do Hero enviada com sucesso para o Supabase CDN!");
+      let uploadedUrl: string | null = null;
+      const directRes = await uploadDirectToSupabase(compressed.file, "properties");
+      if (directRes.success && directRes.url) {
+        uploadedUrl = directRes.url;
       } else {
-        throw new Error(res.error || "Falha no upload da imagem de fundo.");
+        const fd = new FormData();
+        fd.append("file", compressed.file);
+        const res = await uploadPropertyImageAction(fd);
+        if (res.success && res.url) {
+          uploadedUrl = res.url;
+        } else {
+          throw new Error(directRes.error || res.error || "Falha no upload da imagem de fundo.");
+        }
       }
+
+      setHeroBgImage(uploadedUrl);
+      setUploadFeedback("Imagem de fundo do Hero enviada com sucesso para o Supabase CDN!");
     } catch (err: any) {
       console.error("Erro no upload do fundo do Hero:", err);
       setUploadFeedback(err?.message || "Erro ao processar imagem de fundo.");
@@ -156,16 +164,23 @@ export function ConfiguracoesForm({ initialSettings }: ConfiguracoesFormProps) {
         mimeType: "image/webp",
       });
 
-      const fd = new FormData();
-      fd.append("file", compressed.file);
-
-      const res = await uploadPropertyImageAction(fd);
-      if (res.success && res.url) {
-        setAboutImage(res.url);
-        setUploadFeedback("Imagem institucional da página Sobre enviada com sucesso!");
+      let uploadedUrl: string | null = null;
+      const directRes = await uploadDirectToSupabase(compressed.file, "properties");
+      if (directRes.success && directRes.url) {
+        uploadedUrl = directRes.url;
       } else {
-        throw new Error(res.error || "Falha no upload da imagem institucional.");
+        const fd = new FormData();
+        fd.append("file", compressed.file);
+        const res = await uploadPropertyImageAction(fd);
+        if (res.success && res.url) {
+          uploadedUrl = res.url;
+        } else {
+          throw new Error(directRes.error || res.error || "Falha no upload da imagem institucional.");
+        }
       }
+
+      setAboutImage(uploadedUrl);
+      setUploadFeedback("Imagem institucional da página Sobre enviada com sucesso!");
     } catch (err: any) {
       console.error("Erro no upload da imagem Sobre:", err);
       setUploadFeedback(err?.message || "Erro ao processar imagem.");
@@ -193,16 +208,23 @@ export function ConfiguracoesForm({ initialSettings }: ConfiguracoesFormProps) {
         mimeType: "image/webp",
       });
 
-      const fd = new FormData();
-      fd.append("file", compressed.file);
-
-      const res = await uploadPropertyImageAction(fd);
-      if (res.success && res.url) {
-        setLogoUrl(res.url);
-        setUploadFeedback("Logotipo enviado com sucesso para o Supabase CDN!");
+      let uploadedUrl: string | null = null;
+      const directRes = await uploadDirectToSupabase(compressed.file, "properties");
+      if (directRes.success && directRes.url) {
+        uploadedUrl = directRes.url;
       } else {
-        throw new Error(res.error || "Falha no upload do logotipo.");
+        const fd = new FormData();
+        fd.append("file", compressed.file);
+        const res = await uploadPropertyImageAction(fd);
+        if (res.success && res.url) {
+          uploadedUrl = res.url;
+        } else {
+          throw new Error(directRes.error || res.error || "Falha no upload do logotipo.");
+        }
       }
+
+      setLogoUrl(uploadedUrl);
+      setUploadFeedback("Logotipo enviado com sucesso para o Supabase CDN!");
     } catch (err: any) {
       console.error("Erro no upload do logotipo:", err);
       setUploadFeedback(err?.message || "Erro ao processar imagem.");
