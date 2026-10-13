@@ -40,6 +40,7 @@ export async function createPropertyAction(
   const number = (formData.get("number") as string)?.trim() || null;
   const zipCode = (formData.get("zipCode") as string)?.trim() || null;
   const showExactAddress = formData.get("showExactAddress") === "true";
+  const internalNotes = (formData.get("internalNotes") as string)?.trim() || null;
   
   const bedrooms = parseInt(formData.get("bedrooms") as string) || 0;
   const suites = parseInt(formData.get("suites") as string) || 0;
@@ -150,6 +151,7 @@ export async function createPropertyAction(
         number,
         zipCode,
         showExactAddress,
+        internalNotes,
         bedrooms,
         suites,
         bathrooms,
@@ -247,7 +249,8 @@ export async function deletePropertyAction(propertyId: string): Promise<Property
 
 export async function reassignPropertyBrokerAction(
   propertyId: string,
-  assignedBrokerId: string | null
+  assignedBrokerId: string | null,
+  internalNotes?: string | null
 ): Promise<PropertyActionResult> {
   const session = await getSession();
   if (!session) {
@@ -273,9 +276,14 @@ export async function reassignPropertyBrokerAction(
         ? assignedBrokerId
         : null;
 
+    const dataToUpdate: any = { brokerId: targetBrokerId };
+    if (internalNotes !== undefined) {
+      dataToUpdate.internalNotes = internalNotes?.trim() || null;
+    }
+
     await prisma.property.update({
       where: { id: propertyId },
-      data: { brokerId: targetBrokerId },
+      data: dataToUpdate,
     });
 
     revalidatePath("/");
@@ -288,6 +296,29 @@ export async function reassignPropertyBrokerAction(
   } catch (err) {
     console.error("Erro ao reatribuir corretor:", err);
     return { success: false, error: "Falha ao atualizar corretor do imóvel." };
+  }
+}
+
+export async function updatePropertyInternalNotesAction(
+  propertyId: string,
+  internalNotes: string | null
+): Promise<PropertyActionResult> {
+  const session = await getSession();
+  if (!session) {
+    return { success: false, error: "Não autorizado." };
+  }
+
+  try {
+    await prisma.property.update({
+      where: { id: propertyId },
+      data: { internalNotes: internalNotes?.trim() || null },
+    });
+
+    revalidatePath("/dashboard/imoveis");
+    revalidatePath(`/imoveis/${propertyId}`);
+    return { success: true, message: "Observação interna salva com sucesso!" };
+  } catch (err: any) {
+    return { success: false, error: err?.message || "Erro ao salvar observação interna." };
   }
 }
 
@@ -383,6 +414,7 @@ export async function updatePropertyAction(
   const number = (formData.get("number") as string)?.trim() || null;
   const zipCode = (formData.get("zipCode") as string)?.trim() || null;
   const showExactAddress = formData.get("showExactAddress") === "true";
+  const internalNotes = (formData.get("internalNotes") as string)?.trim() || null;
   const bedrooms = parseInt(formData.get("bedrooms") as string, 10) || 0;
   const suites = parseInt(formData.get("suites") as string, 10) || 0;
   const bathrooms = parseInt(formData.get("bathrooms") as string, 10) || 0;
@@ -466,6 +498,7 @@ export async function updatePropertyAction(
           number,
           zipCode,
           showExactAddress,
+          internalNotes,
           bedrooms,
           suites,
           bathrooms,

@@ -31,6 +31,7 @@ import {
   ChevronRight,
   GripVertical,
   ArrowLeftRight,
+  FileText,
 } from "lucide-react";
 
 const COMMON_AMENITIES = [
@@ -345,6 +346,30 @@ export function PropertyCreateForm({
               </Select>
             </div>
           )}
+
+          {/* Observações Internas (Exclusivo para Corretores e Administradores) */}
+          <div className="sm:col-span-12 p-4 bg-[#FBF9F5] border border-[#D4AF37]/50 rounded-xs space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <FileText className="w-4 h-4 text-[#D4AF37]" />
+                <label className="text-xs font-semibold text-[#0F1115] uppercase tracking-wider">
+                  Observações Internas (Exclusivo para Corretores)
+                </label>
+              </div>
+              <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
+                <Lock className="w-3 h-3" /> Confidencial / Oculto no Portal
+              </span>
+            </div>
+            <p className="text-[11px] text-[#6B6862] font-light leading-relaxed">
+              Espaço reservado para informações de captação, contato do proprietário, localização de chaves, flexibilidade de proposta ou regras de comissão. Visível apenas para corretores e administradores logados na equipe.
+            </p>
+            <Textarea
+              name="internalNotes"
+              placeholder="Ex: Proprietário aceita permuta até 20%. Chaves na portaria com autorização prévia. Falar com corretor captador antes de agendar visita..."
+              rows={3}
+              className="bg-white text-xs"
+            />
+          </div>
 
           <div className="sm:col-span-8">
             <Input

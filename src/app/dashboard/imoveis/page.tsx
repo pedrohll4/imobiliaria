@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { deletePropertyAction } from "@/actions/propertyActions";
 import { PropertyBrokerReassignSelect } from "@/components/property/PropertyBrokerReassignSelect";
-import { Plus, Eye, ExternalLink, Trash2, Building, ShieldCheck, Users, Pencil, MapPin, EyeOff } from "lucide-react";
+import { Plus, Eye, ExternalLink, Trash2, Building, ShieldCheck, Users, Pencil, MapPin, EyeOff, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 
 interface DashboardImoveisPageProps {
@@ -197,6 +197,20 @@ export default async function DashboardImoveisPage({ searchParams }: DashboardIm
                                 )}
                               </div>
                             )}
+
+                            {prop.internalNotes && (
+                              <div className="mt-1.5 p-1.5 px-2 bg-amber-50/70 border border-amber-200/80 rounded-xs text-[11px] text-amber-950 flex items-start gap-1.5 max-w-md">
+                                <FileText className="w-3 h-3 text-amber-700 shrink-0 mt-0.5" />
+                                <div>
+                                  <span className="font-semibold text-amber-900 block text-[9px] uppercase tracking-wider">
+                                    Nota Interna:
+                                  </span>
+                                  <span className="line-clamp-2 text-[#38352F]">
+                                    {prop.internalNotes}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </td>
@@ -206,6 +220,9 @@ export default async function DashboardImoveisPage({ searchParams }: DashboardIm
                             propertyId={prop.id}
                             currentBrokerId={prop.brokerId}
                             brokers={brokers}
+                            initialInternalNotes={prop.internalNotes}
+                            propertyTitle={prop.title}
+                            propertyCode={prop.code}
                           />
                         </td>
                       )}

@@ -63,6 +63,7 @@ model Property {
   number        String?
   zipCode       String?
   showExactAddress Boolean @default(false)
+  internalNotes    String?
   latitude      Float?
   longitude     Float?
   bedrooms      Int      @default(0)

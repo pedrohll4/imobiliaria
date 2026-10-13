@@ -22,6 +22,7 @@ import {
   EyeOff,
   Lock,
   Shield,
+  FileText,
 } from "lucide-react";
 import { getSiteSettings } from "@/lib/settings";
 
@@ -165,27 +166,46 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
               </span>
             </p>
 
-            {/* Painel Exclusivo para Corretores Logados (quando endereço estiver oculto no anúncio público) */}
-            {session && !property.showExactAddress && (property.address || property.number || property.zipCode) && (
-              <div className="mt-3 p-3 bg-amber-50/80 border border-[#D4AF37]/50 rounded text-xs text-[#0F1115] flex flex-wrap items-center justify-between gap-2 shadow-xs">
-                <div className="flex items-center gap-2">
-                  <div className="p-1 rounded bg-[#D4AF37]/20 text-[#0F1115]">
-                    <EyeOff className="w-3.5 h-3.5 text-[#0F1115]" />
-                  </div>
-                  <div>
+            {/* Painel Exclusivo para Corretores Logados (quando houver endereço oculto ou observações internas) */}
+            {session && ((!property.showExactAddress && (property.address || property.number || property.zipCode)) || property.internalNotes) && (
+              <div className="mt-3 p-3.5 bg-amber-50/85 border border-[#D4AF37]/50 rounded-sm text-xs text-[#0F1115] space-y-2 shadow-xs">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#D4AF37]/25 pb-2">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1 rounded bg-[#D4AF37]/25 text-[#0F1115]">
+                      <Shield className="w-3.5 h-3.5 text-[#0F1115]" />
+                    </div>
                     <span className="font-semibold text-[#0F1115]">
-                      Localização Interna (Oculta do público):
-                    </span>{" "}
-                    <span className="text-[#38352F]">
+                      Informações Internas da Imobiliária (Confidencial)
+                    </span>
+                  </div>
+                  <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
+                    Visível apenas para Corretores da Equipe
+                  </span>
+                </div>
+
+                {!property.showExactAddress && (property.address || property.number || property.zipCode) && (
+                  <div className="flex items-start gap-2 text-[#38352F]">
+                    <MapPin className="w-3.5 h-3.5 text-[#D4AF37] shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="text-[#0F1115]">Endereço Completo:</strong>{" "}
                       {property.address || "Sem logradouro"}
                       {property.number ? `, Nº ${property.number}` : ""}
                       {property.zipCode ? ` • CEP: ${property.zipCode}` : ""}
-                    </span>
+                    </div>
                   </div>
-                </div>
-                <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
-                  Visível apenas para Corretores
-                </span>
+                )}
+
+                {property.internalNotes && (
+                  <div className="flex items-start gap-2 text-[#38352F] pt-1.5 border-t border-[#D4AF37]/20">
+                    <FileText className="w-3.5 h-3.5 text-[#D4AF37] shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <strong className="text-[#0F1115]">Observação da Corretagem / Captação:</strong>
+                      <p className="mt-1 whitespace-pre-line bg-white/80 p-2.5 rounded border border-[#0F1115]/10 text-xs text-[#2A2825]">
+                        {property.internalNotes}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
