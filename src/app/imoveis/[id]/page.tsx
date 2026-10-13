@@ -19,6 +19,9 @@ import {
   MapPin,
   Sparkles,
   Pencil,
+  EyeOff,
+  Lock,
+  Shield,
 } from "lucide-react";
 import { getSiteSettings } from "@/lib/settings";
 
@@ -158,9 +161,33 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
               <MapPin className="w-4 h-4 text-[#D4AF37]" />
               <span>
                 {property.neighborhood}, {property.city} — {property.state}
-                {property.address && ` • ${property.address}`}
+                {property.showExactAddress && property.address && ` • ${property.address}${property.number ? `, ${property.number}` : ""}`}
               </span>
             </p>
+
+            {/* Painel Exclusivo para Corretores Logados (quando endereço estiver oculto no anúncio público) */}
+            {session && !property.showExactAddress && (property.address || property.number || property.zipCode) && (
+              <div className="mt-3 p-3 bg-amber-50/80 border border-[#D4AF37]/50 rounded text-xs text-[#0F1115] flex flex-wrap items-center justify-between gap-2 shadow-xs">
+                <div className="flex items-center gap-2">
+                  <div className="p-1 rounded bg-[#D4AF37]/20 text-[#0F1115]">
+                    <EyeOff className="w-3.5 h-3.5 text-[#0F1115]" />
+                  </div>
+                  <div>
+                    <span className="font-semibold text-[#0F1115]">
+                      Localização Interna (Oculta do público):
+                    </span>{" "}
+                    <span className="text-[#38352F]">
+                      {property.address || "Sem logradouro"}
+                      {property.number ? `, Nº ${property.number}` : ""}
+                      {property.zipCode ? ` • CEP: ${property.zipCode}` : ""}
+                    </span>
+                  </div>
+                </div>
+                <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
+                  Visível apenas para Corretores
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -252,19 +279,58 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
 
             {/* Localização */}
             <div className="space-y-4 pt-6 border-t border-[#0F1115]/10">
-              <h2 className="font-serif text-2xl font-normal text-[#0F1115]">
-                Localização & Entorno
-              </h2>
+              <div className="flex items-center justify-between">
+                <h2 className="font-serif text-2xl font-normal text-[#0F1115]">
+                  Localização & Entorno
+                </h2>
+                {!property.showExactAddress ? (
+                  <span className="inline-flex items-center gap-1.5 text-xs text-[#8C8983] bg-[#EAE7DF]/70 px-2.5 py-1 rounded">
+                    <Lock className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    Localização aproximada (discrição)
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 text-xs text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200">
+                    <MapPin className="w-3.5 h-3.5 text-emerald-600" />
+                    Localização exata confirmada
+                  </span>
+                )}
+              </div>
+
               <p className="text-sm text-[#68655F] font-light leading-relaxed">
-                O imóvel está localizado em {property.neighborhood}, na cidade de {property.city} — {property.state}. Entre em contato com um de nossos corretores e agende sua visita!
+                {property.showExactAddress && property.address
+                  ? `O imóvel está localizado em ${property.address}${property.number ? `, nº ${property.number}` : ""}, no bairro ${property.neighborhood}, em ${property.city} — ${property.state}. Entre em contato para mais detalhes.`
+                  : `O imóvel está situado no prestigiado bairro ${property.neighborhood}, na cidade de ${property.city} — ${property.state}. Por motivos de discrição e privacidade, o endereço exato é fornecido mediante contato com nossos corretores.`}
               </p>
+
+              {/* Informação exclusiva da corretagem */}
+              {session && !property.showExactAddress && (property.address || property.number || property.zipCode) && (
+                <div className="p-4 bg-[#FFFFFF] border-2 border-[#D4AF37]/40 rounded-sm shadow-subtle space-y-1.5">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-[#0F1115]">
+                    <Shield className="w-4 h-4 text-[#D4AF37]" />
+                    <span>Dados de Localização para Corretores da Imobiliária</span>
+                  </div>
+                  <p className="text-xs text-[#38352F]">
+                    Logradouro: <strong>{property.address || "Não informado"}</strong>
+                    {property.number && ` • Número: ${property.number}`}
+                    {property.zipCode && ` • CEP: ${property.zipCode}`}
+                  </p>
+                  <p className="text-[11px] text-[#8C8983]">
+                    Esta informação está oculta do público e é visível apenas para você porque está logado como corretor ou administrador.
+                  </p>
+                </div>
+              )}
+
               <div className="h-48 w-full bg-[#EAE7DF] rounded-sm border border-[#0F1115]/10 flex flex-col items-center justify-center text-center p-6 space-y-2">
                 <MapPin className="w-8 h-8 text-[#D4AF37]" />
                 <p className="text-sm font-medium text-[#0F1115]">
-                  {property.neighborhood}, {property.city} — {property.state}
+                  {property.showExactAddress && property.address
+                    ? `${property.address}${property.number ? `, Nº ${property.number}` : ""} — ${property.neighborhood}, ${property.city}`
+                    : `${property.neighborhood}, ${property.city} — ${property.state}`}
                 </p>
                 <p className="text-xs text-[#8C8983]">
-                  Entre em contato com um de nossos corretores e agende sua visita
+                  {property.showExactAddress
+                    ? "Localização exata disponibilizada no portal"
+                    : "Entre em contato com um de nossos corretores e agende sua visita"}
                 </p>
               </div>
             </div>

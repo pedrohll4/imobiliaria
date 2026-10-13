@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { deletePropertyAction } from "@/actions/propertyActions";
 import { PropertyBrokerReassignSelect } from "@/components/property/PropertyBrokerReassignSelect";
-import { Plus, Eye, ExternalLink, Trash2, Building, ShieldCheck, Users, Pencil } from "lucide-react";
+import { Plus, Eye, ExternalLink, Trash2, Building, ShieldCheck, Users, Pencil, MapPin, EyeOff } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 
 interface DashboardImoveisPageProps {
@@ -177,9 +177,26 @@ export default async function DashboardImoveisPage({ searchParams }: DashboardIm
                             <span className="font-semibold text-[#0F1115] block line-clamp-1">
                               {prop.title}
                             </span>
-                            <span className="font-mono text-[10px] text-[#8C8983]">
+                            <span className="font-mono text-[10px] text-[#8C8983] block">
                               {prop.code} • {prop.neighborhood}, {prop.city}
                             </span>
+                            {prop.address && (
+                              <div className="flex items-center gap-1.5 mt-1">
+                                <span className="text-[11px] text-[#38352F] font-medium flex items-center gap-1">
+                                  <MapPin className="w-3 h-3 text-[#D4AF37]" />
+                                  {prop.address}{prop.number ? `, Nº ${prop.number}` : ""}
+                                </span>
+                                {prop.showExactAddress ? (
+                                  <span className="text-[9px] px-1.5 py-0.2 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded font-medium">
+                                    Público
+                                  </span>
+                                ) : (
+                                  <span className="text-[9px] px-1.5 py-0.2 bg-amber-50 text-amber-800 border border-amber-200 rounded font-medium flex items-center gap-0.5" title="Oculto no anúncio público. Visível apenas para corretores.">
+                                    <EyeOff className="w-2.5 h-2.5" /> Oculto no site
+                                  </span>
+                                )}
+                              </div>
+                            )}
                           </div>
                         </div>
                       </td>

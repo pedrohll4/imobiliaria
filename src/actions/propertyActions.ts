@@ -39,6 +39,7 @@ export async function createPropertyAction(
   const address = (formData.get("address") as string)?.trim() || null;
   const number = (formData.get("number") as string)?.trim() || null;
   const zipCode = (formData.get("zipCode") as string)?.trim() || null;
+  const showExactAddress = formData.get("showExactAddress") === "true";
   
   const bedrooms = parseInt(formData.get("bedrooms") as string) || 0;
   const suites = parseInt(formData.get("suites") as string) || 0;
@@ -148,6 +149,7 @@ export async function createPropertyAction(
         address,
         number,
         zipCode,
+        showExactAddress,
         bedrooms,
         suites,
         bathrooms,
@@ -380,6 +382,7 @@ export async function updatePropertyAction(
   const address = (formData.get("address") as string)?.trim() || null;
   const number = (formData.get("number") as string)?.trim() || null;
   const zipCode = (formData.get("zipCode") as string)?.trim() || null;
+  const showExactAddress = formData.get("showExactAddress") === "true";
   const bedrooms = parseInt(formData.get("bedrooms") as string, 10) || 0;
   const suites = parseInt(formData.get("suites") as string, 10) || 0;
   const bathrooms = parseInt(formData.get("bathrooms") as string, 10) || 0;
@@ -462,6 +465,7 @@ export async function updatePropertyAction(
           address,
           number,
           zipCode,
+          showExactAddress,
           bedrooms,
           suites,
           bathrooms,

@@ -24,6 +24,10 @@ import {
   ShieldCheck,
   ArrowLeft,
   ExternalLink,
+  Eye,
+  EyeOff,
+  Lock,
+  MapPin,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -66,6 +70,7 @@ interface PropertyEditFormProps {
     address?: string | null;
     number?: string | null;
     zipCode?: string | null;
+    showExactAddress?: boolean;
     bedrooms: number;
     suites: number;
     bathrooms: number;
@@ -115,10 +120,14 @@ export function PropertyEditForm({
     property.features.map((f) => f.name)
   );
 
+  // Visibilidade da localização exata
+  const [showExactAddress, setShowExactAddress] = useState(property.showExactAddress ?? false);
+
   const [state, formAction, isPending] = useActionState<PropertyActionResult | null, FormData>(
     async (prev, formData) => {
       formData.set("propertyId", property.id);
       formData.set("code", code);
+      formData.set("showExactAddress", showExactAddress ? "true" : "false");
       formData.set("imagesList", images.join("\n"));
       formData.set("featuresList", selectedAmenities.join("\n"));
 
@@ -514,14 +523,81 @@ export function PropertyEditForm({
 
       {/* 3. LOCALIZAÇÃO */}
       <div className="bg-[#FFFFFF] border border-[#0F1115]/[0.08] p-6 sm:p-8 rounded-sm shadow-subtle space-y-6">
-        <div className="border-b border-[#0F1115]/10 pb-4">
-          <h2 className="font-serif text-xl text-[#0F1115]">
-            3. Localização da Propriedade
-          </h2>
-          <p className="text-xs text-[#8C8983] font-light">
-            Endereço, cidade e bairro para indexação no portal.
-          </p>
+        <div className="border-b border-[#0F1115]/10 pb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h2 className="font-serif text-xl text-[#0F1115]">
+              3. Localização da Propriedade
+            </h2>
+            <p className="text-xs text-[#8C8983] font-light">
+              Endereço, cidade e bairro para indexação no portal.
+            </p>
+          </div>
+
+          {/* Botão de Revelar / Ocultar Localização Exata no Site */}
+          <div className="flex items-center gap-3 bg-[#FBF9F5] p-2.5 px-4 rounded border border-[#0F1115]/10 shrink-0">
+            <button
+              type="button"
+              role="switch"
+              aria-checked={showExactAddress}
+              onClick={() => setShowExactAddress((prev) => !prev)}
+              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
+                showExactAddress ? "bg-[#D4AF37]" : "bg-[#0F1115]/20"
+              }`}
+              title={showExactAddress ? "Clique para ocultar no anúncio público" : "Clique para revelar no anúncio público"}
+            >
+              <span
+                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                  showExactAddress ? "translate-x-5" : "translate-x-0"
+                }`}
+              />
+            </button>
+
+            <div className="text-left select-none">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-[#0F1115]">
+                  {showExactAddress ? "Localização Exata Revelada" : "Localização Exata Oculta"}
+                </span>
+                {showExactAddress ? (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <Eye className="w-3 h-3" /> Público no Site
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
+                    <EyeOff className="w-3 h-3" /> Exclusivo Corretores
+                  </span>
+                )}
+              </div>
+              <p className="text-[11px] text-[#6B6862] leading-tight mt-0.5">
+                {showExactAddress
+                  ? "Rua e número aparecem no anúncio para todos os clientes."
+                  : "Oculto no anúncio público. Corretores veem no sistema para agendar visitas."}
+              </p>
+            </div>
+
+            <input
+              type="hidden"
+              name="showExactAddress"
+              value={showExactAddress ? "true" : "false"}
+            />
+          </div>
         </div>
+
+        {/* Aviso explicativo visual */}
+        {!showExactAddress ? (
+          <div className="p-3 bg-amber-50/70 border border-amber-200/80 rounded-xs flex items-center gap-2.5 text-xs text-amber-900">
+            <Lock className="w-4 h-4 text-amber-700 shrink-0" />
+            <span>
+              <strong>Discrição Ativa:</strong> Você pode preencher o Logradouro, Número e CEP abaixo com tranquilidade. O site público exibirá apenas o <strong>Bairro e Cidade</strong> aos visitantes, enquanto o endereço exato fica salvo para você e os demais corretores da equipe.
+            </span>
+          </div>
+        ) : (
+          <div className="p-3 bg-emerald-50/70 border border-emerald-200/80 rounded-xs flex items-center gap-2.5 text-xs text-emerald-900">
+            <Eye className="w-4 h-4 text-emerald-700 shrink-0" />
+            <span>
+              <strong>Visibilidade Pública Ativada:</strong> O logradouro e número preenchidos abaixo serão exibidos no anúncio para qualquer visitante do portal.
+            </span>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
           <div className="sm:col-span-5">
@@ -556,7 +632,7 @@ export function PropertyEditForm({
           <div className="sm:col-span-8">
             <Input
               name="address"
-              label="Logradouro / Avenida"
+              label={showExactAddress ? "Logradouro / Avenida (Visível no site)" : "Logradouro / Avenida (Interno - Corretores)"}
               defaultValue={property.address || ""}
               placeholder="Ex: Alameda Fortaleza"
             />
@@ -564,7 +640,7 @@ export function PropertyEditForm({
           <div className="sm:col-span-2">
             <Input
               name="number"
-              label="Número"
+              label={showExactAddress ? "Número (Público)" : "Número (Interno)"}
               defaultValue={property.number || ""}
               placeholder="Ex: 2950"
             />
@@ -572,7 +648,7 @@ export function PropertyEditForm({
           <div className="sm:col-span-2">
             <Input
               name="zipCode"
-              label="CEP"
+              label={showExactAddress ? "CEP (Público)" : "CEP (Interno)"}
               defaultValue={property.zipCode || ""}
               placeholder="76820-800"
             />
