@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { LeadCard, AvailableProperty } from "./LeadCard";
+import { CreateLeadButton } from "@/components/leads/CreateLeadButton";
 import { Users, Sparkles } from "lucide-react";
 
 export default async function DashboardLeadsPage() {
@@ -94,9 +95,28 @@ export default async function DashboardLeadsPage() {
     images: p.images,
   }));
 
+  const isAdmin = session.role === "ADMIN";
+  const canAssignBroker = isAdmin;
+
+  // Busca corretores ativos para atribuição
+  const brokers = await prisma.broker.findMany({
+    where: { active: true },
+    select: { id: true, name: true, creci: true },
+    orderBy: { name: "asc" },
+  });
+
+  const propertyOptions = rawProperties.map((p) => ({
+    id: p.id,
+    code: p.code,
+    title: p.title,
+    price: p.price,
+    neighborhood: p.neighborhood,
+    city: p.city,
+  }));
+
   return (
     <div className="space-y-6">
-      <div className="pb-6 border-b border-[#0F1115]/10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div className="pb-6 border-b border-[#0F1115]/10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <span className="text-xs uppercase tracking-[0.2em] text-[#D4AF37] font-semibold flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
@@ -109,17 +129,37 @@ export default async function DashboardLeadsPage() {
             Visualize os contatos, monte seleções personalizadas de casas parecidas e envie dossiês exclusivos diretamente no WhatsApp dos clientes.
           </p>
         </div>
+
+        <div className="shrink-0">
+          <CreateLeadButton
+            properties={propertyOptions}
+            brokers={brokers}
+            canAssignBroker={canAssignBroker}
+            currentBrokerId={brokerId || undefined}
+            currentBrokerName={session.name}
+          />
+        </div>
       </div>
 
       {leads.length === 0 ? (
-        <div className="bg-[#FFFFFF] border border-[#0F1115]/10 p-12 text-center rounded-sm space-y-3">
+        <div className="bg-[#FFFFFF] border border-[#0F1115]/10 p-12 text-center rounded-sm space-y-4">
           <Users className="w-10 h-10 text-[#D4AF37] mx-auto" />
           <h3 className="font-serif text-xl text-[#0F1115]">
             Nenhum lead recebido até o momento
           </h3>
           <p className="text-xs text-[#8C8983] max-w-sm mx-auto">
-            Assim que clientes demonstrarem interesse em suas propriedades no portal, eles aparecerão aqui com a opção de criar seleções de casas personalizadas.
+            Assim que clientes demonstrarem interesse em suas propriedades no portal, eles aparecerão aqui. Você também pode cadastrar clientes manualmente agora mesmo.
           </p>
+          <div className="pt-2">
+            <CreateLeadButton
+              properties={propertyOptions}
+              brokers={brokers}
+              canAssignBroker={canAssignBroker}
+              currentBrokerId={brokerId || undefined}
+              currentBrokerName={session.name}
+              label="Cadastrar Primeiro Lead"
+            />
+          </div>
         </div>
       ) : (
         <div className="space-y-4">
@@ -130,6 +170,8 @@ export default async function DashboardLeadsPage() {
               availableProperties={availableProperties}
               currentBrokerId={brokerId}
               currentBrokerName={session.name}
+              brokers={brokers}
+              isAdmin={isAdmin}
             />
           ))}
         </div>

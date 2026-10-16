@@ -61,6 +61,7 @@ export default async function CuratedDossierPage({ params }: CuratedPageProps) {
         include: {
           images: { orderBy: { order: "asc" } },
           features: true,
+          broker: true,
         },
       },
     },
@@ -102,15 +103,22 @@ export default async function CuratedDossierPage({ params }: CuratedPageProps) {
     .map((pid) => rawCuratedProperties.find((p) => p.id === pid))
     .filter((p): p is NonNullable<typeof p> => Boolean(p));
 
-  // Dados do Corretor
-  const broker = lead.broker;
-  const brokerName = broker?.name || "Camila Alencar";
-  const brokerCreci = broker?.creci || "RO 2.894-F";
+  // Dados do Corretor Responsável (prioriza o corretor vinculado ao lead, depois o do imóvel, depois as configurações da imobiliária)
+  const broker = lead.broker || lead.property?.broker || null;
+  const brokerName = broker?.name || settings?.name || "Consultoria Especializada";
+  const brokerCreci = broker?.creci || settings?.creciJ || "CRECI Exclusivo";
   const brokerPhoto =
     broker?.photoUrl ||
-    "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=800&q=80";
-  const brokerPhone = broker?.phone || "(69) 99288-7711";
-  const brokerWhatsapp = broker?.whatsapp || "5569992887711";
+    settings?.logoUrl ||
+    "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&q=80";
+  const brokerPhone = broker?.phone || settings?.phone || "(69) 99999-9999";
+
+  let rawWa = broker?.whatsapp || settings?.whatsapp || "5569999999999";
+  let cleanWa = rawWa.replace(/\D/g, "");
+  if (!cleanWa.startsWith("55")) {
+    cleanWa = `55${cleanWa}`;
+  }
+  const brokerWhatsapp = cleanWa;
 
   // WhatsApp link geral da curadoria
   const generalWaMessage = `Olá ${brokerName}! Estou visualizando a seleção de imóveis exclusiva que você preparou para mim (Dossiê de ${lead.name}). Gostaria de conversar com você sobre as opções.`;
@@ -178,7 +186,7 @@ export default async function CuratedDossierPage({ params }: CuratedPageProps) {
                 </div>
                 <div>
                   <span className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-semibold block">
-                    Sua Consultora Dedicada
+                    Consultor Responsável
                   </span>
                   <h3 className="font-serif text-lg font-medium text-white">
                     {brokerName}
@@ -240,7 +248,7 @@ export default async function CuratedDossierPage({ params }: CuratedPageProps) {
               Curadoria em elaboração
             </h3>
             <p className="text-sm text-[#8C8983] max-w-md mx-auto">
-              Sua consultora {brokerName} está finalizando a seleção das melhores oportunidades. Entre em contato direto via WhatsApp para adiantar detalhes.
+              O consultor responsável {brokerName} está finalizando a seleção das melhores oportunidades. Entre em contato direto via WhatsApp para adiantar detalhes.
             </p>
             <a
               href={generalWaUrl}
@@ -456,7 +464,7 @@ export default async function CuratedDossierPage({ params }: CuratedPageProps) {
                 Dossiê preparado para <strong className="text-[#D4AF37]">{lead.name}</strong>
               </p>
               <p className="text-[10px] text-white/60">
-                Consultora: {brokerName} • CRECI {brokerCreci}
+                Consultor: {brokerName} • CRECI {brokerCreci}
               </p>
             </div>
           </div>

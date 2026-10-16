@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   updateLeadStatusAction,
   saveLeadCurationAction,
+  deleteLeadAction,
 } from "@/actions/leadActions";
 import {
   MessageSquare,
@@ -23,7 +24,9 @@ import {
   Share2,
   Send,
   SlidersHorizontal,
+  Trash2,
 } from "lucide-react";
+import { LeadBrokerReassignSelect } from "@/components/leads/LeadBrokerReassignSelect";
 
 export interface AvailableProperty {
   id: string;
@@ -49,6 +52,7 @@ interface LeadCardProps {
     phone: string;
     message: string;
     status: string;
+    source?: string;
     curatedPropertyIds?: string | null;
     curatedNotes?: string | null;
     createdAt: Date | string;
@@ -74,6 +78,8 @@ interface LeadCardProps {
   availableProperties: AvailableProperty[];
   currentBrokerId?: string;
   currentBrokerName?: string;
+  brokers?: { id: string; name: string; creci: string }[];
+  isAdmin?: boolean;
 }
 
 const STATUS_OPTIONS = [
@@ -90,6 +96,8 @@ export function LeadCard({
   availableProperties,
   currentBrokerId,
   currentBrokerName,
+  brokers = [],
+  isAdmin = false,
 }: LeadCardProps) {
   const [status, setStatus] = useState(lead.status);
   const [isStatusPending, startStatusTransition] = useTransition();
@@ -119,6 +127,24 @@ export function LeadCard({
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Exclusão de lead
+  const handleDeleteLead = async () => {
+    if (confirm(`Deseja realmente excluir o lead "${lead.name}"? Esta ação removerá este atendimento permanentemente.`)) {
+      setIsDeleting(true);
+      try {
+        const res = await deleteLeadAction(lead.id);
+        if (!res.success) {
+          alert(res.error || "Erro ao excluir lead.");
+        }
+      } catch {
+        alert("Erro ao conectar ao servidor.");
+      } finally {
+        setIsDeleting(false);
+      }
+    }
+  };
 
   // Status handler
   const handleStatusChange = (newStatus: string) => {
@@ -179,7 +205,7 @@ export function LeadCard({
   const brokerName = lead.broker?.name || currentBrokerName || "Consultoria Imobiliária";
 
   // Mensagem para envio no WhatsApp com a página de curadoria
-  const waCurationMessage = `Olá ${lead.name}! Tudo bem?\nAqui é ${brokerName} da Vanguard Imóveis.\n\nCom base no seu interesse, preparei uma curadoria exclusiva com ${selectedIds.length} opções de imóveis selecionados especialmente para você:\n\n${publicCurationFullUrl}\n\nDê uma olhada no link e me diga o que achou!`;
+  const waCurationMessage = `Olá ${lead.name}! Tudo bem?\nAqui é ${brokerName}.\n\nCom base no seu interesse, preparei uma curadoria exclusiva com ${selectedIds.length} opções de imóveis selecionados especialmente para você:\n\n${publicCurationFullUrl}\n\nDê uma olhada no link e me diga o que achou!`;
   const waCurationUrl = `https://wa.me/${clientWaNumber}?text=${encodeURIComponent(waCurationMessage)}`;
 
   // Mensagem simples de resposta inicial
@@ -243,6 +269,23 @@ export function LeadCard({
                     Curadoria Ativa
                   </span>
                 )}
+                {lead.source && lead.source !== "PORTAL" && (
+                  <span className="inline-flex items-center gap-1 text-[10px] bg-amber-50 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full font-medium">
+                    {lead.source === "MANUAL"
+                      ? "Cadastro Manual"
+                      : lead.source === "WHATSAPP"
+                      ? "WhatsApp Direto"
+                      : lead.source === "INDICACAO"
+                      ? "Indicação"
+                      : lead.source === "PRESENCIAL"
+                      ? "Presencial"
+                      : lead.source === "TELEFONE"
+                      ? "Telefone"
+                      : lead.source === "INSTAGRAM"
+                      ? "Instagram"
+                      : lead.source}
+                  </span>
+                )}
               </div>
               {lead.property ? (
                 <p className="text-xs text-[#8C8983] font-light mt-0.5">
@@ -268,33 +311,43 @@ export function LeadCard({
             </div>
           </div>
 
-          {/* Seletor de Status */}
-          <div className="flex items-center gap-2">
-            <label className="text-[10px] uppercase tracking-wider text-[#8C8983]">
-              Status:
-            </label>
-            <select
-              value={status}
-              disabled={isStatusPending}
-              onChange={(e) => handleStatusChange(e.target.value)}
-              className={`text-xs px-2.5 py-1.5 rounded-xs border font-medium cursor-pointer transition-colors focus:outline-none ${
-                status === "NOVO"
-                  ? "bg-[#D4AF37]/15 text-[#9B7826] border-[#D4AF37]/30"
-                  : status === "PROPOSTA"
-                  ? "bg-amber-50 text-amber-900 border-amber-300 font-semibold"
-                  : status === "VISITA_AGENDADA"
-                  ? "bg-blue-50 text-blue-800 border-blue-300"
-                  : status === "FECHADO"
-                  ? "bg-emerald-900 text-white border-emerald-900"
-                  : "bg-[#F4F1EA] text-[#0F1115] border-[#0F1115]/15"
-              }`}
-            >
-              {STATUS_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+          {/* Controles de Corretor Responsável & Status */}
+          <div className="flex flex-wrap items-center gap-3">
+            <LeadBrokerReassignSelect
+              leadId={lead.id}
+              currentBrokerId={lead.broker?.id}
+              currentBrokerName={lead.broker?.name}
+              brokers={brokers}
+              isAdmin={Boolean(isAdmin)}
+            />
+
+            <div className="flex items-center gap-1.5">
+              <label className="text-[10px] uppercase tracking-wider text-[#8C8983]">
+                Status:
+              </label>
+              <select
+                value={status}
+                disabled={isStatusPending}
+                onChange={(e) => handleStatusChange(e.target.value)}
+                className={`text-xs px-2.5 py-1.5 rounded-xs border font-medium cursor-pointer transition-colors focus:outline-none ${
+                  status === "NOVO"
+                    ? "bg-[#D4AF37]/15 text-[#9B7826] border-[#D4AF37]/30"
+                    : status === "PROPOSTA"
+                    ? "bg-amber-50 text-amber-900 border-amber-300 font-semibold"
+                    : status === "VISITA_AGENDADA"
+                    ? "bg-blue-50 text-blue-800 border-blue-300"
+                    : status === "FECHADO"
+                    ? "bg-emerald-900 text-white border-emerald-900"
+                    : "bg-[#F4F1EA] text-[#0F1115] border-[#0F1115]/15"
+                }`}
+              >
+                {STATUS_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
 
@@ -337,6 +390,17 @@ export function LeadCard({
               <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
               <span>WhatsApp</span>
             </a>
+
+            {/* Botão de Excluir Lead */}
+            <button
+              type="button"
+              onClick={handleDeleteLead}
+              disabled={isDeleting}
+              className="inline-flex items-center justify-center p-2 text-[#8C8983] hover:text-red-600 hover:bg-red-50 rounded-xs transition-colors border border-[#0F1115]/10 disabled:opacity-50"
+              title="Excluir Lead"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
 
             {/* Botão para Expandir e Curar Imóveis */}
             <button
