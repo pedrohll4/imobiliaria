@@ -3,6 +3,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { togglePropertyFeaturedAction, deletePropertyAction } from "@/actions/propertyActions";
 import { PropertyBrokerReassignSelect } from "@/components/property/PropertyBrokerReassignSelect";
+import { PropertyOwnerModal } from "@/components/property/PropertyOwnerModal";
 import { Star, Trash2, ExternalLink, Plus, Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 
@@ -108,9 +109,21 @@ export default async function AdminImoveisPage() {
                           <span className="font-semibold text-[#0F1115] block line-clamp-1">
                             {prop.title}
                           </span>
-                          <span className="font-mono text-[10px] text-[#8C8983]">
+                          <span className="font-mono text-[10px] text-[#8C8983] block">
                             {prop.code} • {prop.neighborhood}, {prop.city}
                           </span>
+                          <div className="mt-1">
+                            <PropertyOwnerModal
+                              propertyId={prop.id}
+                              propertyCode={prop.code}
+                              propertyTitle={prop.title}
+                              initialOwnerName={prop.ownerName}
+                              initialOwnerPhone={prop.ownerPhone}
+                              initialOwnerEmail={prop.ownerEmail}
+                              initialOwnerDocument={prop.ownerDocument}
+                              initialOwnerNotes={prop.ownerNotes}
+                            />
+                          </div>
                         </div>
                       </div>
                     </td>

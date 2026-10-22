@@ -23,6 +23,10 @@ import {
   Lock,
   Shield,
   FileText,
+  User,
+  Phone,
+  Mail,
+  MessageSquare,
 } from "lucide-react";
 import { getSiteSettings } from "@/lib/settings";
 
@@ -166,9 +170,9 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
               </span>
             </p>
 
-            {/* Painel Exclusivo para Corretores Logados (quando houver endereço oculto ou observações internas) */}
-            {session && ((!property.showExactAddress && (property.address || property.number || property.zipCode)) || property.internalNotes) && (
-              <div className="mt-3 p-3.5 bg-amber-50/85 border border-[#D4AF37]/50 rounded-sm text-xs text-[#0F1115] space-y-2 shadow-xs">
+            {/* Painel Exclusivo para Corretores Logados (quando houver endereço oculto, observações internas ou dados do dono) */}
+            {session && ((!property.showExactAddress && (property.address || property.number || property.zipCode)) || property.internalNotes || property.ownerName || property.ownerPhone || property.ownerEmail || property.ownerDocument || property.ownerNotes) && (
+              <div className="mt-3 p-3.5 bg-amber-50/85 border border-[#D4AF37]/50 rounded-sm text-xs text-[#0F1115] space-y-3 shadow-xs">
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#D4AF37]/25 pb-2">
                   <div className="flex items-center gap-2">
                     <div className="p-1 rounded bg-[#D4AF37]/25 text-[#0F1115]">
@@ -179,7 +183,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                     </span>
                   </div>
                   <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
-                    Visível apenas para Corretores da Equipe
+                    Visível apenas para Corretores e Administradores
                   </span>
                 </div>
 
@@ -195,11 +199,93 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
                   </div>
                 )}
 
+                {/* Dados do Proprietário / Dono da Casa */}
+                {(property.ownerName || property.ownerPhone || property.ownerEmail || property.ownerDocument || property.ownerNotes) && (
+                  <div className="pt-2 border-t border-[#D4AF37]/20 space-y-2">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-[#0F1115]">
+                      <User className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <span>Dados do Dono do Imóvel (Proprietário):</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 bg-white/85 p-3 rounded-xs border border-[#0F1115]/10 text-xs">
+                      {property.ownerName && (
+                        <div>
+                          <span className="text-[10px] uppercase tracking-wider text-[#8C8983] block font-semibold">
+                            Proprietário:
+                          </span>
+                          <span className="font-medium text-[#0F1115]">
+                            {property.ownerName}
+                          </span>
+                        </div>
+                      )}
+
+                      {property.ownerPhone && (
+                        <div>
+                          <span className="text-[10px] uppercase tracking-wider text-[#8C8983] block font-semibold">
+                            Telefone / WhatsApp:
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-[#0F1115]">
+                              {property.ownerPhone}
+                            </span>
+                            <a
+                              href={`https://wa.me/${property.ownerPhone.replace(/\D/g, "").startsWith("55") ? property.ownerPhone.replace(/\D/g, "") : `55${property.ownerPhone.replace(/\D/g, "")}`}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-[10px] font-semibold rounded transition-colors"
+                              title="Conversar com o proprietário no WhatsApp"
+                            >
+                              <MessageSquare className="w-3 h-3 text-emerald-600" />
+                              <span>WhatsApp</span>
+                            </a>
+                          </div>
+                        </div>
+                      )}
+
+                      {property.ownerEmail && (
+                        <div>
+                          <span className="text-[10px] uppercase tracking-wider text-[#8C8983] block font-semibold">
+                            E-mail:
+                          </span>
+                          <a
+                            href={`mailto:${property.ownerEmail}`}
+                            className="font-medium text-[#0F1115] hover:text-[#D4AF37] underline truncate block"
+                          >
+                            {property.ownerEmail}
+                          </a>
+                        </div>
+                      )}
+
+                      {property.ownerDocument && (
+                        <div>
+                          <span className="text-[10px] uppercase tracking-wider text-[#8C8983] block font-semibold">
+                            CPF / Documento:
+                          </span>
+                          <span className="font-mono text-[11px] text-[#0F1115]">
+                            {property.ownerDocument}
+                          </span>
+                        </div>
+                      )}
+
+                      {property.ownerNotes && (
+                        <div className="sm:col-span-2 md:col-span-3 pt-1 border-t border-[#0F1115]/5">
+                          <span className="text-[10px] uppercase tracking-wider text-[#8C8983] block font-semibold">
+                            Anotações do Dono / Condições:
+                          </span>
+                          <p className="mt-0.5 text-xs text-[#38352F] whitespace-pre-wrap leading-relaxed">
+                            {property.ownerNotes}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {property.internalNotes && (
-                  <div className="flex items-start gap-2 text-[#38352F] pt-1.5 border-t border-[#D4AF37]/20">
+                  <div className="flex items-start gap-2 text-[#38352F] pt-2 border-t border-[#D4AF37]/20">
                     <FileText className="w-3.5 h-3.5 text-[#D4AF37] shrink-0 mt-0.5" />
                     <div className="flex-1">
-                      <strong className="text-[#0F1115]">Observação da Corretagem / Captação:</strong>
+                      <strong className="text-[#0F1115]">Observação Geral da Captação:</strong>
                       <p className="mt-1 whitespace-pre-line bg-white/80 p-2.5 rounded border border-[#0F1115]/10 text-xs text-[#2A2825]">
                         {property.internalNotes}
                       </p>

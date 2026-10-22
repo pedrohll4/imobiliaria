@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { deletePropertyAction } from "@/actions/propertyActions";
 import { PropertyBrokerReassignSelect } from "@/components/property/PropertyBrokerReassignSelect";
+import { PropertyOwnerModal } from "@/components/property/PropertyOwnerModal";
 import { Plus, Eye, ExternalLink, Trash2, Building, ShieldCheck, Users, Pencil, MapPin, EyeOff, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 
@@ -211,6 +212,20 @@ export default async function DashboardImoveisPage({ searchParams }: DashboardIm
                                 </div>
                               </div>
                             )}
+
+                            {/* Informações do Dono do Imóvel (Proprietário) */}
+                            <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
+                              <PropertyOwnerModal
+                                propertyId={prop.id}
+                                propertyCode={prop.code}
+                                propertyTitle={prop.title}
+                                initialOwnerName={prop.ownerName}
+                                initialOwnerPhone={prop.ownerPhone}
+                                initialOwnerEmail={prop.ownerEmail}
+                                initialOwnerDocument={prop.ownerDocument}
+                                initialOwnerNotes={prop.ownerNotes}
+                              />
+                            </div>
                           </div>
                         </div>
                       </td>

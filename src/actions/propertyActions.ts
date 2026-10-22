@@ -41,6 +41,11 @@ export async function createPropertyAction(
   const zipCode = (formData.get("zipCode") as string)?.trim() || null;
   const showExactAddress = formData.get("showExactAddress") === "true";
   const internalNotes = (formData.get("internalNotes") as string)?.trim() || null;
+  const ownerName = (formData.get("ownerName") as string)?.trim() || null;
+  const ownerPhone = (formData.get("ownerPhone") as string)?.trim() || null;
+  const ownerEmail = (formData.get("ownerEmail") as string)?.trim() || null;
+  const ownerDocument = (formData.get("ownerDocument") as string)?.trim() || null;
+  const ownerNotes = (formData.get("ownerNotes") as string)?.trim() || null;
   
   const bedrooms = parseInt(formData.get("bedrooms") as string) || 0;
   const suites = parseInt(formData.get("suites") as string) || 0;
@@ -152,6 +157,11 @@ export async function createPropertyAction(
         zipCode,
         showExactAddress,
         internalNotes,
+        ownerName,
+        ownerPhone,
+        ownerEmail,
+        ownerDocument,
+        ownerNotes,
         bedrooms,
         suites,
         bathrooms,
@@ -322,6 +332,70 @@ export async function updatePropertyInternalNotesAction(
   }
 }
 
+export async function updatePropertyOwnerAction(
+  propertyId: string,
+  ownerData: {
+    ownerName?: string | null;
+    ownerPhone?: string | null;
+    ownerEmail?: string | null;
+    ownerDocument?: string | null;
+    ownerNotes?: string | null;
+  }
+): Promise<PropertyActionResult> {
+  const session = await getSession();
+  if (!session) {
+    return { success: false, error: "Acesso não autorizado. Faça login para continuar." };
+  }
+
+  try {
+    const property = await prisma.property.findUnique({
+      where: { id: propertyId },
+      select: { id: true },
+    });
+
+    if (!property) {
+      return { success: false, error: "Imóvel não encontrado." };
+    }
+
+    const dataToUpdate: Record<string, string | null> = {};
+    if (ownerData.ownerName !== undefined) {
+      dataToUpdate.ownerName = ownerData.ownerName?.trim() || null;
+    }
+    if (ownerData.ownerPhone !== undefined) {
+      dataToUpdate.ownerPhone = ownerData.ownerPhone?.trim() || null;
+    }
+    if (ownerData.ownerEmail !== undefined) {
+      dataToUpdate.ownerEmail = ownerData.ownerEmail?.trim().toLowerCase() || null;
+    }
+    if (ownerData.ownerDocument !== undefined) {
+      dataToUpdate.ownerDocument = ownerData.ownerDocument?.trim() || null;
+    }
+    if (ownerData.ownerNotes !== undefined) {
+      dataToUpdate.ownerNotes = ownerData.ownerNotes?.trim() || null;
+    }
+
+    await prisma.property.update({
+      where: { id: propertyId },
+      data: dataToUpdate,
+    });
+
+    revalidatePath("/dashboard/imoveis");
+    revalidatePath("/admin/imoveis");
+    revalidatePath(`/imoveis/${propertyId}`);
+
+    return {
+      success: true,
+      message: "Dados do proprietário atualizados com sucesso!",
+    };
+  } catch (err: any) {
+    console.error("Erro ao atualizar dados do proprietário:", err);
+    return {
+      success: false,
+      error: err?.message || "Erro ao atualizar dados do proprietário.",
+    };
+  }
+}
+
 export async function togglePropertyFeaturedAction(propertyId: string): Promise<PropertyActionResult> {
   const session = await getSession();
   if (!session || session.role !== "ADMIN") {
@@ -415,6 +489,11 @@ export async function updatePropertyAction(
   const zipCode = (formData.get("zipCode") as string)?.trim() || null;
   const showExactAddress = formData.get("showExactAddress") === "true";
   const internalNotes = (formData.get("internalNotes") as string)?.trim() || null;
+  const ownerName = (formData.get("ownerName") as string)?.trim() || null;
+  const ownerPhone = (formData.get("ownerPhone") as string)?.trim() || null;
+  const ownerEmail = (formData.get("ownerEmail") as string)?.trim() || null;
+  const ownerDocument = (formData.get("ownerDocument") as string)?.trim() || null;
+  const ownerNotes = (formData.get("ownerNotes") as string)?.trim() || null;
   const bedrooms = parseInt(formData.get("bedrooms") as string, 10) || 0;
   const suites = parseInt(formData.get("suites") as string, 10) || 0;
   const bathrooms = parseInt(formData.get("bathrooms") as string, 10) || 0;
@@ -499,6 +578,11 @@ export async function updatePropertyAction(
           zipCode,
           showExactAddress,
           internalNotes,
+          ownerName,
+          ownerPhone,
+          ownerEmail,
+          ownerDocument,
+          ownerNotes,
           bedrooms,
           suites,
           bathrooms,

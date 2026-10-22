@@ -64,6 +64,12 @@ model Property {
   zipCode       String?
   showExactAddress Boolean @default(false)
   internalNotes    String?
+  // Dados Internos do Proprietário / Dono da Casa (Exclusivo para Corretores e Administradores)
+  ownerName        String?
+  ownerPhone       String?
+  ownerEmail       String?
+  ownerDocument    String? // CPF / CNPJ / Documento do Dono
+  ownerNotes       String? // Observações sobre o proprietário / negociação / chaves
   latitude      Float?
   longitude     Float?
   bedrooms      Int      @default(0)

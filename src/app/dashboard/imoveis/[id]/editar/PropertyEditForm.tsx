@@ -22,6 +22,7 @@ import {
   AlertCircle,
   CheckCircle2,
   ShieldCheck,
+  UserCheck,
   ArrowLeft,
   ExternalLink,
   Eye,
@@ -77,6 +78,11 @@ interface PropertyEditFormProps {
     zipCode?: string | null;
     showExactAddress?: boolean;
     internalNotes?: string | null;
+    ownerName?: string | null;
+    ownerPhone?: string | null;
+    ownerEmail?: string | null;
+    ownerDocument?: string | null;
+    ownerNotes?: string | null;
     bedrooms: number;
     suites: number;
     bathrooms: number;
@@ -416,29 +422,94 @@ export function PropertyEditForm({
             </div>
           )}
 
-          {/* Observações Internas (Exclusivo para Corretores e Administradores) */}
-          <div className="sm:col-span-12 p-4 bg-[#FBF9F5] border border-[#D4AF37]/50 rounded-xs space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-[#D4AF37]" />
-                <label className="text-xs font-semibold text-[#0F1115] uppercase tracking-wider">
-                  Observações Internas (Exclusivo para Corretores)
-                </label>
+          {/* Dados Internos do Proprietário / Dono do Imóvel (Exclusivo para Corretores e Administradores) */}
+          <div className="sm:col-span-12 p-5 bg-[#FBF9F5] border border-[#D4AF37]/60 rounded-xs space-y-4 shadow-subtle">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#D4AF37]/20 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-[#D4AF37]/20 text-[#9B7826] flex items-center justify-center shrink-0">
+                  <UserCheck className="w-4 h-4 text-[#9B7826]" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-semibold text-[#0F1115] uppercase tracking-wider">
+                    Dados do Dono do Imóvel (Proprietário)
+                  </h4>
+                  <p className="text-[11px] text-[#6B6862] font-light">
+                    Informações confidenciais visíveis apenas para Corretores e Administradores logados.
+                  </p>
+                </div>
               </div>
-              <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
-                <Lock className="w-3 h-3" /> Confidencial / Oculto no Portal
+              <span className="self-start sm:self-center inline-flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1 rounded bg-amber-50 text-amber-900 border border-amber-300">
+                <Lock className="w-3 h-3 text-amber-700" />
+                100% Interno & Oculto no Portal
               </span>
             </div>
-            <p className="text-[11px] text-[#6B6862] font-light leading-relaxed">
-              Espaço reservado para informações de captação, contato do proprietário, localização de chaves, flexibilidade de proposta ou regras de comissão. Visível apenas para corretores e administradores logados na equipe.
-            </p>
-            <Textarea
-              name="internalNotes"
-              placeholder="Ex: Proprietário aceita permuta até 20%. Chaves na portaria com autorização prévia. Falar com corretor captador antes de agendar visita..."
-              defaultValue={property.internalNotes || ""}
-              rows={3}
-              className="bg-white text-xs"
-            />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <Input
+                name="ownerName"
+                label="Nome do Dono / Proprietário"
+                placeholder="Ex: Carlos Eduardo Silveira"
+                defaultValue={property.ownerName || ""}
+                className="bg-white text-xs"
+              />
+
+              <Input
+                name="ownerPhone"
+                label="Telefone / WhatsApp do Dono"
+                placeholder="Ex: (69) 99999-8888"
+                defaultValue={property.ownerPhone || ""}
+                className="bg-white text-xs"
+              />
+
+              <Input
+                name="ownerEmail"
+                type="email"
+                label="E-mail do Dono (Opcional)"
+                placeholder="proprietario@email.com"
+                defaultValue={property.ownerEmail || ""}
+                className="bg-white text-xs"
+              />
+
+              <Input
+                name="ownerDocument"
+                label="CPF / CNPJ ou Doc (Opcional)"
+                placeholder="000.000.000-00"
+                defaultValue={property.ownerDocument || ""}
+                className="bg-white text-xs"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-[#4A4742] flex items-center justify-between">
+                <span>Observações do Dono & Condições de Negociação</span>
+                <span className="text-[10px] text-[#8C8983] font-normal lowercase">
+                  comissão acordada, propostas aceitas, chaves, horários
+                </span>
+              </label>
+              <Textarea
+                name="ownerNotes"
+                placeholder="Ex: Aceita permuta em veículo até R$ 150 mil. Chaves na portaria do condomínio com autorização prévia. Falar com ele após as 14h..."
+                defaultValue={property.ownerNotes || ""}
+                rows={2}
+                className="bg-white text-xs"
+              />
+            </div>
+
+            <div className="space-y-1.5 pt-2 border-t border-[#D4AF37]/15">
+              <label className="block text-xs font-medium text-[#4A4742] flex items-center justify-between">
+                <span>Observações Gerais da Captação / Equipe</span>
+                <span className="text-[10px] text-[#8C8983] font-normal lowercase">
+                  outras anotações internas da corretagem
+                </span>
+              </label>
+              <Textarea
+                name="internalNotes"
+                placeholder="Outras anotações gerais da equipe sobre o imóvel..."
+                defaultValue={property.internalNotes || ""}
+                rows={2}
+                className="bg-white text-xs"
+              />
+            </div>
           </div>
 
           <div className="sm:col-span-8">
