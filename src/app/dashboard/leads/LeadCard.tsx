@@ -27,6 +27,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { LeadBrokerReassignSelect } from "@/components/leads/LeadBrokerReassignSelect";
+import { LeadMessageEditor } from "@/components/leads/LeadMessageEditor";
 
 export interface AvailableProperty {
   id: string;
@@ -351,10 +352,12 @@ export function LeadCard({
           </div>
         </div>
 
-        {/* Mensagem do Lead */}
-        <div className="p-3.5 bg-[#FBF9F5] border border-[#0F1115]/5 rounded-xs text-xs text-[#4A4742] leading-relaxed italic">
-          &ldquo;{lead.message}&rdquo;
-        </div>
+        {/* Mensagem / Perfil do Lead (Editável) */}
+        <LeadMessageEditor
+          leadId={lead.id}
+          initialMessage={lead.message}
+          leadName={lead.name}
+        />
 
         {/* Informações de Contato & Botão de Expansão */}
         <div className="flex flex-wrap items-center justify-between gap-4 pt-2 text-xs text-[#6B6862]">

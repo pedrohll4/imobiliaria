@@ -243,6 +243,64 @@ export async function updateLeadStatusAction(
   }
 }
 
+export async function updateLeadMessageAction(
+  leadId: string,
+  newMessage: string
+): Promise<LeadActionResult> {
+  const session = await getSession();
+  if (!session) {
+    return { success: false, error: "Acesso não autorizado. Faça login para continuar." };
+  }
+
+  try {
+    const existing = await prisma.lead.findUnique({
+      where: { id: leadId },
+      select: { id: true, brokerId: true },
+    });
+
+    if (!existing) {
+      return { success: false, error: "Lead não encontrado." };
+    }
+
+    // Se for corretor, garantir que o atendimento pertence a ele
+    if (session.role === "BROKER") {
+      if (!session.brokerId || existing.brokerId !== session.brokerId) {
+        return {
+          success: false,
+          error: "Você só tem permissão para editar observações dos seus próprios leads.",
+        };
+      }
+    }
+
+    const trimmed = (newMessage ?? "").trim();
+    if (trimmed.length > 5000) {
+      return {
+        success: false,
+        error: "A anotação excede o limite máximo permitido (5.000 caracteres).",
+      };
+    }
+
+    await prisma.lead.update({
+      where: { id: leadId },
+      data: { message: trimmed },
+    });
+
+    revalidatePath("/dashboard/leads");
+    revalidatePath("/admin/leads");
+
+    return {
+      success: true,
+      message: "Observações do lead atualizadas com sucesso!",
+    };
+  } catch (err) {
+    console.error("Erro ao atualizar mensagem/anotação do lead:", err);
+    return {
+      success: false,
+      error: "Erro ao salvar alterações no lead. Tente novamente.",
+    };
+  }
+}
+
 export async function saveLeadCurationAction(
   leadId: string,
   propertyIds: string[],
